@@ -85,7 +85,7 @@ struct ApplicationCommand
     application_id::Snowflake
     guild_id::Optional{Snowflake}
     name::String
-    description::OString
+    description::String
     options::Optional{Vector{ApplicationCommandOption}}
     default_permissions::Optional{Bool}
     version::Optional{Snowflake}
@@ -119,7 +119,7 @@ struct Interaction
     member::Optional{Member}
     user::Optional{User}
     token::String
-    version::Int
+    version::Optional{Int}
     message::Optional{Message}
 end
 @boilerplate Interaction :constructors :docs :lower :merge :mock
