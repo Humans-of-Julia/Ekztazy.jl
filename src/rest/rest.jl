@@ -183,7 +183,7 @@ function Response{T}(
 
         @debug "About to send request"
         # Queue a job to be run within the rate-limiting constraints.
-        rr = begin
+        enqueue!(c.limiter, method, endpoint) do
             @debug "Enqueued job running"
             http_r = nothing
 
