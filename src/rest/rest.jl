@@ -152,6 +152,7 @@ function Response{T}(
         )
 
         # Retrieve the value from the cache, maybe.
+        @debug "Looking in cache"
         if c.use_cache && method === :GET
             val = get(c.state, T; kws...)
             if val !== nothing
@@ -166,7 +167,7 @@ function Response{T}(
                 end
             end
         end
-
+        @debug "Did not find in cache, preparing request"
         # Prepare the request.
         url = "$DISCORD_API/v$(c.version)$endpoint"
         isempty(kwargs) || (url *= "?" * HTTP.escapeuri(kwargs))
@@ -180,6 +181,7 @@ function Response{T}(
             push!(args, headers["Content-Type"] == "application/json" ? json(body) : body)
         end
 
+        @debug "About to send request"
         # Queue a job to be run within the rate-limiting constraints.
         enqueue!(c.limiter, method, endpoint) do
             http_r = nothing

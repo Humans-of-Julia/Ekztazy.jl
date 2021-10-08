@@ -3,6 +3,7 @@ function create(c::Client, ::Type{Message}, ch::DiscordChannel; kwargs...)
 end
 
 function reply(c::Client, m::Mesage; kwargs...)
+    @debug "Replying to message"
     return create_message(c, m.channel_id; kwargs...)
 end
 
