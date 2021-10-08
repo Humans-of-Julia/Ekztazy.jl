@@ -44,7 +44,9 @@ mutable struct JobQueue
             end
 
             # Run the job, and get the HTTP response.
-            r = f()
+            @sync begin 
+                @async r = f()
+            end
 
             if r === nothing
                 # Exception from the HTTP request itself, nothing to do.
