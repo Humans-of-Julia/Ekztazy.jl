@@ -46,10 +46,11 @@ mutable struct JobQueue
             # Run the job, and get the HTTP response.
             r = f()
             @debug "Ran the job!"
-            
+
             if r === nothing
                 # Exception from the HTTP request itself, nothing to do.
                 continue
+                @debug "Got an error"
             elseif r.status == 429
                 # Update the rate limiter with the response body.
                 @debug "Rate limited"
@@ -73,6 +74,7 @@ mutable struct JobQueue
                 isempty(res) || (q.reset = unix2datetime(parse(Int, res)))
                 @debug "Updated limiter"
             end
+            @debug "Finished rate limit job handling"
         end
 
         return q

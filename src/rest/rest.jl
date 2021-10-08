@@ -191,7 +191,7 @@ function Response{T}(
                 # Make an HTTP request, and generate a Response.
                 # If we hit an upstream rate limit, return the response immediately.
                 http_r = HTTP.request(args...; status_exception=false)
-                http_r.status == 429 && return false
+                http_r.status == 429 && return http_r
                 r = Response{T}(c, http_r)
 
                 if r.ok && r.val !== nothing
@@ -210,7 +210,7 @@ function Response{T}(
             end
             
             @debug "Returning internally"
-            return true
+            return http_r
         end
     end
     @debug "Returning future"
