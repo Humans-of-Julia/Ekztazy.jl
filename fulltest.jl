@@ -10,10 +10,8 @@ client = Client(
 
 on_message!(client) do (ctx) 
     println("Received message: $(ctx.message.content)")
-    @sync begin
-        t = Dizkord.reply(client, ctx.message, content="Hey")
-    end 
-    
+    @sync t = Dizkord.reply(client, ctx.message, content="Hey")
+    print(t)
 end
 
 start(client)
