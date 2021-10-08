@@ -2,6 +2,10 @@ function create(c::Client, ::Type{Message}, ch::DiscordChannel; kwargs...)
     return create_message(c, ch.id; kwargs...)
 end
 
+function reply(c::Client, m::Mesage; kwargs...)
+    return create_message(c, m.channel_id; kwargs...)
+end
+
 function retrieve(c::Client, ::Type{Message}, ch::DiscordChannel, message::Integer)
     return get_channel_message(c, ch.id, message)
 end
