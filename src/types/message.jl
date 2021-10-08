@@ -1,4 +1,5 @@
-export Message
+export Message,
+    author
 
 """
 A [`Message`](@ref)'s type.
@@ -79,4 +80,9 @@ struct Message
     activity::Optional{MessageActivity}
     application::Optional{MessageApplication}
 end
+
+author(::Type{User}, m::Message) = m.member.user
+author(::Type{Member}, m::Message) = m.member
+author(m::Message) = author(User, m)
+
 @boilerplate Message :constructors :docs :lower :merge :mock
