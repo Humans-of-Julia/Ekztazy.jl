@@ -10,6 +10,4 @@ on_message!(client) do (ctx)
     println("Received message: $(ctx.message.content)")
 end
 
-open(client)
-println(client)
-wait(client)
+start(client)
