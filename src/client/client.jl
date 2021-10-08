@@ -237,3 +237,8 @@ function set_cache(f::Function, c::Client, use_cache::Bool)
         c.use_cache = old
     end
 end
+
+function run(c::Client)
+    open(c)
+    wait(c)
+end
