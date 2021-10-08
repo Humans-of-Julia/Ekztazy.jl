@@ -1,11 +1,10 @@
 export on_message!
 
 # helper function
-function on_message!(f::Function, c::Client) 
-    sym = :OnMessageCreate
-    h = eval(sym)(f)
-    haskey(c.handlers, sym) ? push!(c.handlers[sym], h) : c.handlers[sym] = [h] 
-end
+on_message!(f::Function, c::Client) = add_handler(c, OnMessageCreate(f))
+
+on_ready!(f::Function, c::Client) = add_handler(c, OnReady(f))
+
 
 function context(T::Type{OnMessageCreate}, data::Dict) 
     @debug "Creating context object" event=Symbol(T)
@@ -13,6 +12,8 @@ function context(T::Type{OnMessageCreate}, data::Dict)
     @debug "Created context object" context=object
     OnMessageContext(object)
 end
+
+context(::Type{OnReady}, data::Dict) = OnReadyContext(data)
 
 tohandler(t::Type{<:AbstractEvent}) = Symbol("On"*String(Symbol(t)))
 

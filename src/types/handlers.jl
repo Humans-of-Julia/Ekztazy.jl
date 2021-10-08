@@ -1,5 +1,7 @@
 export OnMessageContext,
-    OnMessageCreate
+    OnMessageCreate,
+    OnReady,
+    OnReadyContext
     
 macro named(T) 
     quote
@@ -21,6 +23,19 @@ struct OnMessageContext <: AbstractContext
 end
 @boilerplate OnMessageContext :constructors
 
+struct OnReadyContext <: AbstractContext 
+    v::Int
+    user::Optional{User}
+    guilds::Vector{UnavailableGuild}
+    session_id::String
+    shard::Optional{Vector{Int}}
+end
+@boilerplate OnReadyContext :constructors
+
+struct OnReady <: AbstractHandler 
+    f::Function
+end
+@named OnReady
 """
 Handler for a `Message Create` event
 """

@@ -13,4 +13,8 @@ on_message!(client) do (ctx)
     end
 end
 
+on_ready!(client) do (ctx)
+    println!("successfully logged in as $(ctx.user.username)")
+end
+
 start(client)

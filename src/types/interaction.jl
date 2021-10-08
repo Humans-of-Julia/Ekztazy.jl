@@ -71,7 +71,7 @@ end
 struct ApplicationCommandOption 
     name::Optional{String}
     type::OptionType
-    value::Nullable{Any}
+    value::Optional{Any}
     required::Optional{Bool}
     choices::Optional{Vector{ApplicationCommandChoice}}
     options::Optional{Vector{ApplicationCommandOption}}
@@ -85,8 +85,8 @@ struct ApplicationCommand
     application_id::Snowflake
     guild_id::Optional{Snowflake}
     name::String
-    description::String
-    options::Vector{ApplicationCommandOption}
+    description::OString
+    options::Optional{Vector{ApplicationCommandOption}}
     default_permissions::Optional{Bool}
     version::Optional{Snowflake}
 end
@@ -96,7 +96,7 @@ struct InteractionData
     id::Nullable{Snowflake}
     name::String
     type::ApplicationCommandType
-    resolved::ResolvedData
+    resolved::Optional{ResolvedData}
     options::Nullable{Vector{ApplicationCommandOption}}
     custom_id::OptionalNullable{String}
     component_type::OptionalNullable{ComponentType}

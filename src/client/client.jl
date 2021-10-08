@@ -150,11 +150,7 @@ Client(token::String, appid::Int, intents::Int, args...) = Client(token, UInt(ap
 # TODO: clean
 function add_handler(c::Client, handler::AbstractHandler) 
     handle = name(handler)
-    if haskey(c.handlers, handle)
-        push!(c.handlers[handle], handler) 
-    else 
-        c.handlers[handle] = [handler]
-    end
+    haskey(c.handlers, handle) ? c.handlers[handle] = push!(c.handlers[handle], handler) : c.handlers[handle] = [handler]
 end
 
 mock(::Type{Client}; kwargs...) = Client("token")
