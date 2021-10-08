@@ -238,7 +238,7 @@ function set_cache(f::Function, c::Client, use_cache::Bool)
     end
 end
 
-function run(c::Client)
+function start(c::Client)
     open(c)
     wait(c)
 end
