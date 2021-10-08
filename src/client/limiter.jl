@@ -75,7 +75,11 @@ mutable struct JobQueue
                 @debug "2"
                 res = HTTP.header(r, "X-RateLimit-Reset")
                 @debug "3"
-                isempty(res) || (q.reset = unix2datetime(parse(Int, res)))
+                if !isempty(res)
+                    @debug "3.25"
+                    tim = parse(Int, res)
+                    @debug "3.5"
+                    q.reset = unix2datetime(tim)
                 @debug "4"
             end
             @debug "Finished rate limit job handling"
