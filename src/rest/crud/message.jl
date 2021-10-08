@@ -2,7 +2,7 @@ function create(c::Client, ::Type{Message}, ch::DiscordChannel; kwargs...)
     return create_message(c, ch.id; kwargs...)
 end
 
-function reply(c::Client, m::Mesage; kwargs...)
+function reply(c::Client, m::Message; kwargs...)
     @debug "Replying to message"
     return create_message(c, m.channel_id; kwargs...)
 end
