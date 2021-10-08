@@ -44,17 +44,13 @@ mutable struct JobQueue
             end
 
             # Run the job, and get the HTTP response.
-            try 
-                r = f()
-            catch  
-                put!(q.retries, f)
-            end
+            r = f()
             @debug "Ran the job!"
 
             if r === nothing
                 # Exception from the HTTP request itself, nothing to do.
                 @debug "Got an error"
-                continue
+                @async put!(q.retries, f)   
             elseif r.status == 429
                 # Update the rate limiter with the response body.
                 @warn "Rate limited"
