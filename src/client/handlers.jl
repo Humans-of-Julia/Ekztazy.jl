@@ -22,7 +22,7 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     @debug "Found context" context=ctx
     for h = handlers
         @debug "Running handler" handler=h.f
-        @async begin 
+        @spawn begin 
             x = h.f(ctx)
             @debug "Got return value" ret=x
         end

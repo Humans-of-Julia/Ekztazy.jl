@@ -13,7 +13,7 @@ mutable struct JobQueue
     function JobQueue(endpoint::AbstractString, limiter)
         q = new(nothing, nothing, Channel{Function}(Inf), Channel{Function}(Inf))
 
-        @async while true
+        @spawn while true
             # Get a job, prioritizing retries. This is really ugly.
             local f = nothing
             while true
@@ -76,6 +76,7 @@ mutable struct JobQueue
                 res = HTTP.header(r, "X-RateLimit-Reset")
                 @debug "3"
                 isempty(res) || (q.reset = unix2datetime(parse(Int, res)))
+                @debug "4"
             end
             @debug "Finished rate limit job handling"
         end

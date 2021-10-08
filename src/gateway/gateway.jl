@@ -99,8 +99,8 @@ function Base.open(c::Client; resume::Bool=false, delay::Period=Second(7))
     end
 
     @debug "Starting background maintenance tasks" logkws(c)...
-    @async heartbeat_loop(c)
-    @async read_loop(c)
+    @spawn heartbeat_loop(c)
+    @spawn read_loop(c)
 
     c.ready = true
 end
