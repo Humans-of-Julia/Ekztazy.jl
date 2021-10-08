@@ -183,7 +183,7 @@ function Response{T}(
 
         @debug "About to send request"
         # Queue a job to be run within the rate-limiting constraints.
-        enqueue!(c.limiter, method, endpoint) do
+        rr = begin
             @debug "Enqueued job running"
             http_r = nothing
 
@@ -191,7 +191,7 @@ function Response{T}(
                 # Make an HTTP request, and generate a Response.
                 # If we hit an upstream rate limit, return the response immediately.
                 http_r = HTTP.request(args...; status_exception=false)
-                http_r.status == 429 && return http_r
+                http_r.status == 429 && return false
                 r = Response{T}(c, http_r)
 
                 if r.ok && r.val !== nothing
@@ -210,7 +210,7 @@ function Response{T}(
             end
             
             @debug "Returning internally"
-            return http_r
+            return true
         end
     end
     @debug "Returning future"
