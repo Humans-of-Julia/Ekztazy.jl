@@ -211,7 +211,7 @@ function Response{T}(
             
             @debug "Returning"
             return http_r  # Return the HTTP response to update the rate limits.
-        end
+        yield()
     end
 
     return f
