@@ -44,7 +44,11 @@ mutable struct JobQueue
             end
 
             # Run the job, and get the HTTP response.
-            r = f()
+            try 
+                r = f()
+            catch  
+                put!(q.retries, f)
+            end
             @debug "Ran the job!"
 
             if r === nothing
