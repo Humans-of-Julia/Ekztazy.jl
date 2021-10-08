@@ -17,6 +17,7 @@ mutable struct JobQueue
             # Get a job, prioritizing retries. This is really ugly.
             local f = nothing
             while true
+                @debug "Waiting for jobs"
                 if isready(q.retries)
                     f = take!(q.retries)
                     break
@@ -50,6 +51,7 @@ mutable struct JobQueue
                 continue
             elseif r.status == 429
                 # Update the rate limiter with the response body.
+                @debug "Rate limited"
                 n = now(UTC)
                 d = JSON.parse(String(copy(r.body)))
                 reset = n + Millisecond(get(d, "retry_after", 0))
@@ -68,6 +70,7 @@ mutable struct JobQueue
                 isempty(rem) || (q.remaining = parse(Int, rem))
                 res = HTTP.header(r, "X-RateLimit-Reset")
                 isempty(res) || (q.reset = unix2datetime(parse(Int, res)))
+                @debug "Updated limiter"
             end
         end
 
