@@ -183,7 +183,7 @@ function Response{T}(
 
         @debug "About to send request"
         # Queue a job to be run within the rate-limiting constraints.
-        enqueue!(c.limiter, method, endpoint) do
+        rr = begin
             @debug "Enqueued job running"
             http_r = nothing
 
@@ -209,7 +209,7 @@ function Response{T}(
                 put!(f, Response{T}(nothing, false, http_r, e))
             end
             
-            @debug "Returning control"
+            @debug "Returning"
             return http_r  # Return the HTTP response to update the rate limits.
         end
     end
