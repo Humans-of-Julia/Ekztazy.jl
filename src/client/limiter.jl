@@ -53,17 +53,18 @@ mutable struct JobQueue
                 continue
             elseif r.status == 429
                 # Update the rate limiter with the response body.
-                @debug "Rate limited"
-                n = now(UTC)
-                d = JSON.parse(String(copy(r.body)))
-                reset = n + Millisecond(get(d, "retry_after", 0))
-                if get(d, "global", false)
-                    limiter.reset = reset
-                else
-                    q.remaining = 0
-                    q.reset = reset
+                @warn "Rate limited"
+                @async begin
+                    n = now(UTC)
+                    d = JSON.parse(String(copy(r.body)))
+                    reset = n + Millisecond(get(d, "retry_after", 0))
+                    if get(d, "global", false)
+                        limiter.reset = reset
+                    else
+                        q.remaining = 0
+                        q.reset = reset
+                    end
                 end
-
                 # Requeue the job with high priority.
                 put!(q.retries, f)
             else
