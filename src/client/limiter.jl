@@ -75,11 +75,11 @@ mutable struct JobQueue
                 @debug "2"
                 res = HTTP.header(r, "X-RateLimit-Reset")
                 @debug "3"
-                if !isempty(res)
-                    @debug "3.25"
-                    tim = parse(Int, res)
-                    @debug "3.5"
-                    q.reset = unix2datetime(tim)
+                @async begin 
+                    if !isempty(res)
+                        tim = parse(Int, res)
+                        q.reset = unix2datetime(tim)
+                    end
                 end
                 @debug "4"
             end
