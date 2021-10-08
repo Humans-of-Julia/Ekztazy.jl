@@ -1,6 +1,5 @@
 using Dizkord
 
-@debug "Hello"
 client = Client(
     readlines("token.txt")[1], # token in token.txt
     830208012668764250,
