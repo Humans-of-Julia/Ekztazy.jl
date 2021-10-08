@@ -80,6 +80,7 @@ mutable struct JobQueue
                     tim = parse(Int, res)
                     @debug "3.5"
                     q.reset = unix2datetime(tim)
+                end
                 @debug "4"
             end
             @debug "Finished rate limit job handling"
