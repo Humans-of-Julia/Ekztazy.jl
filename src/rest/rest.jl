@@ -209,12 +209,11 @@ function Response{T}(
                 put!(f, Response{T}(nothing, false, http_r, e))
             end
             
-            @debug "Returning"
-            return http_r  # Return the HTTP response to update the rate limits.
+            @debug "Returning internally"
+            return http_r
         end
-        yield()
     end
-
+    @debug "Returning future"
     return f
 end
 
