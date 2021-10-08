@@ -202,12 +202,14 @@ function Response{T}(
 
                 # Store the successful Response to the Future.
                 put!(f, r)
+                @debug "Got response"
             catch e
                 kws = logkws(c; conn=undef, exception=(e, catch_backtrace()))
                 @error "Creating response failed" kws...
                 put!(f, Response{T}(nothing, false, http_r, e))
             end
-
+            
+            @debug "Returning control"
             return http_r  # Return the HTTP response to update the rate limits.
         end
     end
