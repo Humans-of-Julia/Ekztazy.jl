@@ -14,7 +14,7 @@ on_message!(client) do (ctx)
 end
 
 on_ready!(client) do (ctx)
-    println!("successfully logged in as $(ctx.user.username)")
+    println("successfully logged in as $(ctx.user.username)")
     return true
 end
 
