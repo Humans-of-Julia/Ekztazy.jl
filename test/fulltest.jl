@@ -1,6 +1,8 @@
 using Dizkord
 using Distributed
 
+ENV["JULIA_DEBUG"] = Dizkord
+
 client = Client(
     ENV["DISCORD_TOKEN"], 
     830208012668764250,
@@ -14,8 +16,8 @@ on_message!(client) do (ctx)
 end
 
 command!(client, 776251117616234506, "boom", "Go boom!") do (ctx) 
-    println(typeof(ctx))
     Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> blew up!")
+    println(typeof(ctx))
 end
 
 command!(client, 776251117616234506, "bam", "Go bam!") do (ctx) 
