@@ -25,15 +25,11 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     for h = handlers
         @debug "Running handler" handler=h.f
         future = @spawn begin 
-            fut = Future()
-            print(ctx)
-            @spawn h.f(ctx)
-            @debug "Got return value" ret=x
-            put!(fut, x)
-            fut
+            h.f(ctx)
         end
     end
     @debug "Finished running handlers" 
+    @debug "Spawned future: " future=future
 end
 function handle(c::Client, t::Symbol, data::Dict)
     haskey(c.handlers, t) ? handle(c, c.handlers[t], data) : @debug "No handlers" logkws(c; event=t)...
