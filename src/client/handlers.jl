@@ -14,13 +14,14 @@ function command!(f::Function, c::Client, name::AbstractString, description::Abs
     end && create(c, name, description; kwargs...)
     command!(f, c)
 end
-function command!(f::Function, c::Client, g::Snowflake, name::AbstractString, description::AbstractString; kwargs...)
+function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
+    gid = Snowflake(g)
     begin
-        for app = retrieve(c, Vector{ApplicationCommand}, g)
+        for app = retrieve(c, Vector{ApplicationCommand}, gid)
             app.name == name && return false
         end
         true
-    end && create(c, name, description, g; kwargs...)
+    end && create(c, name, description, gid; kwargs...)
     command!(f, c)
 end
 command!(f::Function, c::Client) = add_handler!(c, OnInteractionCreate(f))
