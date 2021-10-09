@@ -17,7 +17,6 @@ mutable struct JobQueue
             # Get a job, prioritizing retries. This is really ugly.
             local f = nothing
             while true
-                @debug "Waiting for jobs"
                 if isready(q.retries)
                     f = take!(q.retries)
                     break
