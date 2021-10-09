@@ -17,7 +17,7 @@ end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
     begin
-        for app = retrieve(c, Vector{ApplicationCommand}, gid)
+        for app = obtain(c, Vector{ApplicationCommand}, gid)
             app.name == name && return false
         end
         true

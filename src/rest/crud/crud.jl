@@ -1,7 +1,8 @@
 export create,
     retrieve,
     update,
-    delete
+    delete,
+    obtain
 
 """
     create(c::Client, ::Type{T}, args...; kwargs...) -> Future{Response}
@@ -45,6 +46,7 @@ retrieve(c, Invite, "abcdef")
 """
 function retrieve end
 
+obtain(args...; kwargs...) = fetch(retrieve(args...; kwargs...)).val
 """
     update(c::Client, x::T, args...; kwargs...) -> Future{Response}
 
