@@ -40,7 +40,7 @@ tohandler(t::Type{<:AbstractEvent}) = Symbol("On"*String(Symbol(t)))
 function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     ctx = context(eltype(handlers), data::Dict)
     for h = handlers
-        if typeof(h) == OnInteractionCreate && h.name == context.int.name
+        if !(h isa OnInteractionCreate) || h.name == context.int.name
             f = h.f
             @spawn begin 
                 try
