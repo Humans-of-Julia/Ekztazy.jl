@@ -30,6 +30,7 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
                 f(ctx)
             catch
                 return
+            end
         end
     end
     @debug "Finished running handlers" 
