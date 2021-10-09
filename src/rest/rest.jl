@@ -167,9 +167,9 @@ function Response{T}(
                 end
             end
         end
-        @debug "Did not find in cache, preparing request"
         # Prepare the request.
         url = "$DISCORD_API/v$(c.version)$endpoint"
+        @debug "Did not find in cache, preparing request" url=url
         isempty(kwargs) || (url *= "?" * HTTP.escapeuri(kwargs))
         headers = merge(Dict(
             "User-Agent" => "Discord.jl $DISCORD_JL_VERSION",
