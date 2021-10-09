@@ -17,5 +17,12 @@ end
 
 function create_followup_message(c::Client, int_token::String; kwargs...)
     appid = c.application_id
+    kwargs["type"] = 4
+    kwargs["data"] = Dict(
+        "tts" => haskey(kwargs, :tts) ? kwargs.tts : false,
+        "content" => haskey(kwargs, :content) ? kwargs.content : nothing,
+        "embeds" => haskey(kwargs, :embeds) ? kwargs.embeds : nothing,
+        "allowed_mentions" => haskey(kwargs, :allowed_mentions) ? kwargs.allowed_mentions : nothing,
+    )
     return Response{Message}(c, :POST, "/interactions/$appid/$int_token/callback"; body=kwargs)
 end
