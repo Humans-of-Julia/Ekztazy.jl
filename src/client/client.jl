@@ -254,4 +254,5 @@ function start(c::Client)
         end
         rethrow(err)
         return
+    end
 end
