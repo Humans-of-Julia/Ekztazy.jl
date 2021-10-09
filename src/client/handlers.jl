@@ -11,7 +11,7 @@ function command!(f::Function, c::Client, name::AbstractString, description::Abs
             app.name == name && return false
         end
         true
-    end && create(c, name, description; kwargs...)
+    end && create(c, ApplicationCommand, name, description; kwargs...)
     command!(f, c)
 end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
@@ -21,7 +21,7 @@ function command!(f::Function, c::Client, g::Int64, name::AbstractString, descri
             app.name == name && return false
         end
         true
-    end && create(c, name, description, gid; kwargs...)
+    end && create(c, ApplicationCommand, name, description, gid; kwargs...)
     command!(f, c)
 end
 command!(f::Function, c::Client) = add_handler!(c, OnInteractionCreate(f))
