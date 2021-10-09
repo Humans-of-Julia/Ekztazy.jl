@@ -12,12 +12,12 @@ client = Client(
 on_message!(client) do (ctx) 
     println("Received message: $(ctx.message.content)")
     if ctx.message.author.id != 830208012668764250
-        Dizkord.reply(client, ctx.message, content="<@$(ctx.message.author.id)>, $(ctx.message.content)")
+        Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content)")
     end
 end
 
 command!(client, 776251117616234506, "boom", "Go boom!") do (ctx) 
-    println("Command ran!")
+    Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)> blew up!")
 end
 
 on_ready!(client) do (ctx)

@@ -2,10 +2,10 @@ function create(c::Client, ::Type{Message}, ch::DiscordChannel; kwargs...)
     return create_message(c, ch.id; kwargs...)
 end
 
-function reply(c::Client, m::Message; kwargs...)
-    @debug "Replying to message"
-    return create_message(c, m.channel_id; kwargs...)
-end
+reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; kwargs...)
+reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; kwargs...)
+reply(c::Client, ctx::OnMessageContext; kwargs...) = reply(c, ctx.message; kwargs...)
+reply(c::Client, ctx::OnInteractionCreateContext; kwargs...) = reply(c, ctx.int; kwargs...)
 
 function retrieve(c::Client, ::Type{Message}, ch::DiscordChannel, message::Integer)
     return get_channel_message(c, ch.id, message)
