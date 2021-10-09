@@ -18,8 +18,8 @@ end
 function create_followup_message(c::Client, int_token::String; kwargs...)
     appid = c.application_id
     dict = Dict{Symbol, Any}(
-        data => kwargs,
-        type = 4,
+        :data => kwargs,
+        :type => 4,
     )
     return Response{Message}(c, :POST, "/interactions/$appid/$int_token/callback"; body=dict)
 end
