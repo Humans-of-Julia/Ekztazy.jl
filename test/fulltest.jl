@@ -18,11 +18,7 @@ end
 
 command!(client, 776251117616234506, "boom", "Go boom!") do (ctx) 
     print("Hey")
-    try
-        fetch(Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)> blew up!"))
-    catch err
-        showerror(stderr, err, bt)
-    end
+    Dizkord.reply(client, ctx, content="<@$(ctx.int.user.id)> blew up!"))
     print(t.val)
 end
 
