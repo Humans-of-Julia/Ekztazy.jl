@@ -251,4 +251,6 @@ function start(c::Client)
     catch e 
         if e isa InterruptException
             println!("Terminated.")
+        end
+    end
 end
