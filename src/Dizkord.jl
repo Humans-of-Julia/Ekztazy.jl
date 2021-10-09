@@ -46,6 +46,5 @@ include(joinpath("client", "handlers.jl"))
 include(joinpath("gateway", "gateway.jl"))
 include(joinpath("rest", "rest.jl"))
 include(joinpath("utils", "helpers.jl"))
-include("Defaults.jl")
 
 end
