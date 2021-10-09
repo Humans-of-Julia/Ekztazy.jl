@@ -17,5 +17,5 @@ end
 
 function create_followup_message(c::Client, int_token::String; kwargs...)
     appid = c.application_id
-    return Response{Message}(c, :POST, "/webhooks/$appid/$int_token"; body=kwargs)
+    return Response{Message}(c, :POST, "/interactions/$appid/$int_token/callback"; body=kwargs)
 end
