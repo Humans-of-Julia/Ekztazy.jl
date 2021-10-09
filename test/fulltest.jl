@@ -1,6 +1,8 @@
 using Dizkord
 using Distributed
 
+ENV["JULIA_DEBUG"] = Dizkord
+
 client = Client(
     ENV["DISCORD_TOKEN"], 
     830208012668764250,
