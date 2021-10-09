@@ -3,7 +3,7 @@ export OnMessageContext,
     OnReady,
     OnReadyContext,
     OnGuildCreate,
-    OnGuildCreateContext
+    OnGuildCreateContext,
     OnGuildUpdate,
     OnGuildUpdateContext
 
