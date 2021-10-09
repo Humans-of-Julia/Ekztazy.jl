@@ -17,6 +17,7 @@ on_message!(client) do (ctx)
 end
 
 command!(client, 776251117616234506, "boom", "Go boom!") do (ctx) 
+    print("Hey")
     Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)> blew up!")
 end
 
