@@ -169,7 +169,7 @@ function Response{T}(
         end
         # Prepare the request.
         url = "$DISCORD_API/v$(c.version)$endpoint"
-        @debug "Did not find in cache, preparing request" url=url
+        @debug "Did not find in cache, preparing request"
         isempty(kwargs) || (url *= "?" * HTTP.escapeuri(kwargs))
         headers = merge(Dict(
             "User-Agent" => "Discord.jl $DISCORD_JL_VERSION",
@@ -209,7 +209,7 @@ function Response{T}(
                 put!(f, Response{T}(nothing, false, http_r, e))
             end
             
-            @debug "Returning internally" response=http_r
+            @warn "Returning internally" response=http_r url=args[2]
             return http_r
         end
     end
