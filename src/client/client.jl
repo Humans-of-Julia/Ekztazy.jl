@@ -237,7 +237,7 @@ function set_cache(f::Function, c::Client, use_cache::Bool)
 end
 
 function start(c::Client)
-    hcreate = OnGuildCreate(c) do (ctx)
+    hcreate = OnGuildCreate() do (ctx)
         put!(c.state, ctx.guild)
     end
     add_handler(c, hcreate)
