@@ -94,7 +94,10 @@ macro constructors(T)
     args = map(f -> field(QuoteNode(f), fieldtype(TT, f)), fieldnames(TT))
 
     quote
-        $(esc(T))(; kwargs...) = $(esc(T))($(args...))
+        function $(esc(T))(; kwargs...) 
+            @debug "Got some stuff" kw=kwargs ar=args 
+            $(esc(T))($(args...))
+        end
         $(esc(T))(d::Dict{Symbol, Any}) = $(esc(T))(; d...)
         $(esc(T))(x::$(esc(T))) = x
     end
