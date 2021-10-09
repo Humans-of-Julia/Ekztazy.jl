@@ -19,7 +19,7 @@ function command!(f::Function, c::Client, g::Int64, name::AbstractString, descri
     int = OnInteractionCreate(f)
     try
         t=add_handler!(c, int)
-        @debug "Added command" hs=c.handlers[:OnInteractionCreate] r=t
+        @debug "Added command" r=t
     catch
     end
     begin
