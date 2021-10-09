@@ -95,7 +95,7 @@ macro constructors(T)
 
     quote
         function $(esc(T))(; kwargs...) 
-            @debug "Gen" arg=args
+            @debug "Gen" arg=$args
             $(esc(T))($(args...))
         end
         $(esc(T))(d::Dict{Symbol, Any}) = $(esc(T))(; d...)
