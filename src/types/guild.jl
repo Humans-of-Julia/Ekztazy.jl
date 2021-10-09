@@ -64,7 +64,7 @@ struct Guild <: AbstractGuild
     splash::OptionalNullable{String}
     owner::Optional{Bool}
     owner_id::Optional{Snowflake}  # Missing in Invite.
-    permissions::Optional{Int64}
+    permissions::Optional{String}
     region::Optional{String}  # Invite
     afk_channel_id::OptionalNullable{Snowflake}  # Invite
     afk_timeout::Optional{Int}  # Invite
