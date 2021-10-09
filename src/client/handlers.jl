@@ -6,7 +6,7 @@ export on_message!,
 on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))
 on_ready!(f::Function, c::Client) = add_handler!(c, OnReady(f))
 function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; kwargs...)
-    add_handler!(f, OnInteractionCreate(c))
+    add_handler!(f, OnInteractionCreate(f))
     begin
         for app = retrieve(c, Vector{ApplicationCommand})
             app.name == name && return false
@@ -16,10 +16,7 @@ function command!(f::Function, c::Client, name::AbstractString, description::Abs
 end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
-    @spawn begin 
-        add_handler!(f, OnInteractionCreate(c))
-        @debug "New handler" hs=c.handlers
-    end
+    add_handler!(f, OnInteractionCreate(f))
     begin
         for app = obtain(c, Vector{ApplicationCommand}, gid)
             app.name == name && return false
