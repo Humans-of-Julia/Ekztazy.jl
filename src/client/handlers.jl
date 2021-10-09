@@ -20,7 +20,6 @@ function command!(f::Function, c::Client, g::Int64, name::AbstractString, descri
     try
         t=add_handler!(c, int)
     catch
-        @warn "Well frick"
     end
     begin
         for app = obtain(c, Vector{ApplicationCommand}, gid)
@@ -45,8 +44,8 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
         @spawn begin 
             try
                 f(ctx)
-            catch
-                return
+            catch err
+                showerror(stderr, err)
             end
         end
     end
