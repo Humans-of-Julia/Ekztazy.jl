@@ -1,7 +1,7 @@
 using Dizkord
-ENV["JULIA_DEBUG"] = Dizkord
+
 client = Client(
-    readlines("token.txt")[1], # token in token.txt
+    ENV["DISCORD_TOKEN"], 
     830208012668764250,
     intents(GUILDS, GUILD_MESSAGES)
 )
@@ -15,7 +15,6 @@ end
 
 on_ready!(client) do (ctx)
     println("successfully logged in as $(ctx.user.username)")
-    return true
 end
 
 start(client)
