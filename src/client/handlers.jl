@@ -17,8 +17,8 @@ end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
     try
-        add_handler!(c, OnInteractionCreate(f))
-        @debug "Added command" hs=c.handlers
+        t=add_handler!(c, OnInteractionCreate(f))
+        @debug "Added command" hs=c.handlers r=t
     catch
     end
     begin
