@@ -151,6 +151,7 @@ Client(token::String, appid::Int, intents::Int, args...) = Client(token, UInt(ap
 function add_handler!(c::Client, handler::AbstractHandler) 
     handle = Symbol(typeof(handler))
     haskey(c.handlers, handle) ? c.handlers[handle] = push!(c.handlers[handle], handler) : c.handlers[handle] = [handler]
+    handle
 end
 add_handler!(c::Client, args...) = map(h -> add_handler!(c, h), args)
 
