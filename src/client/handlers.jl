@@ -12,7 +12,7 @@ function command!(f::Function, c::Client, name::AbstractString, description::Abs
         end
         true
     end && create(c, ApplicationCommand, name, description; kwargs...)
-    command!(f, c)
+    add_handler!(f, OnInteractionCreate(c))
 end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
@@ -22,9 +22,9 @@ function command!(f::Function, c::Client, g::Int64, name::AbstractString, descri
         end
         true
     end && create(c, ApplicationCommand, name, description, gid; kwargs...)
-    command!(f, c)
+    add_handler!(f, OnInteractionCreate(c))
+    @debug "New handler" hs=c.handlers
 end
-command!(f::Function, c::Client) = add_handler!(c, OnInteractionCreate(f))
 
 context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
 context(::Type{OnGuildUpdate}, data::Dict) = OnGuildUpdateContext(Guild(data))
