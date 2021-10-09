@@ -15,11 +15,11 @@ function get_application_commands(c::Client, guild::Snowflake)
     return Response{Vector{ApplicationCommand}}(c, :GET, "/applications/$appid/guilds/$guild/commands")
 end
 
-function create_followup_message(c::Client, int_token::String; kwargs...)
+function create_followup_message(c::Client, int_id::Snowflake, int_token::String; kwargs...)
     appid = c.application_id
     dict = Dict{Symbol, Any}(
         :data => kwargs,
         :type => 4,
     )
-    return Response{Message}(c, :POST, "/interactions/$appid/$int_token/callback"; body=dict)
+    return Response{Message}(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
 end
