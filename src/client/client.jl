@@ -152,6 +152,7 @@ function add_handler(c::Client, handler::AbstractHandler)
     handle = Symbol(typeof(handler))
     haskey(c.handlers, handle) ? c.handlers[handle] = push!(c.handlers[handle], handler) : c.handlers[handle] = [handler]
 end
+add_handler(c::Client, args...) = map(h -> add_handler(c, h), args)
 
 mock(::Type{Client}; kwargs...) = Client("token")
 
@@ -236,6 +237,11 @@ function set_cache(f::Function, c::Client, use_cache::Bool)
 end
 
 function start(c::Client)
+    hcreate = OnGuildCreate(c) do (ctx)
+        put!(c.state, ctx.guild)
+    end
+    add_handler(c, hcreate)
+
     open(c)
     wait(c)
 end

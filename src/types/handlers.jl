@@ -1,19 +1,10 @@
 export OnMessageContext,
     OnMessageCreate,
     OnReady,
-    OnReadyContext
-    
-macro named(T) 
-    quote
-        name(x::$T) = Symbol($T)
-    end
-end
+    OnReadyContext,
+    OnGuildCreate,
+    OnGuildCreateContext
 
-macro name(T) 
-    quote
-        Symbol($T)
-    end
-end
 
 abstract type AbstractHandler end
 abstract type AbstractContext end
@@ -22,6 +13,10 @@ struct OnMessageContext <: AbstractContext
     message::Message
 end
 @boilerplate OnMessageContext :constructors
+
+struct OnGuildCreateContext <: AbstractContext
+    guild::Guild
+end
 
 struct OnReadyContext <: AbstractContext 
     v::Int
@@ -35,11 +30,13 @@ end
 struct OnReady <: AbstractHandler 
     f::Function
 end
-@named OnReady
 """
 Handler for a `Message Create` event
 """
 struct OnMessageCreate <: AbstractHandler 
     f::Function
 end
-@named OnMessageCreate
+
+struct OnGuildCreate <: AbstractHandler 
+    f::Function
+end

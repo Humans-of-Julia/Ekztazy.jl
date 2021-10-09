@@ -7,6 +7,7 @@ on_ready!(f::Function, c::Client) = add_handler(c, OnReady(f))
 
 context(::Type{OnMessageCreate}, data::Dict) = OnMessageContext(Message(data))
 context(::Type{OnReady}, data::Dict) = OnReadyContext(data)
+context(::Type{OnGuildCreate}, data::Dict) = OnGuildCreateContext(Guild(data))
 
 tohandler(t::Type{<:AbstractEvent}) = Symbol("On"*String(Symbol(t)))
 
