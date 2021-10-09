@@ -34,7 +34,6 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
         end
     end
     @debug "Finished running handlers" 
-    @debug "Spawned future: " future=future
 end
 function handle(c::Client, t::Symbol, data::Dict)
     haskey(c.handlers, t) ? handle(c, c.handlers[t], data) : @debug "No handlers" logkws(c; event=t)...
