@@ -26,12 +26,12 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
         @debug "Running handler" handler=h.f
         future = @spawn begin 
             fut = Future()
-            x = h.f(ctx)
+            print(ctx)
+            @spawn h.f(ctx)
             @debug "Got return value" ret=x
             put!(fut, x)
             fut
         end
-        @debug "Result" t=isready(future)
     end
     @debug "Finished running handlers" 
 end
