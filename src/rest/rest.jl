@@ -209,7 +209,7 @@ function Response{T}(
                 put!(f, Response{T}(nothing, false, http_r, e))
             end
             
-            @warn "Returning internally" response=http_r url=args[2]
+            @debug "Returning internally" response=http_r url=args[2]
             return http_r
         end
     end

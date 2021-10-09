@@ -7,26 +7,14 @@ on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))
 on_ready!(f::Function, c::Client) = add_handler!(c, OnReady(f))
 function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; kwargs...)
     add_handler!(c, OnInteractionCreate(f, name))
-    begin
-        for app = retrieve(c, Vector{ApplicationCommand})
-            app.name == name && return false
-        end
-        true
-    end && create(c, ApplicationCommand, name, description; kwargs...)
+    !any(x -> x.name == name, obtain(c, VectorApplicationCommand)) && create(c, ApplicationCommand, name, description; kwargs...)
 end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
     int = OnInteractionCreate(f, name)
     try
         t=add_handler!(c, int)
-    catch
-    end
-    begin
-        for app = obtain(c, Vector{ApplicationCommand}, gid)
-            app.name == name && return false
-        end
-        true
-    end && create(c, ApplicationCommand, name, description, gid; kwargs...)
+    !any(x -> x.name == name, obtain(c, VectorApplicationCommand, gid)) && create(c, ApplicationCommand, name, description, gid; kwargs...)
 end
 
 context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
