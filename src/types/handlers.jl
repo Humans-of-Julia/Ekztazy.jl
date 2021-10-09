@@ -1,5 +1,6 @@
 export OnMessageContext,
     OnMessageCreate,
+    OnInteractionCreate,
     OnReady,
     OnReadyContext,
     OnGuildCreate,
