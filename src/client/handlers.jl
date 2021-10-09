@@ -12,8 +12,7 @@ end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
     int = OnInteractionCreate(f, name)
-    try
-        t=add_handler!(c, int)
+    add_handler!(c, int)
     !any(x -> x.name == name, obtain(c, VectorApplicationCommand, gid)) && create(c, ApplicationCommand, name, description, gid; kwargs...)
 end
 
