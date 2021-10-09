@@ -1,5 +1,5 @@
 using Dizkord
-
+ENV["JULIA_DEBUG"] = Dizkord
 client = Client(
     readlines("token.txt")[1], # token in token.txt
     830208012668764250,
@@ -15,6 +15,7 @@ end
 
 on_ready!(client) do (ctx)
     println!("successfully logged in as $(ctx.user.username)")
+    return true
 end
 
 start(client)

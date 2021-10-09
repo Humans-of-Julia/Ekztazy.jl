@@ -26,7 +26,7 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
         @debug "Running handler" handler=h.f
         @spawn begin 
             x = h.f(ctx)
-            @debug "Got return value" ret=x
+            @debug "Got return value" ret=x.result
         end
     end
     @debug "Finished running handlers" 
