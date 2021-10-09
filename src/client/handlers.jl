@@ -16,7 +16,10 @@ function command!(f::Function, c::Client, name::AbstractString, description::Abs
 end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
-    add_handler!(c, OnInteractionCreate(f))
+    try
+        add_handler!(c, OnInteractionCreate(f))
+    catch
+    end
     begin
         for app = obtain(c, Vector{ApplicationCommand}, gid)
             app.name == name && return false
