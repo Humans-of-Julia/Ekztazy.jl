@@ -22,8 +22,8 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     @debug "Sending to handlers" logkws(c; handles=length(handlers))...
     ctx = context(eltype(handlers), data::Dict)
     @debug "Found context" context=ctx
-    f = h.f
-    for h = handlers
+    @sync for h = handlers
+        f = h.f
         @debug "Running handler" handler=h.f
         future = @spawn begin 
             f(ctx)
