@@ -14,7 +14,7 @@ function command!(f::Function, c::Client, name::AbstractString, description::Abs
     end && create(c, name, description; kwargs...)
     command!(f, c)
 end
-function command!(f::Function, c::Client, g::Guild, name::AbstractString, description::AbstractString; kwargs...)
+function command!(f::Function, c::Client, g::Snowflake, name::AbstractString, description::AbstractString; kwargs...)
     begin
         for app = retrieve(c, Vector{ApplicationCommand}, g)
             app.name == name && return false

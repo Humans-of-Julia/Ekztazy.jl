@@ -14,7 +14,7 @@ on_message!(client) do (ctx)
     end
 end
 
-command!(client, fetch(retrieve(client, Dizkord.Guild, 776251117616234506)).val, "boom", "Go boom!") do (ctx) 
+command!(client, 776251117616234506, "boom", "Go boom!") do (ctx) 
     println("Command ran!")
 end
 
