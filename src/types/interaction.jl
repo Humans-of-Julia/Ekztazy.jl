@@ -101,7 +101,7 @@ struct InteractionData
     custom_id::OptionalNullable{String}
     component_type::OptionalNullable{ComponentType}
     values::Optional{Vector{String}}
-    target_id::Nullable{Snowflake}
+    target_id::Optional{Snowflake}
 end
 @boilerplate InteractionData :constructors :docs :lower :merge
 
