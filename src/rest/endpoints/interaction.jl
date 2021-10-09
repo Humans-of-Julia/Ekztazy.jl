@@ -17,13 +17,9 @@ end
 
 function create_followup_message(c::Client, int_token::String; kwargs...)
     appid = c.application_id
-    kwargs = Dict(kwargs)
-    kwargs["type"] = 4
-    kwargs["data"] = Dict(
-        "tts" => haskey(kwargs, :tts) ? kwargs.tts : false,
-        "content" => haskey(kwargs, :content) ? kwargs.content : nothing,
-        "embeds" => haskey(kwargs, :embeds) ? kwargs.embeds : nothing,
-        "allowed_mentions" => haskey(kwargs, :allowed_mentions) ? kwargs.allowed_mentions : nothing,
+    dic = Dict{Symbol, Any}(
+        data => kwargs,
+        type = 4,
     )
-    return Response{Message}(c, :POST, "/interactions/$appid/$int_token/callback"; body=kwargs)
+    return Response{Message}(c, :POST, "/interactions/$appid/$int_token/callback"; body=dic)
 end
