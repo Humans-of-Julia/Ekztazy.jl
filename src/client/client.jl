@@ -245,12 +245,6 @@ function start(c::Client)
         put!(c.state, ctx.guild)
     end
     add_handler!(c, hcreate, hupdate)
-    try
-        open(c)
-        wait(c)
-    catch e 
-        if e isa InterruptException
-            println!("Terminated.")
-        end
-    end
+    open(c)
+    wait(c)
 end
