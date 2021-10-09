@@ -45,7 +45,7 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
             try
                 f(ctx)
             catch err
-                showerror(stderr, err)
+                @error "Running handlers unexpectedly errored" event=eltype(handlers) error=err
             end
         end
     end
