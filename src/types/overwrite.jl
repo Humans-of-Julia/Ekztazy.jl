@@ -24,7 +24,7 @@ More details [here](https://discordapp.com/developers/docs/resources/channel#ove
 struct Overwrite
     id::Snowflake
     type::OverwriteType
-    allow::Int
-    deny::Int
+    allow::String
+    deny::String
 end
 @boilerplate Overwrite :constructors :docs :lower :merge :mock
