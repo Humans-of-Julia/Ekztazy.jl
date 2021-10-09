@@ -209,7 +209,7 @@ function Response{T}(
                 put!(f, Response{T}(nothing, false, http_r, e))
             end
             
-            @debug "Returning internally"
+            @debug "Returning internally" response=http_r
             return http_r
         end
     end

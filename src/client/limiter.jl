@@ -70,18 +70,14 @@ mutable struct JobQueue
                 # Update the rate limiter with the response headers.
                 @debug "Updated limiter"
                 rem = HTTP.header(r, "X-RateLimit-Remaining")
-                @debug "1"
                 isempty(rem) || (q.remaining = parse(Int, rem))
-                @debug "2"
                 res = HTTP.header(r, "X-RateLimit-Reset")
-                @debug "3"
                 @async begin 
                     if !isempty(res)
                         tim = parse(Int, res)
                         q.reset = unix2datetime(tim)
                     end
                 end
-                @debug "4"
             end
             @debug "Finished rate limit job handling"
         end
