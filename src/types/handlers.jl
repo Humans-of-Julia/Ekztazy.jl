@@ -49,6 +49,7 @@ end
 
 struct OnInteractionCreate <: AbstractHandler 
     f::Function
+    name::String
 end
 
 struct OnGuildCreate <: AbstractHandler 
