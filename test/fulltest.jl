@@ -15,6 +15,10 @@ on_message!(client) do (ctx)
     end
 end
 
+command!(client, retrieve(c, Dizkord.Guild, 776251117616234506)) do 
+    println("Command ran!")
+end
+
 on_ready!(client) do (ctx)
     println("successfully logged in as $(ctx.user.username)")
 end

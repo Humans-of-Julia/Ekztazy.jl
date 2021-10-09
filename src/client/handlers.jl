@@ -1,5 +1,6 @@
 export on_message!,
-    on_ready!
+    on_ready!,
+    command!
 
 # just-a-shortcut function
 on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))

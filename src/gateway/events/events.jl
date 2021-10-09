@@ -41,6 +41,7 @@ include("messages.jl")
 include("presence.jl")
 include("voice.jl")
 include("webhooks.jl")
+include("interaction.jl")
 
 const EVENT_TYPES = Dict{String, Type{<:AbstractEvent}}(
     "READY"                       => Ready,
