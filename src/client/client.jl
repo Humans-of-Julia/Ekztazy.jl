@@ -148,11 +148,11 @@ end
 Client(token::String, appid::Int, intents::Int, args...) = Client(token, UInt(appid), intents, args...)
 
 # TODO: clean
-function add_handler(c::Client, handler::AbstractHandler) 
+function add_handler!(c::Client, handler::AbstractHandler) 
     handle = Symbol(typeof(handler))
     haskey(c.handlers, handle) ? c.handlers[handle] = push!(c.handlers[handle], handler) : c.handlers[handle] = [handler]
 end
-add_handler(c::Client, args...) = map(h -> add_handler(c, h), args)
+add_handler!(c::Client, args...) = map(h -> add_handler(c, h), args)
 
 mock(::Type{Client}; kwargs...) = Client("token")
 
@@ -240,7 +240,10 @@ function start(c::Client)
     hcreate = OnGuildCreate() do (ctx)
         put!(c.state, ctx.guild)
     end
-    add_handler(c, hcreate)
+    hupdate = OnGuildUpdate() do (ctx)
+        put!(c.state, ctx.guild)
+    end
+    add_handler!(c, hcreate, hupdate)
 
     open(c)
     wait(c)
