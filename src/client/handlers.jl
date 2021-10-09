@@ -10,14 +10,11 @@ context(::Type{OnReady}, data::Dict) = OnReadyContext(data)
 
 tohandler(t::Type{<:AbstractEvent}) = Symbol("On"*String(Symbol(t)))
 
-function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict) 
-    @debug "Sending to handlers" logkws(c; handles=length(handlers))...
+function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     ctx = context(eltype(handlers), data::Dict)
-    @debug "Found context" context=ctx
     for h = handlers
         f = h.f
-        @debug "Running handler" handler=h.f
-        future = @spawn begin 
+        @spawn begin 
             try
                 f(ctx)
             catch
