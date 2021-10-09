@@ -24,12 +24,14 @@ function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     @debug "Found context" context=ctx
     for h = handlers
         @debug "Running handler" handler=h.f
-        task = @spawn begin 
+        future = @spawn begin 
+            fut = Future()
             x = h.f(ctx)
             @debug "Got return value" ret=x
-            x
+            put!(fut, x)
+            fut
         end
-        @debug "Result" t=task.result
+        @debug "Result" t=isready(future)
     end
     @debug "Finished running handlers" 
 end
