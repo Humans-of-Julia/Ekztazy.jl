@@ -17,6 +17,7 @@ end
 
 function create_followup_message(c::Client, int_token::String; kwargs...)
     appid = c.application_id
+    kwargs = Dict(kwargs)
     kwargs["type"] = 4
     kwargs["data"] = Dict(
         "tts" => haskey(kwargs, :tts) ? kwargs.tts : false,
