@@ -1,10 +1,12 @@
 export OnMessageContext,
     OnMessageCreate,
+    OnInteractionCreate,
     OnReady,
     OnReadyContext,
     OnGuildCreate,
-    OnGuildCreateContext
-
+    OnGuildCreateContext,
+    OnGuildUpdate,
+    OnGuildUpdateContext
 
 abstract type AbstractHandler end
 abstract type AbstractContext end
@@ -16,6 +18,14 @@ end
 
 struct OnGuildCreateContext <: AbstractContext
     guild::Guild
+end
+
+struct OnGuildUpdateContext <: AbstractContext
+    guild::Guild
+end
+
+struct OnInteractionCreateContext <: AbstractContext
+    int::Interaction
 end
 
 struct OnReadyContext <: AbstractContext 
@@ -37,6 +47,15 @@ struct OnMessageCreate <: AbstractHandler
     f::Function
 end
 
+struct OnInteractionCreate <: AbstractHandler 
+    f::Function
+    name::String
+end
+
 struct OnGuildCreate <: AbstractHandler 
+    f::Function
+end
+
+struct OnGuildUpdate <: AbstractHandler 
     f::Function
 end

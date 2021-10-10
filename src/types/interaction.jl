@@ -97,11 +97,11 @@ struct InteractionData
     name::String
     type::ApplicationCommandType
     resolved::Optional{ResolvedData}
-    options::Nullable{Vector{ApplicationCommandOption}}
+    options::Optional{Vector{ApplicationCommandOption}}
     custom_id::OptionalNullable{String}
     component_type::OptionalNullable{ComponentType}
-    values::OptionalNullable{Any}
-    target_id::Nullable{Snowflake}
+    values::Optional{Vector{String}}
+    target_id::Optional{Snowflake}
 end
 @boilerplate InteractionData :constructors :docs :lower :merge
 
