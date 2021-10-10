@@ -1,5 +1,4 @@
 using Dizkord
-using Distributed
 
 client = Client(
     ENV["DISCORD_TOKEN"], 
