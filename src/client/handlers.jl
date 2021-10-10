@@ -13,7 +13,7 @@ function command!(f::Function, c::Client, g::Int64, name::AbstractString, descri
     gid = Snowflake(g)
     int = OnInteractionCreate(f, name)
     add_handler!(c, int)
-    !any(x -> x.name == name, obtain(c, Vector{ApplicationCommand}, gid)) && create(c, ApplicationCommand, name, description, gid; kwargs...)
+    create(c, ApplicationCommand, name, description, gid; kwargs...)
 end
 
 context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
