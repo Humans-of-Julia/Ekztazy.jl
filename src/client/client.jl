@@ -244,13 +244,16 @@ function start(c::Client)
     hupdate = OnGuildUpdate() do (ctx)
         put!(c.state, ctx.guild)
     end
-    add_handler!(c, hcreate, hupdate)
+    hready = OnReady() do (ctx)
+        c.state.user = ctx.user
+    end
+    add_handler!(c, hcreate, hupdate, hready)
     try
         open(c)
         wait(c)
     catch err
         if err isa InterruptException
-            return
+            close(c)
         end
         rethrow(err)
         return

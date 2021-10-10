@@ -8,7 +8,7 @@ client = Client(
 )
 
 on_message!(client) do (ctx) 
-    if ctx.message.author.id != 830208012668764250
+    if ctx.message.author.id != me(client).id
         Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content)")
     end
 end
@@ -19,6 +19,12 @@ end
 
 command!(client, 776251117616234506, "bam", "Go bam!") do (ctx) 
     Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> slapped themselves!")
+end
+
+
+command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
+    Dizkord.reply(client, ctx, content="Shutting down the bot")
+    close(client)
 end
 
 
