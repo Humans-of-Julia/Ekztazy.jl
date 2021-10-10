@@ -20,6 +20,10 @@ command!(client, 776251117616234506, "bam", "Go bam!") do (ctx)
     Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> slapped themselves!")
 end
 
+command!(client, 776251117616234506, "julia", "Go bam!") do (ctx) 
+    Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> slapped themselves!")
+end
+
 
 on_ready!(client) do (ctx)
     println("successfully logged in as $(ctx.user.username)")
