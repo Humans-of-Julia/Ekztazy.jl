@@ -8,7 +8,7 @@ client = Client(
 )
 
 on_message!(client) do (ctx) 
-    if ctx.message.author.id != 830208012668764250
+    if ctx.message.author.id != me(client).id
         Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content)")
     end
 end
