@@ -1,4 +1,5 @@
 using Dizkord
+using Distributed
 
 client = Client(
     ENV["DISCORD_TOKEN"], 
@@ -19,6 +20,7 @@ end
 command!(client, 776251117616234506, "bam", "Go bam!") do (ctx) 
     Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> slapped themselves!")
 end
+
 
 command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
     Dizkord.reply(client, ctx, content="Shutting down the bot")
