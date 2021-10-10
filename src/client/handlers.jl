@@ -7,7 +7,7 @@ on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))
 on_ready!(f::Function, c::Client) = add_handler!(c, OnReady(f))
 function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; kwargs...)
     add_handler!(c, OnInteractionCreate(f, name))
-    !any(x -> x.name == name, obtain(c, Vector{ApplicationCommand})) && create(c, ApplicationCommand, name, description; kwargs...)
+    create(c, ApplicationCommand, name, description; kwargs...)
 end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
     gid = Snowflake(g)
