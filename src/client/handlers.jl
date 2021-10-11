@@ -77,7 +77,7 @@ Creates an `AbstractContext` based on the event using the `data` provided and pa
 function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     ctx = context(eltype(handlers), data::Dict)
     for h = handlers
-        if !(h isa OnInteractionCreate) || h.name == ctx.int.data.name
+        if !(h isa OnInteractionCreate) || h.name == ctx.interaction.data.name
             f = h.f
             @spawn begin 
                 try
