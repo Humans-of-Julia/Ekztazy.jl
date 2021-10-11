@@ -3,13 +3,13 @@ using Distributed
 
 client = Client(
     ENV["DISCORD_TOKEN"], 
-    830208012668764250,
+    896997233931743272,
     intents(GUILDS, GUILD_MESSAGES)
 )
 
 on_message!(client) do (ctx) 
     if ctx.message.author.id != me(client).id
-        Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content)")
+        Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content) TEST")
     end
 end
 
@@ -37,7 +37,7 @@ end
 
 
 on_ready!(client) do (ctx)
-    println("successfully logged in as $(ctx.user.username)")
+    @info "Successfully logged in as $(ctx.user.username)"
 end
 
 start(client)
