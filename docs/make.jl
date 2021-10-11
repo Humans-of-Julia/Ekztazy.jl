@@ -4,7 +4,8 @@ makedocs(;
     modules=[Dizkord],
     format=Documenter.HTML(),
     pages=[
-        "Home" => "index.md"
+        "Home" => "index.md",
+        "Types" => "types.md"
     ],
     repo="https://github.com/Kyando2/Dizkord.jl/blob/{commit}{path}#L{line}",
     sitename="Dizkord.jl",
