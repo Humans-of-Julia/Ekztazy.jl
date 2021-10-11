@@ -80,7 +80,7 @@ end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
 struct ApplicationCommand <: DiscordObject
-    id::Nullable{Snowflake}
+    id::OptionalNullable{Snowflake}
     type::Optional{ApplicationCommandType}
     application_id::Snowflake
     guild_id::Optional{Snowflake}
