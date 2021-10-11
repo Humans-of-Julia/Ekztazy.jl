@@ -34,7 +34,7 @@ delete
 The full list of types available to be manipulated is:
 
 * [`AuditLog`](@ref)
-* [`ApplicationCommand](@ref)
+* [`ApplicationCommand`](@ref)
 * [`Ban`](@ref)
 * [`DiscordChannel`](@ref)
 * [`Emoji`](@ref)

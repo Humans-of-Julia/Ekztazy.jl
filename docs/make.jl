@@ -7,7 +7,7 @@ makedocs(;
         "Home" => "index.md",
         "Types" => "types.md",
         "Client" => "client.md",
-        "RESP API" => "rest.md",
+        "REST API" => "rest.md",
         "Helpers" => "helpers.md"
     ],
     repo="https://github.com/Kyando2/Dizkord.jl/blob/{commit}{path}#L{line}",
