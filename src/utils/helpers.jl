@@ -176,33 +176,28 @@ end
 
 """
     reply(
-        c::Client,
-        m::Message,
-        content::Union{AbstractString, AbstractDict, NamedTuple, Embed};
-        at::Bool=false,
-    ) -> Future{Response}
+        c::Client
+        context;
+        kwargs...
+    )
 
-Reply (send a message to the same [`DiscordChannel`](@ref)) to a [`Message`](@ref).
-If `at` is set, then the message is prefixed with the sender's mention.
+Replies to a [`AbstractContext`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
 """
-function reply(c::Client, m::Message, content::AbstractString; at::Bool=false)
-    at && !ismissing(m.author) && (content = string(m.author, " ", content))
-    return create_message(c, m.channel_id; content=content)
-end
+reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; kwargs...)
+reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; kwargs...)
+reply(c::Client, ctx::OnMessageContext; kwargs...) = reply(c, ctx.message; kwargs...)
+reply(c::Client, ctx::OnInteractionCreateContext; kwargs...) = reply(c, ctx.int; kwargs...)
 
-function reply(
-    c::Client,
-    m::Message,
-    embed::Union{AbstractDict, NamedTuple, Embed};
-    at::Bool=false,
-)
-    return if at && !ismissing(m.author)
-        create_message(c, m.channel_id; content=string(m.author), embed=embed)
-    else
-        create_message(c, m.channel_id; embed=embed)
-    end
-end
-
+"""
+    mention(
+        o::DiscordObject
+    )
+Generates the plaintext mention for a [`User`](@ref), a [`Member`](@ref), a [`DiscordChannel`](@ref), or a [`Role`](@ref)
+"""
+mention(u::User) = "<@$(u.id)>"
+mention(r::Role) = "<@&$(r.id)>"
+mention(m::Member) = "<@$(m.user.id)>"
+mention(c::DiscordChannel) = "<#$(c.id)>"
 """
     filter_ranges(u::Vector{UnitRange{Int}})
 
