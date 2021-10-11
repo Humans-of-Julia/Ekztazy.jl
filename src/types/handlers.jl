@@ -1,4 +1,4 @@
-export OnMessageContext,
+export OnMessageCreateContext,
     OnMessageCreate,
     OnInteractionCreate,
     OnReady,
