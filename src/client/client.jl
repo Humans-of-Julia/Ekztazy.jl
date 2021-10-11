@@ -267,7 +267,6 @@ function start(c::Client)
     catch err
         if err isa InterruptException
             close(c)
-            return
         end
         rethrow(err)
         return
