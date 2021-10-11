@@ -151,7 +151,7 @@ end
 
 Client(token::String, appid::Int, intents::Int, args...) = Client(token, UInt(appid), intents, args...)
 
-add!(d::Dict{U, Vector{R}}, k::U, v::V) where U where R where V<:R = haskey(d, k) ? push!(d[k], v) : d[k] = [v]
+add!(d::Dict{U, Vector}, k::U, v) where U where V = haskey(d, k) ? push!(d[k], v) : d[k] = [v]
 
 add_handler!(c::Client, handler::AbstractHandler) = add!(c.handlers, Symbol(typeof(handler)), handler)
 add_handler!(c::Client, args...) = map(h -> add_handler!(c, h), args)
