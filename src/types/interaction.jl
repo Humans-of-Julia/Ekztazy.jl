@@ -1,4 +1,5 @@
 export Interaction,
+    InteractionData,
     ApplicationCommand,
     ApplicationCommandOption,
     ApplicationCommandChoice
@@ -60,14 +61,22 @@ struct ResolvedData
     channels::Optional{Dict{Snowflake, Channel}}
     messages::Optional{Dict{Snowflake, Message}}
 end
-@boilerplate ResolvedData :constructors :docs :lower :merge 
+@boilerplate ResolvedData :constructors :lower :merge 
 
+"""
+Application Command Choice.
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure).
+"""
 struct ApplicationCommandChoice 
     name::String
     value::Union{String, Number}
 end
 @boilerplate ApplicationCommandChoice :constructors :docs :lower :merge
 
+"""
+Application Command Option.
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
+"""
 struct ApplicationCommandOption 
     name::Optional{String}
     type::OptionType
@@ -79,6 +88,10 @@ struct ApplicationCommandOption
 end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
+"""
+An Application Command.
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-commands).
+"""
 struct ApplicationCommand <: DiscordObject
     id::OptionalNullable{Snowflake}
     type::Optional{ApplicationCommandType}
@@ -92,6 +105,10 @@ struct ApplicationCommand <: DiscordObject
 end
 @boilerplate ApplicationCommand :constructors :docs :lower :merge :mock
 
+"""
+Data for an interaction.
+More details [here](https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-data-structure).
+"""
 struct InteractionData <: DiscordObject
     id::Nullable{Snowflake}
     name::String

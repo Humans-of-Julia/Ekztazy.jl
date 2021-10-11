@@ -91,7 +91,7 @@ const PERM_ALL = |(Int.(instances(Permission))...)
 Determine whether a bitwise OR of permissions contains one [`Permission`](@ref).
 
 ## Examples
-```jldoctest; setup=:(using Discord)
+```jldoctest; setup=:(using Dizkord)
 julia> has_permission(0x0420, PERM_VIEW_CHANNEL)
 true
 
@@ -176,41 +176,36 @@ end
 
 """
     reply(
-        c::Client,
-        m::Message,
-        content::Union{AbstractString, AbstractDict, NamedTuple, Embed};
-        at::Bool=false,
-    ) -> Future{Response}
+        c::Client
+        context;
+        kwargs...
+    )
 
-Reply (send a message to the same [`DiscordChannel`](@ref)) to a [`Message`](@ref).
-If `at` is set, then the message is prefixed with the sender's mention.
+Replies to a [`AbstractContext`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
 """
-function reply(c::Client, m::Message, content::AbstractString; at::Bool=false)
-    at && !ismissing(m.author) && (content = string(m.author, " ", content))
-    return create_message(c, m.channel_id; content=content)
-end
+reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; kwargs...)
+reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; kwargs...)
+reply(c::Client, ctx::OnMessageCreateContext; kwargs...) = reply(c, ctx.message; kwargs...)
+reply(c::Client, ctx::OnInteractionCreateContext; kwargs...) = reply(c, ctx.interaction; kwargs...)
 
-function reply(
-    c::Client,
-    m::Message,
-    embed::Union{AbstractDict, NamedTuple, Embed};
-    at::Bool=false,
-)
-    return if at && !ismissing(m.author)
-        create_message(c, m.channel_id; content=string(m.author), embed=embed)
-    else
-        create_message(c, m.channel_id; embed=embed)
-    end
-end
-
+"""
+    mention(
+        o::DiscordObject
+    )
+Generates the plaintext mention for a [`User`](@ref), a [`Member`](@ref), a [`DiscordChannel`](@ref), or a [`Role`](@ref)
+"""
+mention(u::User) = "<@$(u.id)>"
+mention(r::Role) = "<@&$(r.id)>"
+mention(m::Member) = "<@$(m.user.id)>"
+mention(c::DiscordChannel) = "<#$(c.id)>"
 """
     filter_ranges(u::Vector{UnitRange{Int}})
 
 Filter a list of ranges, discarding ranges included in other ranges from the list.
 
 # Example
-```jldoctest; setup=:(using Discord)
-julia> Discord.filter_ranges([1:5, 3:8, 1:20, 2:16, 10:70, 25:60, 5:35, 50:90, 10:70])
+```jldoctest; setup=:(using Dizkord)
+julia> Dizkord.filter_ranges([1:5, 3:8, 1:20, 2:16, 10:70, 25:60, 5:35, 50:90, 10:70])
 4-element Vector{UnitRange{Int64}}:
  1:20
  5:35
@@ -248,7 +243,7 @@ cannot be avoided. If desired, however, this behavior can be lifter by setting
 `forcesplit` to false.
 
 ## Examples
-```jldoctest; setup=:(using Discord)
+```jldoctest; setup=:(using Dizkord)
 julia> split_message("foo")
 1-element Vector{String}:
  "foo"
