@@ -12,17 +12,17 @@ jobs:
         with:
           version: '1.6'
       - run: |
-        julia --project=docs -e '
-          import Pkg; Pkg.add("Documenter")
-          using Pkg
-          Pkg.develop(PackageSpec(path=pwd()))
-          Pkg.instantiate()'
+          julia --project=docs -e '
+            import Pkg; Pkg.add("Documenter")
+            using Pkg
+            Pkg.develop(PackageSpec(path=pwd()))
+            Pkg.instantiate()'
       - run: |
-        julia --project=docs -e '
-          import Pkg; Pkg.add("Documenter")
-          using Documenter: doctest
-          using Dizkord
-          doctest(Dizkord)'
+          julia --project=docs -e '
+            import Pkg; Pkg.add("Documenter")
+            using Documenter: doctest
+            using Dizkord
+            doctest(Dizkord)'
       - run: julia --project=docs docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
