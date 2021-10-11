@@ -35,7 +35,6 @@ command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx)
     close(client)
 end
 
-
 on_ready!(client) do (ctx)
     println("successfully logged in as $(ctx.user.username)")
 end

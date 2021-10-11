@@ -1,5 +1,8 @@
 export InteractionCreate
 
+"""
+Interaction Create gateway event
+"""
 struct InteractionCreate <: AbstractEvent
     int::Interaction
 end
