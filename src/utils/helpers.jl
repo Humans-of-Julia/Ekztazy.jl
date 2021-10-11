@@ -185,8 +185,8 @@ Replies to a [`AbstractContext`](@ref), an [`Interaction`](@ref) or a [`Message`
 """
 reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; kwargs...)
 reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; kwargs...)
-reply(c::Client, ctx::OnMessageContext; kwargs...) = reply(c, ctx.message; kwargs...)
-reply(c::Client, ctx::OnInteractionCreateContext; kwargs...) = reply(c, ctx.int; kwargs...)
+reply(c::Client, ctx::OnMessageCreateContext; kwargs...) = reply(c, ctx.message; kwargs...)
+reply(c::Client, ctx::OnInteractionCreateContext; kwargs...) = reply(c, ctx.interaction; kwargs...)
 
 """
     mention(

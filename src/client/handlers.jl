@@ -11,7 +11,7 @@ export on_message!,
 Adds a handler for the MESSAGE_CREATE gateway event.
 The `f` parameter's signature should be:
 ```
-    (ctx::OnMessageContext) -> Any 
+    (ctx::OnMessageCreateContext) -> Any 
 ```
 """
 on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))
@@ -59,7 +59,7 @@ Generates the context for a Handler based on the given data.
 """
 context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
 context(::Type{OnGuildUpdate}, data::Dict) = OnGuildUpdateContext(Guild(data))
-context(::Type{OnMessageCreate}, data::Dict) = OnMessageContext(Message(data))
+context(::Type{OnMessageCreate}, data::Dict) = OnMessageCreateContext(Message(data))
 context(::Type{OnReady}, data::Dict) = OnReadyContext(data)
 context(::Type{OnGuildCreate}, data::Dict) = OnGuildCreateContext(Guild(data))
 
@@ -77,7 +77,7 @@ Creates an `AbstractContext` based on the event using the `data` provided and pa
 function handle(c::Client, handlers::Vector{<:AbstractHandler}, data::Dict)
     ctx = context(eltype(handlers), data::Dict)
     for h = handlers
-        if !(h isa OnInteractionCreate) || h.name == ctx.int.data.name
+        if !(h isa OnInteractionCreate) || h.name == ctx.interaction.data.name
             f = h.f
             @spawn begin 
                 try

@@ -14,11 +14,11 @@ on_message!(client) do (ctx)
 end
 
 command!(client, 776251117616234506, "boom", "Go boom!") do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> blew up!")
+    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> blew up!")
 end
 
 command!(client, 776251117616234506, "bam", "Go bam!") do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> slapped themselves!")
+    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> slapped themselves!")
 end
 
 command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
@@ -27,7 +27,7 @@ command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx)
 end
 
 command!(client, 776251117616234506, "crack", "Go crack!") do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> hit a pole")
+    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> hit a pole")
 end
 
 command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
