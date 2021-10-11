@@ -19,10 +19,10 @@ jobs:
           Pkg.instantiate()'
       - run: |
         julia --project=docs -e '
-        import Pkg; Pkg.add("Documenter")
-        using Documenter: doctest
-        using Dizkord
-        doctest(Dizkord)'
+          import Pkg; Pkg.add("Documenter")
+          using Documenter: doctest
+          using Dizkord
+          doctest(Dizkord)'
       - run: julia --project=docs docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
