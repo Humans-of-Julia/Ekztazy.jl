@@ -6,7 +6,7 @@ const Snowflake = UInt64
 
 abstract type DiscordObject end
 Base.in(x::DiscordObject, s::Array{DiscordObject}) = any(obj -> obj == x, s)
-==(x::DiscordObject, other::DiscordObject) = x.id == other.id
+Base.:(==)(x::DiscordObject, other::DiscordObject) = x.id == other.id
 
 snowflake(s::Integer) = Snowflake(s)
 snowflake(s::AbstractString) = parse(Snowflake, s)
