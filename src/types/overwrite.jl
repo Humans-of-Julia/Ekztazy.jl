@@ -21,8 +21,8 @@ JSON.lower(x::OverwriteType) = string(x)
 A permission overwrite.
 More details [here](https://discordapp.com/developers/docs/resources/channel#overwrite-object).
 """
-struct Overwrite
-    id::Snowflake
+struct Overwrite <: DiscordObject
+    id::Snowflake 
     type::OverwriteType
     allow::String
     deny::String

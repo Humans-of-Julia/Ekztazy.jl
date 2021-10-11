@@ -4,7 +4,7 @@ export Member
 A [`Guild`](@ref) member.
 More details [here](https://discordapp.com/developers/docs/resources/guild#guild-member-object).
 """
-struct Member
+struct Member <: DiscordObject
     user::Optional{User}
     nick::OptionalNullable{String}  # Not supposed to be nullable.
     roles::Vector{Snowflake}
@@ -14,3 +14,4 @@ struct Member
     mute::Bool
 end
 @boilerplate Member :constructors :docs :lower :merge :mock
+

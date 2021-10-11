@@ -4,10 +4,11 @@ const DISCORD_EPOCH = 1420070400000
 # Discord's form of ID.
 const Snowflake = UInt64
 
+abstract type DiscordObject end
+
 snowflake(s::Integer) = Snowflake(s)
 snowflake(s::AbstractString) = parse(Snowflake, s)
 
-# TODO: Put these in helpers?
 snowflake2datetime(s::Snowflake) = unix2datetime(((s >> 22) + DISCORD_EPOCH) / 1000)
 worker_id(s::Snowflake) = (s & 0x3e0000) >> 17
 process_id(s::Snowflake) = (s & 0x1f000) >> 12

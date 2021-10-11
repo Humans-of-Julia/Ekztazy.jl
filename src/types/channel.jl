@@ -13,7 +13,7 @@ More details [here](https://discordapp.com/developers/docs/resources/channel#cha
 
 Note: The name `Channel` is already used, hence the prefix.
 """
-struct DiscordChannel
+struct DiscordChannel <: DiscordObject
     id::Snowflake
     type::ChannelType
     guild_id::Optional{Snowflake}

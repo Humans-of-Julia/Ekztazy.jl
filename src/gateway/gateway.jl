@@ -279,7 +279,6 @@ function read_loop(c::Client)
     try
         while c.conn.v == v && isopen(c)
             data, e = readjson(c.conn.io)
-            @debug "Parsing message" logkws(c; op=data[:op], event=get(data, :t, nothing))...
             if e !== nothing
                 if c.conn.v == v
                     handle_read_exception(c, e)
@@ -296,7 +295,7 @@ function read_loop(c::Client)
     catch e
         kws = logkws(c; conn=v, exception=(e, catch_backtrace()))
         @warn "Read loop exited unexpectedly" kws...
-        # c.ready && reconnect(c; zombie=true)
+        c.ready && reconnect(c; zombie=true)
     end
 end
 
@@ -305,7 +304,6 @@ end
 # Dispatch an event to its handlers.
 function dispatch(c::Client, data::Dict)
     T = get(EVENT_TYPES, data[:t], UnknownEvent)
-    @debug "Handling event" logkws(c; event=T)...
     handle(c::Client, T::Type{<:AbstractEvent}, data[:d]::Dict)
 end
 dispatch(c::Client; kwargs...) = dispatch(c::Client, Dict(kwargs))

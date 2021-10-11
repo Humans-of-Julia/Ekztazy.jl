@@ -21,6 +21,14 @@ command!(client, 776251117616234506, "bam", "Go bam!") do (ctx)
     Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> slapped themselves!")
 end
 
+command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
+    Dizkord.reply(client, ctx, content="Shutting down the bot")
+    close(client)
+end
+
+command!(client, 776251117616234506, "crack", "Go crack!") do (ctx) 
+    Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> hit a pole")
+end
 
 command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
     Dizkord.reply(client, ctx, content="Shutting down the bot")

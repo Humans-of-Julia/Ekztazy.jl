@@ -79,8 +79,8 @@ struct ApplicationCommandOption
 end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
-struct ApplicationCommand 
-    id::Nullable{Snowflake}
+struct ApplicationCommand <: DiscordObject
+    id::OptionalNullable{Snowflake}
     type::Optional{ApplicationCommandType}
     application_id::Snowflake
     guild_id::Optional{Snowflake}
@@ -92,7 +92,7 @@ struct ApplicationCommand
 end
 @boilerplate ApplicationCommand :constructors :docs :lower :merge :mock
 
-struct InteractionData 
+struct InteractionData <: DiscordObject
     id::Nullable{Snowflake}
     name::String
     type::ApplicationCommandType
@@ -109,7 +109,7 @@ end
 An interaction.
 More details [here](https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-structure).
 """
-struct Interaction
+struct Interaction <: DiscordObject
     id::Nullable{Snowflake}
     application_id::Nullable{Snowflake}
     type::InteractionType

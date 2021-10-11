@@ -32,7 +32,7 @@ More details [here](https://discordapp.com/developers/docs/resources/guild#guild
 A Discord guild (server).
 Can either be an [`UnavailableGuild`](@ref) or a [`Guild`](@ref).
 """
-abstract type AbstractGuild end
+abstract type AbstractGuild <: DiscordObject end
 function AbstractGuild(; kwargs...)
     return if get(kwargs, :unavailable, length(kwargs) <= 2) === true
         UnavailableGuild(; kwargs...)
