@@ -64,8 +64,8 @@ end
 @boilerplate ResolvedData :constructors :lower :merge 
 
 """
-Application Command Choice 
-More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure)
+Application Command Choice.
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure).
 """
 struct ApplicationCommandChoice 
     name::String
@@ -74,8 +74,8 @@ end
 @boilerplate ApplicationCommandChoice :constructors :docs :lower :merge
 
 """
-Application Command Option 
-More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure)
+Application Command Option.
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
 """
 struct ApplicationCommandOption 
     name::Optional{String}
@@ -89,8 +89,8 @@ end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
 """
-An Application Command
-More details [here](https://discord.com/developers/docs/interactions/application-commands#application-commands)
+An Application Command.
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-commands).
 """
 struct ApplicationCommand <: DiscordObject
     id::OptionalNullable{Snowflake}
