@@ -51,6 +51,8 @@ macro handlerctx(T::Symbol, C::Symbol)
 end
 
 @handlerctx(MessageCreate, Message)
+@handlerctx(MessageUpdate, Message)
+@handlerctx(MessageDelete, Message)
 @handlerctx(GuildCreate, Guild)
 @handlerctx(GuildUpdate, Guild)
 @handlerctx(ChannelCreate, Channel)
