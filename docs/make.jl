@@ -14,3 +14,7 @@ makedocs(;
     sitename="Dizkord.jl",
     authors="Xh4H <sindur.esl@gmail.com>, christopher-dG <chrisadegraaf@gmail.com> Kyando <izawa.iori.tan@gmail.com>",
 )
+
+deploydocs(;
+    repo="github.com/Kyando2/Dizkord.jl",
+)
