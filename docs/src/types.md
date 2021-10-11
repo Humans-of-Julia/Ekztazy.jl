@@ -1,6 +1,7 @@
 ```@meta
 CurrentModule = Dizkord
 ```
+# Types
 ```@docs
 Activity
 ActivityTimestamps
