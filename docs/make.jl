@@ -16,5 +16,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/Kyando2/Dizkord.jl",
+    repo="github.com/Kyando2/kyando2.github.io",
 )
