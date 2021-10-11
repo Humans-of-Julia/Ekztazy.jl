@@ -25,8 +25,9 @@ end
 
 """
     Client(
-        token::String;
-        prefix::String="",
+        token::String
+        application_id::Snowflake
+        intents::Int;
         presence::Union{Dict, NamedTuple}=Dict(),
         strategies::Dict{DataType, <:CacheStrategy}=Dict(),
         version::Int=$API_VERSION,
@@ -40,10 +41,13 @@ A bot token can be acquired by creating a new application
 [here](https://discordapp.com/developers/applications). Make sure not to hardcode the token
 into your Julia code! Use an environment variable or configuration file instead.
 
-### Command Prefix
-The `prefix` keyword specifies the command prefix, which is used by commands added with
-[`add_command!`](@ref). It can be changed later, both globally and on a per-guild basis,
-with [`set_prefix!`](@ref).
+### Application ID
+The application id for your bot can be found [here](https://discordapp.com/developers/applications). 
+Make sure not to hardcode the application id into your Julia code! 
+Use an environment variable or configuration file instead.
+
+### Intents 
+Integer representing intents. More information [here](https://discord.com/developers/docs/topics/gateway#gateway-intents).
 
 ### Presence
 The `presence` keyword sets the bot's presence upon connection. It also sets defaults
@@ -72,7 +76,7 @@ The cache can also be disabled/enabled permanently and temporarily as a whole wi
 
 ### API Version
 The `version` keyword chooses the Version of the Discord API to use. Using anything but
-`$API_VERSION` is not officially supported by the Discord.jl developers.
+`$API_VERSION` is not officially supported by the Dizkord.jl developers.
 
 ### Sharding
 Sharding is handled automatically. The number of available processes is the number of
