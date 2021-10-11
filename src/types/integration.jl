@@ -14,7 +14,7 @@ end
 A [`Guild`](@ref) integration.
 More details [here](https://discordapp.com/developers/docs/resources/guild#integration-object).
 """
-struct Integration
+struct Integration <: DiscordObject
     id::Snowflake
     name::String
     type::String

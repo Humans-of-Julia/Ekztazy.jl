@@ -52,7 +52,7 @@ end
 A Rich Presence [`Message`](@ref)'s application information.
 More details [here](https://discordapp.com/developers/docs/resources/channel#message-object-message-application-structure).
 """
-struct MessageApplication
+struct MessageApplication <: DiscordObject
     id::Snowflake
     cover_image::Optional{String}
     description::String
@@ -65,7 +65,7 @@ end
 A message sent to a [`DiscordChannel`](@ref).
 More details [here](https://discordapp.com/developers/docs/resources/channel#message-object).
 """
-struct Message
+struct Message <: DiscordObject
     id::Snowflake
     channel_id::Snowflake
     # MessageUpdate only requires the ID and channel ID.

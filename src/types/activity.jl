@@ -36,7 +36,7 @@ end
 Emoji for a custom [`Activity`](@ref).
 More details [here](https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-emoji).
 """
-struct ActivityEmoji
+struct ActivityEmoji <: DiscordObject
     name::String
     id::Optional{Snowflake}
     animated::Optional{Bool}

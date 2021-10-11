@@ -16,10 +16,18 @@ function get_application_commands(c::Client, guild::Snowflake)
 end
 
 function create_followup_message(c::Client, int_id::Snowflake, int_token::String; kwargs...)
-    appid = c.application_id
     dict = Dict{Symbol, Any}(
         :data => kwargs,
         :type => 4,
     )
     return Response{Message}(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
+end
+
+function bulk_overwrite_application_commands(c::Client, guild::Snowflake, cmds::Vector{ApplicationCommand})
+    appid = c.application_id
+    return Response{Vector{ApplicationCommand}}(c, :PUT, "/applications/$appid/guilds/$guild/commands"; body=cmds)
+end
+function bulk_overwrite_application_commands(c::Client, cmds::Vector{ApplicationCommand})
+    appid = c.application_id
+    return Response{Vector{ApplicationCommand}}(c, :PUT, "/applications/$appid/commands"; body=cmds)
 end

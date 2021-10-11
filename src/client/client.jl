@@ -81,24 +81,26 @@ shards that are created. See the
 for more details.
 """
 mutable struct Client
-    token::AbstractString                             # Bot token
-    application_id::Snowflake                         # Application ID for Interactions
-    intents::Int                                      # Intents value
-    handlers::Dict{Symbol, Vector{<:AbstractHandler}} # Handlers for each event
-    hb_interval::Int                                  # Milliseconds between heartbeats.
-    hb_seq::Nullable{Int}                             # Sequence value sent by Discord for resuming.
-    last_hb::DateTime                                 # Last heartbeat send.
-    last_ack::DateTime                                # Last heartbeat ack.
-    version::Int                                      # Discord API version.
-    state::State                                      # Client state, cached data, etc.
-    shards::Int                                       # Number of shards in use.
-    shard::Int                                        # Client's shard index.
-    limiter::Limiter                                  # Rate limiter.
-    ready::Bool                                       # Client is connected and authenticated.
-    use_cache::Bool                                   # Whether or not to use the cache.
-    presence::Dict                                    # Default presence options.
-    conn::Conn                                        # WebSocket connection.
-    p_guilds::Dict{Snowflake, String}                 # Command prefix overrides.
+    token::AbstractString                                        # Bot token
+    application_id::Snowflake                                    # Application ID for Interactions
+    commands::Vector{ApplicationCommand}                         # Commands
+    guild_commands::Dict{Snowflake, Vector{ApplicationCommand}}  # Guild commands
+    intents::Int                                                 # Intents value
+    handlers::Dict{Symbol, Vector{<:AbstractHandler}}            # Handlers for each event
+    hb_interval::Int                                             # Milliseconds between heartbeats.
+    hb_seq::Nullable{Int}                                        # Sequence value sent by Discord for resuming.
+    last_hb::DateTime                                            # Last heartbeat send.
+    last_ack::DateTime                                           # Last heartbeat ack.
+    version::Int                                                 # Discord API version.
+    state::State                                                 # Client state, cached data, etc.
+    shards::Int                                                  # Number of shards in use.
+    shard::Int                                                   # Client's shard index.
+    limiter::Limiter                                             # Rate limiter.
+    ready::Bool                                                  # Client is connected and authenticated.
+    use_cache::Bool                                              # Whether or not to use the cache.
+    presence::Dict                                               # Default presence options.
+    conn::Conn                                                   # WebSocket connection.
+    p_guilds::Dict{Snowflake, String}                            # Command prefix overrides.
 
     function Client(
         token::String,
@@ -123,6 +125,8 @@ mutable struct Client
         c = new(
             token,        # token
             app_id,       # application_id
+            Vector()      # Commands
+            Dict()      # Guild commands
             intents,      # intents
             Dict(),       # handlers
             0,            # hb_interval
@@ -154,6 +158,13 @@ function add_handler!(c::Client, handler::AbstractHandler)
     handle
 end
 add_handler!(c::Client, args...) = map(h -> add_handler!(c, h), args)
+
+add_command!(c::Client; kwargs...) = add_command!(c, ApplicationCommand(; application_id=c.application_id, kwargs...))
+add_command!(c::Client, cmd::ApplicationCommand) = push!(c.commands, cmd)
+add_command!(c::Client, args...) = map(cmd -> add_command!(c, cmd), args)
+add_command!(c::Client, g::Snowflake; kwargs...) = add_command!(c, g, ApplicationCommand(; application_id=c.application_id, kwargs...))
+add_command!(c::Client, g::Snowflake, cmd::ApplicationCommand) = push!(c.guild_commands, (g, cmd))
+add_command!(c::Client, g::Snowflake, args...) = map(cmd -> add_command!(c, g, cmd), args)
 
 mock(::Type{Client}; kwargs...) = Client("token")
 
@@ -246,6 +257,10 @@ function start(c::Client)
     end
     hready = OnReady() do (ctx)
         c.state.user = ctx.user
+        for (g, cmds) in c.guild_commands
+            create(c, Vector{ApplicationCommand}, g, cmds)
+        end
+        create(c, Vector{ApplicationCommand}, c.commands)
     end
     add_handler!(c, hcreate, hupdate, hready)
     try

@@ -4,7 +4,7 @@ export User
 A Discord user.
 More details [here](https://discordapp.com/developers/docs/resources/user#user-object).
 """
-struct User
+struct User <: DiscordObject
     id::Snowflake
     # The User inside of a Presence only needs its ID set.
     username::Optional{String}

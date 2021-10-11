@@ -2,18 +2,16 @@ export on_message!,
     on_ready!,
     command!
 
-# just-a-shortcut function
+# shortcut functions
 on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))
 on_ready!(f::Function, c::Client) = add_handler!(c, OnReady(f))
 function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; kwargs...)
     add_handler!(c, OnInteractionCreate(f, name))
-    create(c, ApplicationCommand, name, description; kwargs...)
+    add_command!(c; name=name, description=description, kwargs...)
 end
 function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
-    gid = Snowflake(g)
-    int = OnInteractionCreate(f, name)
-    add_handler!(c, int)
-    create(c, ApplicationCommand, name, description, gid; kwargs...)
+    add_handler!(c, OnInteractionCreate(f, name))
+    add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
 end
 
 context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
