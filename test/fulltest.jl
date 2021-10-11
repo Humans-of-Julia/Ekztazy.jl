@@ -30,6 +30,12 @@ command!(client, 776251117616234506, "crack", "Go crack!") do (ctx)
     Dizkord.reply(client, ctx, content="<@$(ctx.int.member.user.id)> hit a pole")
 end
 
+command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
+    Dizkord.reply(client, ctx, content="Shutting down the bot")
+    close(client)
+end
+
+
 on_ready!(client) do (ctx)
     println("successfully logged in as $(ctx.user.username)")
 end
