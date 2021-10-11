@@ -31,9 +31,12 @@ macro handler(T::Symbol)
 end
 
 macro handlerctx(T::Symbol, C::Symbol)
+    event_name = String(T)
     inner = Symbol(lowercase(String(C)))
     handler_name = Symbol("On"*String(T))
     context_name = Symbol(String(handler_name)*"Context")
+    handler_doc = "Handler for [`$event_name`](@ref) event"
+    context_doc = "Context passed to [`$handler_name`](@ref) handler"
     quote
         struct $handler_name <: AbstractHandler
             f::Function
@@ -41,11 +44,14 @@ macro handlerctx(T::Symbol, C::Symbol)
         struct $context_name <: AbstractContext 
             $inner::$C
         end
+        @doc $handler_doc $handler_name
+        @doc $context_doc $context_name
     end
 end
 
 @handlerctx(MessageCreate, Message)
-@boilerplate OnMessageContext :constructors
+@boilerplate OnMessageCreateContext :constructors :docs
+@boilerplate OnMessageCreate :docs
 
 struct OnChannelUpdateContext <: AbstractContext
     channel::Channel
@@ -73,12 +79,6 @@ end
 @boilerplate OnReadyContext :constructors
 
 struct OnReady <: AbstractHandler 
-    f::Function
-end
-"""
-Handler for a `Message Create` event
-"""
-struct OnMessageCreate <: AbstractHandler 
     f::Function
 end
 
