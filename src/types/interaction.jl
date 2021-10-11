@@ -65,7 +65,7 @@ end
 
 """
 Application Command Choice.
-More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure)
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure).
 """
 struct ApplicationCommandChoice 
     name::String
@@ -75,7 +75,7 @@ end
 
 """
 Application Command Option.
-More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure)
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
 """
 struct ApplicationCommandOption 
     name::Optional{String}
@@ -90,7 +90,7 @@ end
 
 """
 An Application Command.
-More details [here](https://discord.com/developers/docs/interactions/application-commands#application-commands)
+More details [here](https://discord.com/developers/docs/interactions/application-commands#application-commands).
 """
 struct ApplicationCommand <: DiscordObject
     id::OptionalNullable{Snowflake}
