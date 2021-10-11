@@ -44,30 +44,25 @@ macro handlerctx(T::Symbol, C::Symbol)
         struct $context_name <: AbstractContext 
             $inner::$C
         end
+        context(::Type{$handler_name}, data::Dict) = $context_name($C(data))
         @doc $handler_doc $handler_name
         @doc $context_doc $context_name
     end
 end
 
 @handlerctx(MessageCreate, Message)
+@handlerctx(GuildCreate, Guild)
+@handlerctx(GuildUpdate, Guild)
+@handlerctx(ChannelCreate, Channel)
+@handlerctx(ChannelUpdate, Channel)
+@boilerplate OnGuildCreateContext :constructors :docs
+@boilerplate OnGuildCreate :docs
+@boilerplate OnGuildUpdateContext :constructors :docs
+@boilerplate OnGuildUpdate :docs
 @boilerplate OnMessageCreateContext :constructors :docs
 @boilerplate OnMessageCreate :docs
 
-struct OnChannelUpdateContext <: AbstractContext
-    channel::Channel
-end
-
-struct OnGuildCreateContext <: AbstractContext
-    guild::Guild
-end
-
-struct OnGuildUpdateContext <: AbstractContext
-    guild::Guild
-end
-
-struct OnInteractionCreateContext <: AbstractContext
-    int::Interaction
-end
+@ctx(OnInteractionCreate, Interaction)
 
 struct OnReadyContext <: AbstractContext 
     v::Int
@@ -78,19 +73,9 @@ struct OnReadyContext <: AbstractContext
 end
 @boilerplate OnReadyContext :constructors
 
-struct OnReady <: AbstractHandler 
-    f::Function
-end
+@handler(Ready)
 
 struct OnInteractionCreate <: AbstractHandler 
     f::Function
     name::String
-end
-
-struct OnGuildCreate <: AbstractHandler 
-    f::Function
-end
-
-struct OnGuildUpdate <: AbstractHandler 
-    f::Function
 end
