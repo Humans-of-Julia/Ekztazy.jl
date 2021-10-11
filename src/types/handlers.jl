@@ -44,7 +44,7 @@ macro handlerctx(T::Symbol, C::Symbol)
     end
 end
 
-@handlerctx :MessageCreate :Message
+@handlerctx(MessageCreate, Message)
 @boilerplate OnMessageContext :constructors
 
 struct OnChannelUpdateContext <: AbstractContext
