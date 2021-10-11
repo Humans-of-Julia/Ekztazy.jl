@@ -151,19 +151,16 @@ end
 
 Client(token::String, appid::Int, intents::Int, args...) = Client(token, UInt(appid), intents, args...)
 
-# TODO: clean
-function add_handler!(c::Client, handler::AbstractHandler) 
-    handle = Symbol(typeof(handler))
-    haskey(c.handlers, handle) ? c.handlers[handle] = push!(c.handlers[handle], handler) : c.handlers[handle] = [handler]
-    handle
-end
+add!(d::Dict{U, V}, k::U, v::Vector{V}) where U where V = haskey(d, k) ? push!(d[k], v) : d[k] = [v]
+
+add_handler!(c::Client, handler::AbstractHandler) = add!(c.handlers, Symbol(typeof(handler)), handler)
 add_handler!(c::Client, args...) = map(h -> add_handler!(c, h), args)
 
 add_command!(c::Client; kwargs...) = add_command!(c, ApplicationCommand(; application_id=c.application_id, kwargs...))
 add_command!(c::Client, cmd::ApplicationCommand) = push!(c.commands, cmd)
 add_command!(c::Client, args...) = map(cmd -> add_command!(c, cmd), args)
 add_command!(c::Client, g::Snowflake; kwargs...) = add_command!(c, g, ApplicationCommand(; application_id=c.application_id, kwargs...))
-add_command!(c::Client, g::Snowflake, cmd::ApplicationCommand) = push!(c.guild_commands, (g, cmd))
+add_command!(c::Client, g::Snowflake, cmd::ApplicationCommand) = add!(c.guild_commands, g, cmd)
 add_command!(c::Client, g::Snowflake, args...) = map(cmd -> add_command!(c, g, cmd), args)
 
 mock(::Type{Client}; kwargs...) = Client("token")
