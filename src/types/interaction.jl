@@ -64,7 +64,7 @@ end
 @boilerplate ResolvedData :constructors :lower :merge 
 
 """
-Application Command Choice 
+Application Command Choice.
 More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure)
 """
 struct ApplicationCommandChoice 
@@ -74,7 +74,7 @@ end
 @boilerplate ApplicationCommandChoice :constructors :docs :lower :merge
 
 """
-Application Command Option 
+Application Command Option.
 More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure)
 """
 struct ApplicationCommandOption 
@@ -89,7 +89,7 @@ end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
 """
-An Application Command
+An Application Command.
 More details [here](https://discord.com/developers/docs/interactions/application-commands#application-commands)
 """
 struct ApplicationCommand <: DiscordObject
