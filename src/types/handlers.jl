@@ -11,10 +11,45 @@ export OnMessageContext,
 abstract type AbstractHandler end
 abstract type AbstractContext end
 
-struct OnMessageContext <: AbstractContext
-    message::Message
+macro ctx(U::Symbol, T::Symbol) 
+    n = Symbol(lowercase(String(T)))
+    k = Symbol(String(U)*"Context")
+    quote
+        struct $k <: AbstractContext
+            $n::$T
+        end
+    end
 end
+
+macro handler(T::Symbol)
+    n = Symbol("On"*String(T))
+    quote
+        struct $n <: AbstractHandler 
+            f::Function
+        end
+    end
+end
+
+macro handlerctx(T::Symbol, C::Symbol)
+    inner = Symbol(lowercase(String(C)))
+    handler_name = Symbol("On"*String(T))
+    context_name = Symbol(String(handler_name)*"Context")
+    quote
+        struct $handler_name <: AbstractHandler
+            f::Function
+        end
+        struct $context_name <: AbstractContext 
+            $inner::$C
+        end
+    end
+end
+
+@handlerctx :MessageCreate :Message
 @boilerplate OnMessageContext :constructors
+
+struct OnChannelUpdateContext <: AbstractContext
+    channel::Channel
+end
 
 struct OnGuildCreateContext <: AbstractContext
     guild::Guild
