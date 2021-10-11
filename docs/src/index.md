@@ -1,3 +1,4 @@
-```@autodocs
-Modules = [Dizkord]
+## Index
+
+```@index
 ```
