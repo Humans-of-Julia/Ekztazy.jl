@@ -248,6 +248,7 @@ end
 
 function start(c::Client)
     hcreate = OnGuildCreate() do (ctx)
+        println("Why hello there")
         put!(c.state, ctx.guild)
     end
     hupdate = OnGuildUpdate() do (ctx)
