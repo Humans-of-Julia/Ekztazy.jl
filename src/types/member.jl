@@ -15,4 +15,4 @@ struct Member <: DiscordObject
 end
 @boilerplate Member :constructors :docs :lower :merge :mock
 
-Core.getproperty(value::Member, symbol::Symbol) = !(value.user isa User) || hasfield(Member, symbol) ? getfield(value, symbol) : getfield(value.user, symbol)
+Base.getproperty(value::Member, symbol::Symbol) = !(value.user isa User) || hasfield(Member, symbol) ? getfield(value, symbol) : getfield(value.user, symbol)
