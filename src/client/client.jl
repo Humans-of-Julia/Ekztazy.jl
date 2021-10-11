@@ -125,8 +125,8 @@ mutable struct Client
         c = new(
             token,        # token
             app_id,       # application_id
-            Vector()      # Commands
-            Dict()      # Guild commands
+            Vector(),     # Commands
+            Dict(),       # Guild commands
             intents,      # intents
             Dict(),       # handlers
             0,            # hb_interval
