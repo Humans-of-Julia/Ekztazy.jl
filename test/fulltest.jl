@@ -3,7 +3,7 @@ using Distributed
 
 client = Client(
     ENV["DISCORD_TOKEN"], 
-    ENV["DISCORD_UID"],
+    ENV["APPLICATION_ID"],
     intents(GUILDS, GUILD_MESSAGES)
 )
 
