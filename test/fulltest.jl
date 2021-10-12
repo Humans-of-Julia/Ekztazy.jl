@@ -9,7 +9,7 @@ client = Client(
 
 on_message!(client) do (ctx) 
     if ctx.message.author.id != me(client).id
-        Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content)")
+        Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content) TEST")
     end
 end
 
@@ -36,7 +36,7 @@ command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx)
 end
 
 on_ready!(client) do (ctx)
-    println("successfully logged in as $(ctx.user.username)")
+    @info "Successfully logged in as $(ctx.user.username)"
 end
 
 start(client)
