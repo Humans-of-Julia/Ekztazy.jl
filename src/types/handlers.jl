@@ -1,12 +1,30 @@
 export OnMessageCreateContext,
     OnMessageCreate,
+    # Messages ↑
     OnInteractionCreate,
     OnReady,
     OnReadyContext,
+    OnResumed,
+    OnResumedContext,
+    # Misc ↑
     OnGuildCreate,
     OnGuildCreateContext,
     OnGuildUpdate,
-    OnGuildUpdateContext
+    OnGuildUpdateContext,
+    OnGuildDelete,
+    OnGuildDeleteContext,
+    OnGuildMemberAdd,
+    OnGuildMemberAddContext,
+    # Guild ↑
+    OnChannelCreate,
+    OnChannelCreateContext,
+    OnChannelUpdate,
+    OnChannelUpdateContext, 
+    OnChannelDelete,
+    OnChannelDeleteContext,
+    OnChannelPinsUpdate,
+    OnChannelPinsUpdateContext
+    # Channel ↑
 
 abstract type AbstractHandler end
 abstract type AbstractContext end
@@ -55,8 +73,10 @@ end
 @handlerctx(MessageDelete, Message)
 @handlerctx(GuildCreate, Guild)
 @handlerctx(GuildUpdate, Guild)
+@handlerctx(GuildDelete, Guild)
 @handlerctx(ChannelCreate, Channel)
 @handlerctx(ChannelUpdate, Channel)
+@handlerctx(ChannelDelete, Channel)
 @boilerplate OnGuildCreateContext :constructors :docs
 @boilerplate OnGuildCreate :docs
 @boilerplate OnGuildUpdateContext :constructors :docs
@@ -74,10 +94,40 @@ struct OnReadyContext <: AbstractContext
     shard::Optional{Vector{Int}}
 end
 @boilerplate OnReadyContext :constructors
-
 @handler(Ready)
 
 struct OnInteractionCreate <: AbstractHandler 
     f::Function
     name::String
 end
+
+struct OnResumedContext <: AbstractContext
+    _trace::Vector{String}
+end
+@boilerplate OnResumedContext :constructors
+@handler(Resumed)
+
+struct OnChannelPinsUpdateContext <: AbstractContext
+    channel_id::Snowflake
+    last_pin_timestamp::Nullable{DateTime}
+end
+@boilerplate OnChannelPinsUpdateContext :constructors
+@handler(ChannelPinsUpdate)
+
+struct OnGuildMemberAddContext <: AbstractContext
+    guild_id::Snowflake
+    member::Member
+end
+@boilerplate OnGuildMemberAddContext :constructors
+@handler(OnGuildMemberAdd)
+"""
+    context(::Type{<:AbstractHandler}, data) -> AbstractContext
+Generates the context for a Handler based on the given data.
+"""
+context(::Type{OnGuildMemberAddContext}, data::Dict) = OnGuildMemberAddContext(data)
+context(::Type{OnResumed}, data::Dict) = OnResumedContext(data)
+context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
+context(::Type{OnGuildUpdate}, data::Dict) = OnGuildUpdateContext(Guild(data))
+context(::Type{OnMessageCreate}, data::Dict) = OnMessageCreateContext(Message(data))
+context(::Type{OnReady}, data::Dict) = OnReadyContext(data)
+context(::Type{OnGuildCreate}, data::Dict) = OnGuildCreateContext(Guild(data))

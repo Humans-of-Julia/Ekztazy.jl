@@ -53,16 +53,6 @@ function command!(f::Function, c::Client, g::Int64, name::AbstractString, descri
     add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
 end
 
-"""
-    context(::Type{<:AbstractHandler}, data) -> AbstractContext
-Generates the context for a Handler based on the given data.
-"""
-context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
-context(::Type{OnGuildUpdate}, data::Dict) = OnGuildUpdateContext(Guild(data))
-context(::Type{OnMessageCreate}, data::Dict) = OnMessageCreateContext(Message(data))
-context(::Type{OnReady}, data::Dict) = OnReadyContext(data)
-context(::Type{OnGuildCreate}, data::Dict) = OnGuildCreateContext(Guild(data))
-
 tohandler(t::Type{<:AbstractEvent}) = Symbol("On"*String(Symbol(t)))
 
 """
