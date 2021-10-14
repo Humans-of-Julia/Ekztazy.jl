@@ -1,7 +1,7 @@
 name = "Dizkord"
 uuid = "c8b112a7-7677-4d35-8651-7c5b5cba290e"
 authors = ["Kyando <izawa.iori.tan@gmail.com>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
