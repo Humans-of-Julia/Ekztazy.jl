@@ -1,5 +1,5 @@
 ```@meta
-CurrentModule = Discord
+CurrentModule = Dizkord
 ```
 
 # Events
