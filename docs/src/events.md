@@ -6,11 +6,8 @@ CurrentModule = Dizkord
 
 Note that `Snowflake === UInt64`.
 `Union`s with `Nothing` indicate that a field is nullable, whereas `Union`s with `Missing` indicate that a field is optional. 
----
-**NOTE**
 
-The Event types are deprecated. They will be removed in `0.3.z`.
----
+**NOTE**: The Event types are deprecated. They will be removed in `0.3.z`.
 
 ```@docs
 AbstractEvent
