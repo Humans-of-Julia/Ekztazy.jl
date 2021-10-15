@@ -1,10 +1,9 @@
 using Dizkord
 using Distributed
 
-
 client = Client(
     ENV["DISCORD_TOKEN"], 
-    parse(UInt, ENV["APPLICATION_iD"]),
+    ENV["APPLICATION_ID"] isa Number ? ENV["APPLICATION_ID"] : parse(UInt, ENV["APPLICATION_ID"]),
     intents(GUILDS, GUILD_MESSAGES)
 )
 
