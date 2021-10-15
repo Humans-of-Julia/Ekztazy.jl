@@ -1,133 +1,69 @@
-export OnMessageCreateContext,
-    OnMessageCreate,
-    # Messages ↑
-    OnInteractionCreate,
-    OnReady,
-    OnReadyContext,
-    OnResumed,
-    OnResumedContext,
-    # Misc ↑
-    OnGuildCreate,
-    OnGuildCreateContext,
-    OnGuildUpdate,
-    OnGuildUpdateContext,
-    OnGuildDelete,
-    OnGuildDeleteContext,
-    OnGuildMemberAdd,
-    OnGuildMemberAddContext,
-    # Guild ↑
-    OnChannelCreate,
-    OnChannelCreateContext,
-    OnChannelUpdate,
-    OnChannelUpdateContext, 
-    OnChannelDelete,
-    OnChannelDeleteContext,
-    OnChannelPinsUpdate,
-    OnChannelPinsUpdateContext
-    # Channel ↑
+const EVENT_TYPES = Dict{String, Symbol}(
+    "READY"                       => :Ready,
+    "RESUMED"                     => :Resumed,
+    "CHANNEL_CREATE"              => :ChannelCreate,
+    "CHANNEL_UPDATE"              => :ChannelUpdate,
+    "CHANNEL_DELETE"              => :ChannelDelete,
+    "CHANNEL_PINS_UPDATE"         => :ChannelPinsUpdate,
+    "GUILD_CREATE"                => :GuildCreate,
+    "GUILD_UPDATE"                => :GuildUpdate,
+    "GUILD_DELETE"                => :GuildDelete,
+    "GUILD_BAN_ADD"               => :GuildBanAdd,
+    "GUILD_BAN_REMOVE"            => :GuildBanRemove,
+    "GUILD_EMOJIS_UPDATE"         => :GuildEmojisUpdate,
+    "GUILD_INTEGRATIONS_UPDATE"   => :GuildIntegrationsUpdate,
+    "GUILD_MEMBER_ADD"            => :GuildMemberAdd,
+    "GUILD_MEMBER_REMOVE"         => :GuildMemberRemove,
+    "GUILD_MEMBER_UPDATE"         => :GuildMemberUpdate,
+    "GUILD_MEMBERS_CHUNK"         => :GuildMembersChunk,
+    "GUILD_ROLE_CREATE"           => :GuildRoleCreate,
+    "GUILD_ROLE_UPDATE"           => :GuildRoleUpdate,
+    "GUILD_ROLE_DELETE"           => :GuildRoleDelete,
+    "MESSAGE_CREATE"              => :MessageCreate,
+    "MESSAGE_UPDATE"              => :MessageUpdate,
+    "MESSAGE_DELETE"              => :MessageDelete,
+    "MESSAGE_DELETE_BULK"         => :MessageDeleteBulk,
+    "MESSAGE_REACTION_ADD"        => :MessageReactionAdd,
+    "MESSAGE_REACTION_REMOVE"     => :MessageReactionRemove,
+    "MESSAGE_REACTION_REMOVE_ALL" => :MessageReactionRemoveAll,
+    "INTERACTION_CREATE"          => :InteractionCreate,
+    "PRESENCE_UPDATE"             => :PresenceUpdate,
+    "TYPING_START"                => :TypingStart,
+    "USER_UPDATE"                 => :UserUpdate,
+    "VOICE_STATE_UPDATE"          => :VoiceStateUpdate,
+    "VOICE_SERVER_UPDATE"         => :VoiceServerUpdate,
+    "WEBHOOKS_UPDATE"             => :WebhooksUpdate,
+)
 
-abstract type AbstractHandler end
-abstract type AbstractContext end
-
-macro ctx(U::Symbol, T::Symbol) 
-    n = Symbol(lowercase(String(T)))
-    k = Symbol(String(U)*"Context")
-    quote
-        struct $k <: AbstractContext
-            $n::$T
-        end
-    end
-end
-
-macro handler(T::Symbol)
-    n = Symbol("On"*String(T))
-    quote
-        struct $n <: AbstractHandler 
-            f::Function
-        end
-    end
-end
-
-macro handlerctx(T::Symbol, C::Symbol)
-    event_name = String(T)
-    inner = Symbol(lowercase(String(C)))
-    handler_name = Symbol("On"*String(T))
-    context_name = Symbol(String(handler_name)*"Context")
-    handler_doc = "Handler for [`$event_name`](@ref) event"
-    context_doc = "Context passed to [`$handler_name`](@ref) handler"
-    quote
-        struct $handler_name <: AbstractHandler
-            f::Function
-        end
-        struct $context_name <: AbstractContext 
-            $inner::$C
-        end
-        context(::Type{$handler_name}, data::Dict) = $context_name($C(data))
-        @doc $handler_doc $handler_name
-        @doc $context_doc $context_name
-    end
-end
-
-@handlerctx(MessageCreate, Message)
-@handlerctx(MessageUpdate, Message)
-@handlerctx(MessageDelete, Message)
-@handlerctx(GuildCreate, Guild)
-@handlerctx(GuildUpdate, Guild)
-@handlerctx(GuildDelete, Guild)
-@handlerctx(ChannelCreate, Channel)
-@handlerctx(ChannelUpdate, Channel)
-@handlerctx(ChannelDelete, Channel)
-@boilerplate OnGuildCreateContext :constructors :docs
-@boilerplate OnGuildCreate :docs
-@boilerplate OnGuildUpdateContext :constructors :docs
-@boilerplate OnGuildUpdate :docs
-@boilerplate OnMessageCreateContext :constructors :docs
-@boilerplate OnMessageCreate :docs
-
-@ctx(OnInteractionCreate, Interaction)
-
-struct OnReadyContext <: AbstractContext 
-    v::Int
-    user::Optional{User}
-    guilds::Vector{UnavailableGuild}
-    session_id::String
-    shard::Optional{Vector{Int}}
-end
-@boilerplate OnReadyContext :constructors
-@handler(Ready)
-
-struct OnInteractionCreate <: AbstractHandler 
+struct Handler 
     f::Function
-    name::String
+    d::Dict{Symbol, Any}
+end
+Handler(f; kwargs...) = Handler(f, Dict(kwargs))
+struct Context 
+    data::Dict{Symbol, Any}
+end
+Context(; kwargs...) = Context(Dict(kwargs))
+
+context(data::Dict{Symbol, Any}) = Context(data)
+# Special context definitions
+function context(t::Symbol, data::Dict{Symbol, Any})
+    t == :OnMessageCreate && return Context(; message=Message(data))
+    t ∈ [:OnGuildCreate, :OnGuildUpdate] && return Context(; guild=Guild(data))
+    t ∈ [:OnReady] && return Context(; user=User(data[:user]), delete!(data, :user)...)
+    t == :OnInteractionCreate && return Context(; interaction=Interaction(data))
+    Context(data)
 end
 
-struct OnResumedContext <: AbstractContext
-    _trace::Vector{String}
+for v in values(EVENT_TYPES)
+    nm = Symbol("On"*String(v))
+    @eval ($nm)(f::Function; kwargs...) = Handler(f; type=Symbol($nm), kwargs...)
 end
-@boilerplate OnResumedContext :constructors
-@handler(Resumed)
 
-struct OnChannelPinsUpdateContext <: AbstractContext
-    channel_id::Snowflake
-    last_pin_timestamp::Nullable{DateTime}
-end
-@boilerplate OnChannelPinsUpdateContext :constructors
-@handler(ChannelPinsUpdate)
+Base.getproperty(ctx::Context, sym::Symbol) = getfield(ctx, :data)[sym]
+Base.hasproperty(ctx::Context, sym::Symbol) = haskey(getfield(ctx, :data), sym)
 
-struct OnGuildMemberAddContext <: AbstractContext
-    guild_id::Snowflake
-    member::Member
-end
-@boilerplate OnGuildMemberAddContext :constructors
-@handler(OnGuildMemberAdd)
-"""
-    context(::Type{<:AbstractHandler}, data) -> AbstractContext
-Generates the context for a Handler based on the given data.
-"""
-context(::Type{OnGuildMemberAddContext}, data::Dict) = OnGuildMemberAddContext(data)
-context(::Type{OnResumed}, data::Dict) = OnResumedContext(data)
-context(::Type{OnInteractionCreate}, data::Dict) = OnInteractionCreateContext(Interaction(data))
-context(::Type{OnGuildUpdate}, data::Dict) = OnGuildUpdateContext(Guild(data))
-context(::Type{OnMessageCreate}, data::Dict) = OnMessageCreateContext(Message(data))
-context(::Type{OnReady}, data::Dict) = OnReadyContext(data)
-context(::Type{OnGuildCreate}, data::Dict) = OnGuildCreateContext(Guild(data))
+Base.getproperty(h::Handler, sym::Symbol) = sym != :f ? getfield(h, :d)[sym] : getfield(h, sym)
+Base.hasproperty(h::Handler, sym::Symbol) = haskey(getfield(h, :d), sym)
+
+handlerkind(h::Handler) = h.type

@@ -90,7 +90,7 @@ mutable struct Client
     commands::Vector{ApplicationCommand}                         # Commands
     guild_commands::Dict{Snowflake, Vector{ApplicationCommand}}  # Guild commands
     intents::Int                                                 # Intents value
-    handlers::Dict{Symbol, Vector{<:AbstractHandler}}            # Handlers for each event
+    handlers::Dict{Symbol, Vector{Handler}}            # Handlers for each event
     hb_interval::Int                                             # Milliseconds between heartbeats.
     hb_seq::Nullable{Int}                                        # Sequence value sent by Discord for resuming.
     last_hb::DateTime                                            # Last heartbeat send.
@@ -155,9 +155,9 @@ end
 
 Client(token::String, appid::Int, intents::Int, args...) = Client(token, UInt(appid), intents, args...)
 
-add!(d::Dict{U, Union{Vector{<:T}, Vector{T}}}, k::U, v::T) where T where U = haskey(d, k) ? push!(d[k], v) : d[k] = [v]
+add!(d::Dict{U, Union{Vector{T}}}, k::U, v::T) where T where U = haskey(d, k) ? push!(d[k], v) : d[k] = [v]
 
-add_handler!(c::Client, handler::AbstractHandler) = add!(c.handlers, Symbol(typeof(handler)), handler)
+add_handler!(c::Client, handler::Handler) = add!(c.handlers, handlerkind(handler), handler)
 add_handler!(c::Client, args...) = map(h -> add_handler!(c, h), args)
 
 add_command!(c::Client; kwargs...) = add_command!(c, ApplicationCommand(; application_id=c.application_id, kwargs...))

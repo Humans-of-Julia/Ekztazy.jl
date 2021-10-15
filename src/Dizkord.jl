@@ -40,7 +40,6 @@ function compile(f::Function, force::Bool; kwargs...)
 end
 
 include(joinpath("types", "types.jl"))
-include(joinpath("gateway", "events", "events.jl"))
 include(joinpath("client", "client.jl"))
 include(joinpath("client", "handlers.jl"))
 include(joinpath("gateway", "gateway.jl"))
