@@ -26,7 +26,7 @@ Note: The name `Channel` is already used, hence the prefix.
 """
 struct DiscordChannel <: DiscordObject
     id::Snowflake
-    type::ChannelType
+    type::ChannelTypes
     guild_id::Optional{Snowflake}
     position::Optional{Int}
     permission_overwrites::Optional{Vector{Overwrite}}
