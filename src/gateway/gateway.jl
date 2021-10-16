@@ -299,12 +299,10 @@ function read_loop(c::Client)
     end
 end
 
-# Event handlers.
-
 # Dispatch an event to its handlers.
 function dispatch(c::Client, data::Dict)
-    T = get(EVENT_TYPES, data[:t], UnknownEvent)
-    handle(c::Client, T::Type{<:AbstractEvent}, data[:d]::Dict)
+    T = get(EVENT_TYPES, data[:t], :UnknownEvent)
+    handle(c::Client, Symbol("On"*String(T))::Symbol, data[:d]::Dict)
 end
 dispatch(c::Client; kwargs...) = dispatch(c::Client, Dict(kwargs))
 
@@ -357,11 +355,11 @@ const HANDLERS = Dict(
 const CLOSE_CODES = Dict(
     1000 => :NORMAL,
     4000 => :UNKNOWN_ERROR,
-    4001 => :UNKNOWN_OPCODE,         # Probably a library bug.
+    4001 => :UNKNOWN_OPCODE,        
     4002 => :DECODE_ERROR,           # Probably a library bug.
     4003 => :NOT_AUTHENTICATED,      # Probably a library bug.
     4004 => :AUTHENTICATION_FAILED,
-    4005 => :ALREADY_AUTHENTICATED,  # Probably a library bug.
+    4005 => :ALREADY_AUTHENTICATED,  
     4007 => :INVALID_SEQ,            # Probably a library bug.
     4008 => :RATE_LIMITED,           # Probably a library bug.
     4009 => :SESSION_TIMEOUT,

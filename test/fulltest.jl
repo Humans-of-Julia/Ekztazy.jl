@@ -3,7 +3,7 @@ using Distributed
 
 client = Client(
     ENV["DISCORD_TOKEN"], 
-    ENV["APPLICATION_ID"],
+    ENV["APPLICATION_ID"] isa Number ? ENV["APPLICATION_ID"] : parse(UInt, ENV["APPLICATION_ID"]),
     intents(GUILDS, GUILD_MESSAGES)
 )
 

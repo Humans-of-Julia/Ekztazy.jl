@@ -8,7 +8,8 @@ makedocs(;
         "Types" => "types.md",
         "Client" => "client.md",
         "REST API" => "rest.md",
-        "Helpers" => "helpers.md"
+        "Helpers" => "helpers.md",
+        "Handlers" => "events.md"
     ],
     repo="https://github.com/Kyando2/Dizkord.jl/blob/{commit}{path}#L{line}",
     sitename="Dizkord.jl",
@@ -16,5 +17,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/Kyando2/kyando2.github.io",
+    repo="github.com/Kyando2/Dizkord.jl",
 )
