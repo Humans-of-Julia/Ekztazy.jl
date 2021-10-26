@@ -8,6 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+      APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
     strategy:
       fail-fast: false
       matrix:
