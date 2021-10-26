@@ -6,6 +6,8 @@ jobs:
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
+    env:
+      DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -73,4 +75,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}

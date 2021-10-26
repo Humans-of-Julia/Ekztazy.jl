@@ -1,4 +1,4 @@
-using Dizkord.jl
+using Dizkord
 using Documenter
 
 DocMeta.setdocmeta!(Dizkord, :DocTestSetup, :(using Dizkord); recursive=true)
