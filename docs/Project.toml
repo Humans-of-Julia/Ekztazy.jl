@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Dizkord = "c8b112a7-7677-4d35-8651-7c5b5cba290e"
