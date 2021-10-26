@@ -7,7 +7,7 @@ makedocs(;
     modules=[Dizkord],
     authors="Kyando2",
     repo="https://github.com/Kyando2/Dizkord.jl/blob/{commit}{path}#{line}",
-    sitename="CowSay",
+    sitename="Dizkord",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://github.com/Kyando2/Dizkord.jl",
@@ -20,5 +20,5 @@ makedocs(;
 
 deploydocs(;
     repo="https://github.com/Kyando2/Dizkord.jl",
-    devbranch="main",
+    devbranch="master",
 )
