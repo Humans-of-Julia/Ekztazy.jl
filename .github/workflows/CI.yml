@@ -74,4 +74,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-
