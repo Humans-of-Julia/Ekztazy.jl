@@ -1,21 +1,24 @@
-using Documenter, Dizkord
+using Dizkord
+using Documenter
+
+DocMeta.setdocmeta!(Dizkord, :DocTestSetup, :(using Dizkord); recursive=true)
 
 makedocs(;
     modules=[Dizkord],
-    format=Documenter.HTML(),
+    authors="Kyando2",
+    repo="https://github.com/Kyando2/Dizkord.jl/blob/{commit}{path}#{line}",
+    sitename="Dizkord",
+    format=Documenter.HTML(;
+        prettyurls=get(ENV, "CI", "false") == "true",
+        canonical="https://github.com/Kyando2/Dizkord.jl",
+        assets=String[],
+    ),
     pages=[
         "Home" => "index.md",
-        "Types" => "types.md",
-        "Client" => "client.md",
-        "REST API" => "rest.md",
-        "Helpers" => "helpers.md",
-        "Handlers" => "events.md"
     ],
-    repo="https://github.com/Kyando2/Dizkord.jl/blob/{commit}{path}#L{line}",
-    sitename="Dizkord.jl",
-    authors="Xh4H <sindur.esl@gmail.com>, christopher-dG <chrisadegraaf@gmail.com> Kyando <izawa.iori.tan@gmail.com>",
 )
 
 deploydocs(;
-    repo="github.com/Kyando2/Dizkord.jl",
+    repo="https://github.com/Kyando2/Dizkord.jl",
+    devbranch="master",
 )
