@@ -28,8 +28,8 @@ command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx)
     close(client)
 end
 
-command!(client, TESTGUILD, "crack", "Go crack!"; options=[opt("Some option", "Do something... probably.")]) do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> hit a pole")
+command!(client, TESTGUILD, "water", "Water the plants!"; options=[opt("Some option", "Do something... probably.")]) do (ctx) 
+    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> watered the plant so much they grew taller than them!")
 end
 
 command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 

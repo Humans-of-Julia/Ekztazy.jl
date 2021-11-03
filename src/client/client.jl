@@ -259,6 +259,7 @@ function start(c::Client)
     hready = OnReady() do (ctx)
         c.state.user = ctx.user
         for (g, cmds) in c.guild_commands
+            [@warn "$cmd" for cmd in cmds]
             create(c, Vector{ApplicationCommand}, g, cmds)
         end
         create(c, Vector{ApplicationCommand}, c.commands)
