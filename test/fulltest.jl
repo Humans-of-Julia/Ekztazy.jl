@@ -23,7 +23,7 @@ command!(client, TESTGUILD, "bam", "Go bam!") do (ctx)
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> slapped themselves!")
 end
 
-command!(client, TESTGUILD, "water", "Water the plants!"; options=[opt("Someoption", "Do something... probably.")]) do (ctx) 
+command!(client, TESTGUILD, "water", "Water the plants!"; options=[opt("someop", "Dosum")]) do (ctx) 
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> watered the plant so much they grew taller than them!")
 end
 
