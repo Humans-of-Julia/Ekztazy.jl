@@ -579,7 +579,8 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
 end
 
 # Helper function to create Options
-opt(t::Type, name::AbstractString, description::AbstractString; kwargs...) = ApplicationCommandOption(; t=type, name=name, description=description, kwargs...)
+opt(name::AbstractString, description::AbstractString, t::Type; kwargs...) = ApplicationCommandOption(; t=type, name=name, description=description, kwargs...)
+opt(name::AbstractString, description::AbstractString; kwargs...) = ApplicationCommandOption(; t=type, name=name, description=description, kwargs...)
 # Helper function to extract Options from a command Context
 opt(ctx::Context) = extops(ctx.interaction.data.options)
 # Extract Options into a Dict from a list of Options
