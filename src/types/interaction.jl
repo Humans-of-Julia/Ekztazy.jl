@@ -66,10 +66,15 @@ struct ApplicationCommandOption
     name::Optional{String}
     type::OptionType
     value::Optional{Any}
+    description::Optional{String}
     required::Optional{Bool}
+    min_value::Optional{Number}
+    max_value::Optional{Number}
+    autocomplete::Optional{Bool}
     choices::Optional{Vector{ApplicationCommandChoice}}
     options::Optional{Vector{ApplicationCommandOption}}
     channel_types::Optional{Vector{ChannelTypes}}
+    focused::Optional{Bool}
 end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
