@@ -68,7 +68,6 @@ macro merge(T)
 end
 
 # Compute the expression needed to extract field k from keywords.
-field(k::QuoteNode, ::Type{Any}) = :(kwargs[$k])
 field(k::QuoteNode, ::Type{Snowflake}) = :(snowflake(kwargs[$k]))
 field(k::QuoteNode, ::Type{DateTime}) = :(datetime(kwargs[$k]))
 field(k::QuoteNode, ::Type{T}) where T = :($T(kwargs[$k]))
