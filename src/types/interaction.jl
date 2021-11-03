@@ -77,7 +77,7 @@ struct ApplicationCommandOption
     options::Optional{Vector{ApplicationCommandOption}}
     channel_types::Optional{Vector{ChannelTypes}}
     focused::Optional{Bool}
-    ApplicationCommandOption(val, ty, args...) = ty == missing ? new(gentype(val, Int(ty)), ty, args...) : new(val, ty, args...)
+    ApplicationCommandOption(val, ty, args...) = (ty == missing) ? new(gentype(val, Int(ty)), ty, args...) : new(val, ty, args...)
 end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
