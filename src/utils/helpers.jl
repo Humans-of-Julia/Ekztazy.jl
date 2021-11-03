@@ -9,6 +9,8 @@ export PERM_NONE,
     heartbeat_ping,
     upload_file,
     set_game,
+    opt,
+    extops,
     @fetch,
     @fetchval,
     @deferred_fetch,
@@ -575,3 +577,10 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
     append!(ex.args, repls)
     return ex
 end
+
+# Helper function to create Options
+opt(t::Type, name::AbstractString, description::AbstractString; kwargs...) = ApplicationCommandOption(; t=type, name=name, description=description, kwargs...)
+# Helper function to extract Options from a command Context
+opt(ctx::Context) = extops(ctx.interaction.data.options)
+# Extract Options into a Dict from a list of Options
+extops(ops::Vector) = Dict([(op.name, op.type < 3 ? extops(op.options) : op.value) for op in ops])
