@@ -48,7 +48,7 @@ function command!(f::Function, c::Client, name::AbstractString, description::Abs
     add_handler!(c, OnInteractionCreate(f; name=name))
     add_command!(c; name=name, description=description, kwargs...)
 end
-function command!(f::Function, c::Client, g::Int64, name::AbstractString, description::AbstractString; kwargs...)
+function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString; kwargs...)
     add_handler!(c, OnInteractionCreate(f; name=name))
     add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
 end
