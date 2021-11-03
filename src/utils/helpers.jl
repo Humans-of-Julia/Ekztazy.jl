@@ -578,9 +578,22 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
     return ex
 end
 
-# Helper function to create Options
+"""
+    opt(; kwargs...)
+
+Helper function that is equivalent to calling `ApplicationCommandOption(; type=3, kwargs...)`
+"""
 opt(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
-# Helper function to extract Options from a command Context
+"""
+    opt(ctx::Context)
+
+Helper function that is equivalent to calling `extops(ctx.interaction.data.options)`
+"""
 opt(ctx::Context) = extops(ctx.interaction.data.options)
-# Extract Options into a Dict from a list of Options
+"""
+    extops(ops::Vector)
+
+Creates a Dict of `option name` -> `option value` for the given vector of [`ApplicationCommandOption`](@ref). 
+If the option is of `Subcommand` type, creates a dict for all its subcommands.
+"""
 extops(ops::Vector) = Dict([(op.name, Int(op.type) < 3 ? extops(op.options) : op.value) for op in ops])
