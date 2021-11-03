@@ -7,7 +7,7 @@ client = Client(
     intents(GUILDS, GUILD_MESSAGES)
 )
 
-TESTGUILD = ENV["TESTGUILD"] isa Number ? ENV["TESTGUILD"] : parse(UInt, ENV["TESTGUILD"])
+TESTGUILD = ENV["TESTGUILD"] isa Number ? ENV["TESTGUILD"] : parse(Int, ENV["TESTGUILD"])
 
 on_message!(client) do (ctx) 
     if ctx.message.author.id != me(client).id
@@ -23,16 +23,16 @@ command!(client, TESTGUILD, "bam", "Go bam!") do (ctx)
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> slapped themselves!")
 end
 
-command!(client, TESTGUILD, "quit", "Ends the bot process!"; options=opt()) do (ctx) 
+command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
     Dizkord.reply(client, ctx, content="Shutting down the bot")
     close(client)
 end
 
-command!(client, 776251117616234506, "crack", "Go crack!") do (ctx) 
+command!(client, TESTGUILD, "crack", "Go crack!"; options=opt("Some option", "Do something... probably.")) do (ctx) 
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> hit a pole")
 end
 
-command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
+command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
     Dizkord.reply(client, ctx, content="Shutting down the bot")
     close(client)
 end
