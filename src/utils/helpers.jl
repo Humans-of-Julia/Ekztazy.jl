@@ -583,4 +583,4 @@ opt(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
 # Helper function to extract Options from a command Context
 opt(ctx::Context) = extops(ctx.interaction.data.options)
 # Extract Options into a Dict from a list of Options
-extops(ops::Vector) = Dict([(op.name, op.type < 3 ? extops(op.options) : op.value) for op in ops])
+extops(ops::Vector) = Dict([(op.name, Int(op.type) < 3 ? extops(op.options) : op.value) for op in ops])

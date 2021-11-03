@@ -24,7 +24,7 @@ command!(client, TESTGUILD, "bam", "Go bam!") do (ctx)
 end
 
 command!(client, TESTGUILD, "water", "Water the plants!"; options=[opt(name="someop", description="Dosum")]) do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> watered the plant so much they grew taller than them!")
+    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> watered the plant so much they grew taller than them!\n$(opt(ctx))")
 end
 
 command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 

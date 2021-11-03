@@ -126,7 +126,6 @@ function Response{T}(
                 # If we hit an upstream rate limit, return the response immediately.
                 http_r = HTTP.request(args...; status_exception=false)
                 http_r.status == 429 && return http_r
-                http_r.status != 200 && @warn "$(String(http_r.body))"
                 r = Response{T}(c, http_r)
 
                 if r.ok && r.val !== nothing
