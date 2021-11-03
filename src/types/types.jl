@@ -75,6 +75,7 @@ field(k::QuoteNode, ::Type{T}) where T = :($T(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{Snowflake}}) = :(snowflake.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{DateTime}}) = :(datetime.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{T}}) where T = :($T.(kwargs[$k]))
+field(k::QuoteNode, ::Type{Optional{Any}}) = :(haskey(kwargs, $k) ? kwargs[$k] : missing)
 function field(k::QuoteNode, ::Type{T}) where T <: Enum
     return :(kwargs[$k] isa Integer ? $T(Int(kwargs[$k])) :
              kwargs[$k] isa $T ? kwargs[$k] : $T(kwargs[$k]))

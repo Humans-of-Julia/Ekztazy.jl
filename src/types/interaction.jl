@@ -58,14 +58,16 @@ struct ApplicationCommandChoice
 end
 @boilerplate ApplicationCommandChoice :constructors :docs :lower :merge
 
+# TODO: Make this generate a valid type based on ty
+gentype(v, ty::Int) = v
 """
 Application Command Option.
 More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
 """
 struct ApplicationCommandOption 
-    name::Optional{String}
-    type::Optional{OptionType}
     value::Optional{Any}
+    type::Optional{OptionType}
+    name::Optional{String}
     description::Optional{String}
     required::Optional{Bool}
     min_value::Optional{Number}
@@ -75,6 +77,7 @@ struct ApplicationCommandOption
     options::Optional{Vector{ApplicationCommandOption}}
     channel_types::Optional{Vector{ChannelTypes}}
     focused::Optional{Bool}
+    ApplicationCommandOption(val, ty, args...) = ty == missing ? new(gentype(val, Int(ty)), ty, args...) : new(val, ty, args...)
 end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 
