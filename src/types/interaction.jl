@@ -64,7 +64,7 @@ More details [here](https://discord.com/developers/docs/interactions/application
 """
 struct ApplicationCommandOption 
     name::Optional{String}
-    type::OptionType
+    type::Optional{OptionType}
     value::Optional{Any}
     description::Optional{String}
     required::Optional{Bool}
