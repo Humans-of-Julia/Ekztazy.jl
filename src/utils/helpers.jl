@@ -9,6 +9,8 @@ export PERM_NONE,
     heartbeat_ping,
     upload_file,
     set_game,
+    opt,
+    extops,
     @fetch,
     @fetchval,
     @deferred_fetch,
@@ -575,3 +577,23 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
     append!(ex.args, repls)
     return ex
 end
+
+"""
+    opt(; kwargs...)
+
+Helper function that is equivalent to calling `ApplicationCommandOption(; type=3, kwargs...)`
+"""
+opt(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
+"""
+    opt(ctx::Context)
+
+Helper function that is equivalent to calling `extops(ctx.interaction.data.options)`
+"""
+opt(ctx::Context) = extops(ctx.interaction.data.options)
+"""
+    extops(ops::Vector)
+
+Creates a Dict of `option name` -> `option value` for the given vector of [`ApplicationCommandOption`](@ref). 
+If the option is of `Subcommand` type, creates a dict for all its subcommands.
+"""
+extops(ops::Vector) = Dict([(op.name, Int(op.type) < 3 ? extops(op.options) : op.value) for op in ops])

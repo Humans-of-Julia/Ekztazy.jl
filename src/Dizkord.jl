@@ -18,6 +18,7 @@ const Optional{T} = Union{T, Missing}
 const Nullable{T} = Union{T, Nothing}
 const OptionalNullable{T} = Union{T, Missing, Nothing}
 const StringOrChar = Union{AbstractString, AbstractChar}
+const MaybeAny = Union{T, Missing} where T<:Any
 
 # Constant functions.
 donothing(args...; kwargs...) = nothing

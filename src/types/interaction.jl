@@ -58,18 +58,24 @@ struct ApplicationCommandChoice
 end
 @boilerplate ApplicationCommandChoice :constructors :docs :lower :merge
 
+# TODO: Custom type gen for `value` field of ApplicationCommandOption.
 """
 Application Command Option.
 More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
 """
 struct ApplicationCommandOption 
+    value::MaybeAny
+    type::Optional{OptionType}
     name::Optional{String}
-    type::OptionType
-    value::Optional{Any}
+    description::Optional{String}
     required::Optional{Bool}
+    min_value::Optional{Number}
+    max_value::Optional{Number}
+    autocomplete::Optional{Bool}
     choices::Optional{Vector{ApplicationCommandChoice}}
     options::Optional{Vector{ApplicationCommandOption}}
     channel_types::Optional{Vector{ChannelTypes}}
+    focused::Optional{Bool}
 end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
 

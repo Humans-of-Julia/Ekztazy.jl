@@ -7,30 +7,27 @@ client = Client(
     intents(GUILDS, GUILD_MESSAGES)
 )
 
+TESTGUILD = ENV["TESTGUILD"] isa Number ? ENV["TESTGUILD"] : parse(Int, ENV["TESTGUILD"])
+
 on_message!(client) do (ctx) 
     if ctx.message.author.id != me(client).id
         Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content) TEST")
     end
 end
 
-command!(client, 776251117616234506, "boom", "Go boom!") do (ctx) 
+command!(client, TESTGUILD, "boom", "Go boom!") do (ctx) 
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> blew up!")
 end
 
-command!(client, 776251117616234506, "bam", "Go bam!") do (ctx) 
+command!(client, TESTGUILD, "bam", "Go bam!") do (ctx) 
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> slapped themselves!")
 end
 
-command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
-    Dizkord.reply(client, ctx, content="Shutting down the bot")
-    close(client)
+command!(client, TESTGUILD, "water", "Water the plants!"; options=[opt(name="someop", description="Dosum")]) do (ctx) 
+    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> watered the plant so much they grew taller than them!\n$(opt(ctx))")
 end
 
-command!(client, 776251117616234506, "crack", "Go crack!") do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> hit a pole")
-end
-
-command!(client, 776251117616234506, "quit", "Ends the bot process!") do (ctx) 
+command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
     Dizkord.reply(client, ctx, content="Shutting down the bot")
     close(client)
 end
