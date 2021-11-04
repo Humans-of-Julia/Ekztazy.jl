@@ -19,6 +19,6 @@ set_game
 @fetchval
 @deferred_fetch
 @deferred_fetchval
-ops
+opt
 extops
 ```
