@@ -597,3 +597,7 @@ Creates a Dict of `option name` -> `option value` for the given vector of [`Appl
 If the option is of `Subcommand` type, creates a dict for all its subcommands.
 """
 extops(ops::Vector) = Dict([(op.name, Int(op.type) < 3 ? extops(op.options) : op.value) for op in ops])
+"""
+Return an empty `Dict` if the list of options used is missing.
+"""
+extops(::Missing) = Dict()
