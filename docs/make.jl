@@ -11,11 +11,11 @@ makedocs(;
         "Helpers" => "helpers.md",
         "Handlers" => "events.md"
     ],
-    repo="https://github.com/Kyando2/Dizkord.jl/blob/{commit}{path}#L{line}",
+    repo="https://github.com/Humans-of-Julia/Dizkord.jl/blob/{commit}{path}#L{line}",
     sitename="Dizkord.jl",
     authors="Xh4H <sindur.esl@gmail.com>, christopher-dG <chrisadegraaf@gmail.com> Kyando <izawa.iori.tan@gmail.com>",
 )
 
 deploydocs(;
-    repo="github.com/Kyando2/Dizkord.jl",
+    repo="github.com/Humans-of-Julia/Dizkord.jl",
 )
