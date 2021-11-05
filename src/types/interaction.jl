@@ -64,7 +64,7 @@ Application Command Option.
 More details [here](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
 """
 struct ApplicationCommandOption 
-    value::MaybeAny
+    value::Any
     type::Optional{OptionType}
     name::Optional{String}
     description::Optional{String}

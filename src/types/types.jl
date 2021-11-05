@@ -68,14 +68,13 @@ macro merge(T)
 end
 
 # Compute the expression needed to extract field k from keywords.
-field(k::QuoteNode, ::Type{Any}) = :(kwargs[$k])
 field(k::QuoteNode, ::Type{Snowflake}) = :(snowflake(kwargs[$k]))
 field(k::QuoteNode, ::Type{DateTime}) = :(datetime(kwargs[$k]))
 field(k::QuoteNode, ::Type{T}) where T = :($T(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{Snowflake}}) = :(snowflake.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{DateTime}}) = :(datetime.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{T}}) where T = :($T.(kwargs[$k]))
-field(k::QuoteNode, ::Type{MaybeAny}) = :(haskey(kwargs, $k) ? kwargs[$k] : missing)
+field(k::QuoteNode, ::Type{Any}) = :(haskey(kwargs, $k) ? kwargs[$k] : missing)
 function field(k::QuoteNode, ::Type{T}) where T <: Enum
     return :(kwargs[$k] isa Integer ? $T(Int(kwargs[$k])) :
              kwargs[$k] isa $T ? kwargs[$k] : $T(kwargs[$k]))
