@@ -15,10 +15,10 @@ split_message
 plaintext
 upload_file
 set_game
+opt
+extops
 @fetch
 @fetchval
 @deferred_fetch
 @deferred_fetchval
-opt
-extops
 ```
