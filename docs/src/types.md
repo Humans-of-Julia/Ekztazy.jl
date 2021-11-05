@@ -21,7 +21,6 @@ AuditLogOptions
 ActionType
 Ban
 DiscordChannel
-s
 Connection
 Embed
 EmbedThumbnail
