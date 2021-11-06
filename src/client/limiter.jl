@@ -55,7 +55,7 @@ mutable struct JobQueue
                 @warn "Rate limited"
                 @async begin
                     n = now(UTC)
-                    d = JSON.parse(String(copy(r.body)))
+                    d = JSON.read(String(copy(r.body)))
                     reset = n + Millisecond(get(d, "retry_after", 0))
                     if get(d, "global", false)
                         limiter.reset = reset

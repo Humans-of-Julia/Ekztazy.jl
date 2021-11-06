@@ -107,18 +107,6 @@ function AuditLogChange(; kwargs...)
     end
 end
 
-function JSON.lower(x::AuditLogChange)
-    d = Dict{Symbol, Any}()
-    if !ismissing(x.new_value)
-        d[:new_value] = x.new_value
-    end
-    if !ismissing(x.old_value)
-        d[:old_value] = x.new_value
-    end
-    d[:key] = x.key
-    return d
-end
-
 """
 Optional information in an [`AuditLogEntry`](@ref).
 More details [here](https://discordapp.com/developers/docs/resources/audit-log#audit-log-entry-object-optional-audit-entry-info).
@@ -150,20 +138,6 @@ function AuditLogOptions(; kwargs...)
         haskey(kwargs, :type) ? OverwriteType(kwargs[:type]) : missing,
         get(kwargs, :role_name, missing),
     )
-end
-
-function JSON.lower(x::AuditLogOptions)
-    d = Dict{Symbol, Any}()
-    if !ismissing(x.delete_member_days)
-        d[:delete_member_days] = string(d.delete_member_days)
-    end
-    ismissing(x.members_removed) || (d[:members_removed] = string(d.members_removed))
-    ismissing(x.channel_id) || (d[:channel_id] = string(d.members_removed))
-    ismissing(x.count) || (d[:count] = string(x.count))
-    ismissing(x.id) || (d[:id] = string(x.id))
-    ismissing(x.type) || (d[:type] = string(x.type))
-    ismissing(x.role_name) || (d[:role_name] = x.role_name)
-    return d
 end
 
 """

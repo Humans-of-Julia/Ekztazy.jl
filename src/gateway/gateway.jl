@@ -52,7 +52,7 @@ function Base.open(c::Client; resume::Bool=false, delay::Period=Second(7))
         rethrow(e)
     end
 
-    data = JSON.parse(String(resp.body))
+    data = JSON.read(String(resp.body))
     url = "$(data["url"])?v=$(c.version)&encoding=json"
     c.conn.v += 1
     @debug "Connecting to gateway" logkws(c; conn=c.conn.v, url=url)...
@@ -407,7 +407,7 @@ function readjson(io)
         if isempty(data)
             nothing, Empty()
         else
-            JSON.parse(String(data); dicttype=Dict{Symbol, Any}), nothing
+            JSON3.read(String(data); dicttype=Dict{Symbol, Any}), nothing
         end
     catch e
         nothing, e
@@ -416,7 +416,7 @@ end
 
 # Write a JSON message.
 writejson(::Nothing, body) = error("Tried to write to an uninitialized connection")
-writejson(io, body) = write(io, json(body))
+writejson(io, body) = write(io, jsonify(body))
 
 # Write a JSON message, but don't throw an exception.
 function trywritejson(io, body)

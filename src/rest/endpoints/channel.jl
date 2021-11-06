@@ -83,7 +83,7 @@ function create_message(c::Client, channel::Integer; kwargs...)
     return if haskey(kwargs, :file)  # We have to use multipart/form-data for file uploads.
         d = Dict(pairs(kwargs))
         file = pop!(d, :file)
-        form = HTTP.Form(Dict("file" => file, "payload_json" => json(d)))
+        form = HTTP.Form(Dict("file" => file, "payload_json" => jsonify(d)))
         headers = Dict(HTTP.content_type(form))
         Response{Message}(c, :POST, endpoint; headers=headers, body=form)
     else

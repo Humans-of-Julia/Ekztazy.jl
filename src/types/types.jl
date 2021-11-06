@@ -19,34 +19,9 @@ datetime(s::Int64) = unix2datetime(s / 1000)
 datetime(s::AbstractString) = DateTime(replace(s, "+" => ".000+")[1:23], ISODateTimeFormat)
 datetime(d::DateTime) = d
 
-# Lower to something JSON-compatible.
-lowered(x::DateTime) = round(Int, datetime2unix(x))
-lowered(x::Union{Integer, Bool}) = x
-lowered(x::Vector) = lowered.(x)
-lowered(x::Nothing) = nothing
-lowered(x) = JSON.lower(x)
-
-# Define JSON.lower for a type.
 macro lower(T)
-    if supertype(eval(T)) <: Enum{<:Integer}
-        quote
-            JSON.lower(x::$T) = Int(x)
-        end
-    else
-        quote
-            function JSON.lower(x::$T)
-                d = Dict{Symbol, Any}()
-
-                for f in fieldnames($T)
-                    v = getfield(x, f)
-                    if !ismissing(v)
-                        d[f] = lowered(v)
-                    end
-                end
-
-                return d
-            end
-        end
+    # do nothing 
+    quote 
     end
 end
 
@@ -100,6 +75,7 @@ macro constructors(T)
         end
         $(esc(T))(d::Dict{Symbol, Any}) = $(esc(T))(; d...)
         $(esc(T))(x::$(esc(T))) = x
+        StructTypes.StructType(::Type{$(esc(T))}) = StructTypes.DictType()
     end
 end
 

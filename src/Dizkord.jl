@@ -4,7 +4,7 @@ using Dates
 using Distributed
 using HTTP
 using InteractiveUtils
-using JSON
+using JSON3
 using OpenTrick
 using Setfield
 using TimeToLive
@@ -18,6 +18,9 @@ const Optional{T} = Union{T, Missing}
 const Nullable{T} = Union{T, Nothing}
 const OptionalNullable{T} = Union{T, Missing, Nothing}
 const StringOrChar = Union{AbstractString, AbstractChar}
+
+# Shortcut functions .
+jsonify(x) = JSON3.write(x)
 
 # Constant functions.
 donothing(args...; kwargs...) = nothing
