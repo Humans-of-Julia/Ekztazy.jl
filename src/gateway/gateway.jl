@@ -52,7 +52,7 @@ function Base.open(c::Client; resume::Bool=false, delay::Period=Second(7))
         rethrow(e)
     end
 
-    data = JSON.read(String(resp.body))
+    data = JSON3.read(String(resp.body))
     url = "$(data["url"])?v=$(c.version)&encoding=json"
     c.conn.v += 1
     @debug "Connecting to gateway" logkws(c; conn=c.conn.v, url=url)...
@@ -60,7 +60,6 @@ function Base.open(c::Client; resume::Bool=false, delay::Period=Second(7))
 
     @debug "Receiving HELLO" logkws(c)...
     data, e = readjson(c.conn.io)
-    e === nothing || throw(e)
     op = get(OPCODES, data[:op], data[:op])
 
     if op !== :HELLO
@@ -229,7 +228,7 @@ function update_status(
     c::Client,
     since::Nullable{Int},
     game::Union{Dict, NamedTuple, Activity, Nothing},
-    status::Union{PresenceStatus, AbstractString},
+    status::Union{Int, AbstractString},
     afk::Bool,
 )
     # Update defaults for future calls to set_game.
@@ -398,19 +397,16 @@ function handle_specific_exception(c::Client, e::Exception)
     isopen(c) || reconnect(c)
 end
 
-# Helpers.
 
 # Read a JSON message.
 function readjson(io)
-    return try
-        data = readavailable(io)
-        if isempty(data)
-            nothing, Empty()
-        else
-            JSON3.read(String(data); dicttype=Dict{Symbol, Any}), nothing
-        end
-    catch e
-        nothing, e
+    data = readavailable(io)
+    if isempty(data)
+        nothing, Empty()
+    else
+        k , v = JSON3.read(String(data), Dict), nothing
+        symk = symbolize(k)
+        return symk, v
     end
 end
 

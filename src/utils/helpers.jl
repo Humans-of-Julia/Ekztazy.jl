@@ -429,7 +429,7 @@ function set_game(
     game::AbstractString;
     type::Int=ActionType.GAME,
     since::Nullable{Int}=c.presence["since"],
-    status::Union{PresenceStatus, AbstractString}=c.presence["status"],
+    status::Union{Int, AbstractString}=c.presence["status"],
     afk::Bool=c.presence["afk"],
     kwargs...,
 )

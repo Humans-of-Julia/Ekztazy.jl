@@ -117,7 +117,7 @@ struct AuditLogOptions <: DiscordObject
     channel_id::Optional{Snowflake}
     count::Optional{Int}
     id::Optional{Snowflake}
-    type::Optional{OverwriteType}
+    type::Optional{Int}
     role_name::Optional{String}
 end
 @boilerplate AuditLogOptions :docs :merge :mock

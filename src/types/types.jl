@@ -64,6 +64,14 @@ function field(k::QuoteNode, ::Type{OptionalNullable{T}}) where T
     return :(haskey(kwargs, $k) ? $(field(k, Nullable{T})) : missing)
 end
 
+function symbolize(dict::Dict{String, Any}) 
+    new = Dict{Symbol, Any}()
+    for (k, v) in dict
+        new[Symbol(k)] = symbolize(v)
+    end
+    new
+end
+symbolize(t::Any) = t 
 # Define constructors from keyword arguments and a Dict for a type.
 macro constructors(T)
     TT = eval(T)
@@ -74,6 +82,7 @@ macro constructors(T)
             $(esc(T))($(args...))
         end
         $(esc(T))(d::Dict{Symbol, Any}) = $(esc(T))(; d...)
+        $(esc(T))(d::Dict{String, Any}) = $(esc(T))(symbolize(d))
         $(esc(T))(x::$(esc(T))) = x
         StructTypes.StructType(::Type{$(esc(T))}) = StructTypes.DictType()
     end

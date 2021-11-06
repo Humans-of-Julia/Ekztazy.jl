@@ -5,6 +5,7 @@ using Distributed
 using HTTP
 using InteractiveUtils
 using JSON3
+using StructTypes
 using OpenTrick
 using Setfield
 using TimeToLive

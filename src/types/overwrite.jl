@@ -6,7 +6,7 @@ More details [here](https://discordapp.com/developers/docs/resources/channel#ove
 """
 struct Overwrite <: DiscordObject
     id::Snowflake 
-    type::String
+    type::Int
     allow::String
     deny::String
 end

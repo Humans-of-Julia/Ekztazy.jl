@@ -122,7 +122,7 @@ mutable struct Client
         presence = merge(Dict(
             "since" => nothing,
             "game" => nothing,
-            "status" => PS_ONLINE,
+            "status" => "online", # Should make a const out of statuses
             "afk" => false,
         ), Dict(string(k) => v for (k, v) in Dict(pairs(presence))))
         
