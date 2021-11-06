@@ -1,34 +1,6 @@
 export Guild
 
 """
-A [`Guild`](@ref)'s verification level.
-More details [here](https://discordapp.com/developers/docs/resources/guild#guild-object-verification-level).
-"""
-@enum VerificationLevel VL_NONE VL_LOW VL_MEDIUM VL_HIGH VL_VERY_HIGH
-@boilerplate VerificationLevel :export :lower
-
-"""
-A [`Guild`](@ref)'s default message notification level.
-More details [here](https://discordapp.com/developers/docs/resources/guild#guild-object-default-message-notification-level).
-"""
-@enum MessageNotificationLevel MNL_ALL_MESSAGES MNL_ONLY_MENTIONS
-@boilerplate MessageNotificationLevel :export :lower
-
-"""
-A [`Guild`](@ref)'s explicit content filter level.
-More details [here](https://discordapp.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level).
-"""
-@enum ExplicitContentFilterLevel ECFL_DISABLED ECFL_MEMBERS_WITHOUT_ROLES ECFL_ALL_MEMBERS
-@boilerplate ExplicitContentFilterLevel :export :lower
-
-"""
-A [`Guild`](@ref)'s MFA level.
-More details [here](https://discordapp.com/developers/docs/resources/guild#guild-object-mfa-level).
-"""
-@enum MFALevel ML_NONE ML_ELEVATED
-@boilerplate MFALevel :export :lower
-
-"""
 A Discord guild (server).
 Can either be an [`UnavailableGuild`](@ref) or a [`Guild`](@ref).
 """
@@ -70,13 +42,13 @@ struct Guild <: AbstractGuild
     afk_timeout::Optional{Int}  # Invite
     embed_enabled::Optional{Bool}
     embed_channel_id::OptionalNullable{Snowflake}  # Not supposed to be nullable.
-    verification_level::Optional{VerificationLevel}
-    default_message_notifications::Optional{MessageNotificationLevel}  # Invite
-    explicit_content_filter::Optional{ExplicitContentFilterLevel}  # Invite
+    verification_level::Optional{Int}
+    default_message_notifications::Optional{Int}  # Invite
+    explicit_content_filter::Optional{Int}  # Invite
     roles::Optional{Vector{Role}}  # Invite
     emojis::Optional{Vector{Emoji}}  # Invite
     features::Optional{Vector{String}}
-    mfa_level::Optional{MFALevel}  # Invite
+    mfa_level::Optional{Int}  # Invite
     application_id::OptionalNullable{Snowflake}  # Invite
     widget_enabled::Optional{Bool}
     widget_channel_id::OptionalNullable{Snowflake}  # Not supposed to be nullable.

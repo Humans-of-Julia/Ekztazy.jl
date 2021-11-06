@@ -4,41 +4,6 @@ export Interaction,
     ApplicationCommandOption,
     ApplicationCommandChoice
 
-@enum InteractionType begin 
-    PING = 1
-    APPLICATIONCOMMAND = 2
-    MESSAGECOMPONENT = 3
-end
-@boilerplate InteractionType :export :lower :convertenum
-
-@enum ApplicationCommandType begin
-    CHATINPUT = 1
-    UI = 2
-    MESSAGE = 3
-end
-@boilerplate ApplicationCommandType :export :lower :convertenum
-
-@enum ComponentType begin 
-    ACTIONROW = 1
-    BUTTON = 2
-    SELECTMENU = 3
-end
-@boilerplate ComponentType :export :lower :merge :convertenum
-
-@enum OptionType begin 
-    SUB_COMMAND = 1
-    SUB_COMMAND_GROUP = 2
-    STRING = 3
-    INTEGER = 4
-    BOOLEAN = 5
-    USER = 6
-    CHANNEL = 7
-    ROLE = 8
-    MENTIONABLE = 9
-    NUMBER = 10
-end
-@boilerplate OptionType :export :lower
-
 struct ResolvedData 
     users::Optional{Dict{Snowflake, User}}
     members::Optional{Dict{Snowflake, Member}}
@@ -65,7 +30,7 @@ More details [here](https://discord.com/developers/docs/interactions/application
 """
 struct ApplicationCommandOption 
     value::Any
-    type::Optional{OptionType}
+    type::Optional{Int}
     name::Optional{String}
     description::Optional{String}
     required::Optional{Bool}
@@ -74,7 +39,7 @@ struct ApplicationCommandOption
     autocomplete::Optional{Bool}
     choices::Optional{Vector{ApplicationCommandChoice}}
     options::Optional{Vector{ApplicationCommandOption}}
-    channel_types::Optional{Vector{ChannelTypes}}
+    channel_types::Optional{Vector{Int}}
     focused::Optional{Bool}
 end
 @boilerplate ApplicationCommandOption :constructors :docs :lower :merge
@@ -85,7 +50,7 @@ More details [here](https://discord.com/developers/docs/interactions/application
 """
 struct ApplicationCommand <: DiscordObject
     id::OptionalNullable{Snowflake}
-    type::Optional{ApplicationCommandType}
+    type::Optional{Int}
     application_id::Snowflake
     guild_id::Optional{Snowflake}
     name::String
@@ -103,11 +68,11 @@ More details [here](https://discord.com/developers/docs/interactions/receiving-a
 struct InteractionData <: DiscordObject
     id::Nullable{Snowflake}
     name::String
-    type::ApplicationCommandType
+    type::Int
     resolved::Optional{ResolvedData}
     options::Optional{Vector{ApplicationCommandOption}}
     custom_id::OptionalNullable{String}
-    component_type::OptionalNullable{ComponentType}
+    component_type::OptionalNullable{Int}
     values::Optional{Vector{String}}
     target_id::Optional{Snowflake}
 end
@@ -120,7 +85,7 @@ More details [here](https://discord.com/developers/docs/interactions/receiving-a
 struct Interaction <: DiscordObject
     id::Nullable{Snowflake}
     application_id::Nullable{Snowflake}
-    type::InteractionType
+    type::Int
     data::OptionalNullable{InteractionData}
     guild_id::Optional{Snowflake}
     channel_id::Optional{Snowflake}

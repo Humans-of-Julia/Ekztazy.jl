@@ -414,7 +414,7 @@ end
     set_game(
         c::Client,
         game::AbstractString;
-        type::Union{ActivityType, Int}=AT_GAME,
+        type::Int=AT.GAME,
         since::Nullable{Int}=c.presence["since"],
         status::Union{PresenceStatus, AbstractString}=c.presence["status"],
         afk::Bool=c.presence["afk"],
@@ -427,7 +427,7 @@ additional keywords are passed into the `activity` section.
 function set_game(
     c::Client,
     game::AbstractString;
-    type::Union{ActivityType, Int}=AT_GAME,
+    type::Int=ActionType.GAME,
     since::Nullable{Int}=c.presence["since"],
     status::Union{PresenceStatus, AbstractString}=c.presence["status"],
     afk::Bool=c.presence["afk"],

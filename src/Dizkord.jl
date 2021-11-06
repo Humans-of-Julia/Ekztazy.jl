@@ -39,6 +39,7 @@ function compile(f::Function, force::Bool; kwargs...)
     end
 end
 
+include(joinpath("utils", "consts.jl"))
 include(joinpath("types", "types.jl"))
 include(joinpath("client", "client.jl"))
 include(joinpath("client", "handlers.jl"))
