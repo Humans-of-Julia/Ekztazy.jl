@@ -2,7 +2,7 @@ using Documenter, Dizkord
 
 makedocs(;
     modules=[Dizkord],
-    format=Documenter.HTML(; assets=["assets/logo.png"]),
+    format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
         "Types" => "types.md",
