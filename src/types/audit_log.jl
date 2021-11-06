@@ -8,10 +8,10 @@ const AUDIT_LOG_CHANGE_TYPES = Dict(
     "region"                        => (String, Guild),
     "afk_channel_id"                => (Snowflake, Guild),
     "afk_timeout"                   => (Int, Guild),
-    "mfa_level"                     => (MFALevel, Guild),
-    "verification_level"            => (VerificationLevel, Guild),
-    "explicit_content_filter"       => (ExplicitContentFilterLevel, Guild),
-    "default_message_notifications" => (MessageNotificationLevel, Guild),
+    "mfa_level"                     => (Int, Guild),
+    "verification_level"            => (Int, Guild),
+    "explicit_content_filter"       => (Int, Guild),
+    "default_message_notifications" => (Int, Guild),
     "vanity_url_code"               => (String, Guild),
     "\$add"                         => (Vector{Role}, Guild),
     "\$remove"                      => (Vector{Role}, Guild),
@@ -46,40 +46,6 @@ const AUDIT_LOG_CHANGE_TYPES = Dict(
     # Undocumented.
     "rate_limit_per_user"           => (Int, DiscordChannel),
 )
-
-"""
-[`AuditLog`](@ref) action types.
-More details [here](https://discordapp.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events).
-"""
-@enum ActionType  begin
-    AT_GUILD_UPDATE=1
-    AT_CHANNEL_CREATE=10
-    AT_CHANNEL_UPDATE=11
-    AT_CHANNEL_DELETE=12
-    AT_CHANNEL_OVERWRITE_CREATE=13
-    AT_CHANNEL_OVERWRITE_UPDATE=14
-    AT_CHANNEL_OVERWRITE_DELETE=15
-    AT_MEMBER_KICK=20
-    AT_MEMBER_PRUNE=21
-    AT_MEMBER_BAN_ADD=22
-    AT_MEMBER_BAN_REMOVE=23
-    AT_MEMBER_UPDATE=24
-    AT_MEMBER_ROLE_UPDATE=25
-    AT_ROLE_CREATE=30
-    AT_ROLE_UPDATE=31
-    AT_ROLE_DELETE=32
-    AT_INVITE_CREATE=40
-    AT_INVITE_UPDATE=41
-    AT_INVITE_DELETE=42
-    AT_WEBHOOK_CREATE=50
-    AT_WEBHOOK_UPDATE=51
-    AT_WEBHOOK_DELETE=52
-    AT_EMOJI_CREATE=60
-    AT_EMOJI_UPDATE=61
-    AT_EMOJI_DELETE=62
-    AT_MESSAGE_DELETE=72
-end
-@boilerplate ActionType :export :lower
 
 """
 A change item in an [`AuditLogEntry`](@ref).
@@ -209,7 +175,7 @@ struct AuditLogEntry
     changes::Optional{Vector{AuditLogChange}}
     user_id::Snowflake
     id::Snowflake
-    action_type::ActionType
+    action_type::Int
     options::Optional{AuditLogOptions}
     reason::Optional{String}
 end

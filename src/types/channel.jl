@@ -1,24 +1,6 @@
 export DiscordChannel
 
 """
-A [`DiscordChannel`](@ref)'s type. Prefix with `CT_`. See full list
-at https://discord.com/developers/docs/resources/channel#channel-object-channel-types
-"""
-@enum ChannelTypes begin 
-    GUILD_TEXT = 0
-    DM = 1
-    GUILD_VOICE = 2
-    GROUP_DM = 3
-    GUILD_CATEGORY = 4
-    GUILD_NEWS = 5
-    GUILD_STORE = 6
-    GUILD_NEWS_THREAD = 10
-    GUILD_PUBLIC_THREAD = 11
-    GUILD_PRIVATE_THREAD = 12
-    GUILD_STAGE_VOICE = 13
-end
-@boilerplate ChannelTypes :export :lower :convertenum
-"""
 A Discord channel.
 More details [here](https://discordapp.com/developers/docs/resources/channel#channel-object).
 
@@ -26,7 +8,7 @@ Note: The name `Channel` is already used, hence the prefix.
 """
 struct DiscordChannel <: DiscordObject
     id::Snowflake
-    type::ChannelTypes
+    type::Int
     guild_id::Optional{Snowflake}
     position::Optional{Int}
     permission_overwrites::Optional{Vector{Overwrite}}

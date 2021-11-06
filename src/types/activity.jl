@@ -1,28 +1,6 @@
 export Activity
 
 """
-An [`Activity`](@ref)'s type. Available values are `AT_GAME`, `AT_STREAMING`,
-`AT_LISTENING`, `AT_WATCHING`, and `AT_COMPETING`.
-More details [here](https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-types).
-"""
-@enum ActivityType AT_GAME AT_STREAMING AT_LISTENING AT_WATCHING AT_CUSTOM AT_COMPETING
-@boilerplate ActivityType :export :lower
-
-"""
-Flags which indicate what an [`Activity`](@ref) payload contains.
-More details [here](https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-flags).
-"""
-@enum ActivityFlags begin
-    AF_INSTANCE=1<<0
-    AF_JOIN=1<<1
-    AF_SPECTATE=1<<2
-    AF_JOIN_REQUEST=1<<3
-    AF_SYNC=1<<4
-    AF_PLAY=1<<5
-end
-@boilerplate ActivityFlags :export :lower
-
-"""
 The start and stop times of an [`Activity`](@ref).
 More details [here](https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-timestamps).
 """
@@ -82,7 +60,7 @@ More details [here](https://discordapp.com/developers/docs/topics/gateway#activi
 """
 struct Activity
     name::String
-    type::ActivityType
+    type::Int
     url::OptionalNullable{String}
     timestamps::Optional{ActivityTimestamps}
     application_id::Optional{Snowflake}
