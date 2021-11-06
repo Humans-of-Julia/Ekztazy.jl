@@ -45,7 +45,7 @@ function Response{T}(c::Client, r::HTTP.Messages.Response) where T
     r.status >= 300 && return Response{T}(nothing, false, r, nothing)
 
     data = if HTTP.header(r, "Content-Type") == "application/json"
-        JSON.parse(String(copy(r.body)); dicttype=Dict{Symbol, Any})
+        symbolize(JSON3.read(String(copy(r.body))))
     else
         copy(r.body)
     end
@@ -112,7 +112,7 @@ function Response{T}(
         ), Dict(headers))
         args = [method, url, headers]
         if get(SHOULD_SEND, method, false)
-            push!(args, headers["Content-Type"] == "application/json" ? json(body) : body)
+            push!(args, headers["Content-Type"] == "application/json" ? JSON3.write(body) : body)
         end
 
         @debug "About to send request"
