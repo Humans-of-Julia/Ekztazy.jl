@@ -44,14 +44,13 @@ function Response{T}(c::Client, r::HTTP.Messages.Response) where T
     r.status == 204 && return Response{T}(nothing, true, r, nothing)
     r.status >= 300 && return Response{T}(nothing, false, r, nothing)
 
-    data = if HTTP.header(r, "Content-Type") == "application/json"
-        symbolize(JSON3.read(String(copy(r.body))))
+    val = if HTTP.header(r, "Content-Type") == "application/json"
+        symbolize(JSON3.read(String(copy(r.body)), T))
     else
         copy(r.body)
     end
 
-    val, e = tryparse(c, T, data)
-    return Response{T}(val, e === nothing, r, e)
+    return Response{T}(val, true, r, nothing)
 end
 
 # HTTP request with no expected response body.
@@ -76,8 +75,7 @@ function Response{T}(
     kwargs...
 ) where T
     f = Future()
-
-    @async begin
+    @spawn begin
         kws = (
             channel=cap("channels", endpoint),
             guild=cap("guilds", endpoint),
@@ -86,7 +84,7 @@ function Response{T}(
         )
 
         # Retrieve the value from the cache, maybe.
-        @debug "Looking in cache"
+        @debug "Preparing Request: Looking in cache" Time=now()
         if c.use_cache && method === :GET
             val = get(c.state, T; kws...)
             if val !== nothing
@@ -103,7 +101,7 @@ function Response{T}(
         end
         # Prepare the request.
         url = "$DISCORD_API/v$(c.version)$endpoint"
-        @debug "Did not find in cache, preparing request"
+        @debug "Preparing Request: Did not find in cache, preparing request" Time=now()
         isempty(kwargs) || (url *= "?" * HTTP.escapeuri(kwargs))
         headers = merge(Dict(
             "User-Agent" => "Discord.jl $DISCORD_JL_VERSION",
@@ -111,11 +109,12 @@ function Response{T}(
             "Authorization" => c.token,
         ), Dict(headers))
         args = [method, url, headers]
+        @debug "Preparing Request: Type of request: $T" Time=now()
         if get(SHOULD_SEND, method, false)
             push!(args, headers["Content-Type"] == "application/json" ? JSON3.write(body) : body)
         end
 
-        @debug "About to send request"
+        @debug "Preparing Request: Enqueuing request" Time=now()
         # Queue a job to be run within the rate-limiting constraints.
         enqueue!(c.limiter, method, endpoint) do
             @debug "Enqueued job running"
@@ -125,6 +124,10 @@ function Response{T}(
                 # Make an HTTP request, and generate a Response.
                 # If we hit an upstream rate limit, return the response immediately.
                 http_r = HTTP.request(args...; status_exception=false)
+                @debug "Sent http request" Time=now()
+                if http_r.status - 200 >= 100 
+                    @warn "Got an unexpected response" Code=http_r.status
+                end
                 http_r.status == 429 && return http_r
                 r = Response{T}(c, http_r)
 
@@ -143,11 +146,11 @@ function Response{T}(
                 put!(f, Response{T}(nothing, false, http_r, e))
             end
             
-            @debug "Returning internally" response=http_r url=args[2]
+            @debug "Request completed" url=args[2]
             return http_r
         end
     end
-    @debug "Returning future"
+    @debug "Returning future" Time=now()
     return f
 end
 

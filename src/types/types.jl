@@ -84,6 +84,13 @@ macro constructors(T)
         $(esc(T))(d::Dict{Symbol, Any}) = $(esc(T))(; d...)
         $(esc(T))(d::Dict{String, Any}) = $(esc(T))(symbolize(d))
         $(esc(T))(x::$(esc(T))) = x
+        function StructTypes.keyvaluepairs(x::$(esc(T))) 
+            d = Dict{Symbol, Any}()
+            for k = fieldnames(typeof(x))
+                d[k] = getfield(x, k)
+            end
+            d
+        end
         StructTypes.StructType(::Type{$(esc(T))}) = StructTypes.DictType()
     end
 end

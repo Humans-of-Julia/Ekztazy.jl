@@ -62,13 +62,47 @@ end
 @boilerplate ApplicationCommand :constructors :docs :lower :merge :mock
 
 """
+A select option.
+More details [here](https://discord.com/developers/docs/interactions/message-components#select-menu-object-select-option-structure).
+"""
+struct SelectOption <: DiscordObject
+    label::String
+    value::String
+    description::Optional{String}
+    emoji::Optional{Emoji}
+    default::Optional{Bool}
+end
+@boilerplate SelectOption :constructors :docs :lower :merge :mock
+
+"""
+An interactable component.
+More details [here](https://discord.com/developers/docs/interactions/message-components).
+"""
+struct Component <: DiscordObject
+    type::Int
+    custom_id::Optional{String}
+    disabled::Optional{Bool}
+    style::Optional{Int}
+    label::Optional{String}
+    emoji::Optional{Emoji}
+    url::Optional{String}
+    options::Optional{Vector{SelectOption}}
+    placeholder::Optional{String}
+    min_values::Optional{Int}
+    max_values::Optional{Int}
+    components::Optional{Vector{Component}}
+end
+@boilerplate Component :constructors :docs :lower :merge :mock
+
+
+"""
 Data for an interaction.
 More details [here](https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-data-structure).
 """
 struct InteractionData <: DiscordObject
-    id::Nullable{Snowflake}
-    name::String
-    type::Int
+    id::OptionalNullable{Snowflake}
+    name::OptionalNullable{String}
+    type::OptionalNullable{Int}
     resolved::Optional{ResolvedData}
     options::Optional{Vector{ApplicationCommandOption}}
     custom_id::OptionalNullable{String}
