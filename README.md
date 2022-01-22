@@ -25,4 +25,29 @@ It can be added from the Git repository with the following command:
 ] add https://github.com/Humans-of-Julia/Dizkord.jl
 ```
 
+# Example
+
+```julia
+# Discord Token and Application ID should be saved in Env vars
+client = Client(
+    ENV["DISCORD_TOKEN"], 
+    # For compat
+    ENV["APPLICATION_ID"] isa Number ? ENV["APPLICATION_ID"] : parse(UInt, ENV["APPLICATION_ID"]),
+    intents(GUILDS, GUILD_MESSAGES)
+)
+
+# Guild to register the command in 
+TESTGUILD = ENV["TESTGUILD"] isa Number ? ENV["TESTGUILD"] : parse(Int, ENV["TESTGUILD"])
+
+command!(client, TESTGUILD, "boom", "Go boom!") do (ctx) 
+    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> blew up!")
+end
+
+on_ready!(client) do (ctx)
+    @info "Successfully logged in as $(ctx.user.username)"
+end
+
+start(client)
+```
+
 Big thanks to [@Xh4H](https://github.com/Xh4H) for Discord.jl which this relied heavily on.
