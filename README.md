@@ -36,6 +36,9 @@ client = Client(
     intents(GUILDS, GUILD_MESSAGES)
 )
 
+# Guild to register the command in 
+TESTGUILD = ENV["TESTGUILD"] isa Number ? ENV["TESTGUILD"] : parse(Int, ENV["TESTGUILD"])
+
 command!(client, TESTGUILD, "boom", "Go boom!") do (ctx) 
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> blew up!")
 end
