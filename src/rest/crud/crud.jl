@@ -26,7 +26,7 @@ create(c, Ban, guild, member; reason="baz")
 function create end
 
 """
-    retrieve(c::Client, ::Type{T}, args...; kwargs...) -> Future{Response}
+    retrieve(c::Client, ::Type{T}, args...; kwargs...) -> Future{Response{T}}
 
 Retrieve, get, list, etc.
 
@@ -46,7 +46,13 @@ retrieve(c, Invite, "abcdef")
 """
 function retrieve end
 
+"""
+    obtain(c::Client, ::Type{T}, args...; kwargs...) -> T
+
+Equivalent to retrieve, but blocks and returns the object of type T
+"""
 obtain(args...; kwargs...) = fetch(retrieve(args...; kwargs...)).val
+
 """
     update(c::Client, x::T, args...; kwargs...) -> Future{Response}
 
