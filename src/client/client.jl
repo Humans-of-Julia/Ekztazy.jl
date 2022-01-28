@@ -90,7 +90,7 @@ mutable struct Client
     commands::Vector{ApplicationCommand}                         # Commands
     guild_commands::Dict{Snowflake, Vector{ApplicationCommand}}  # Guild commands
     intents::Int                                                 # Intents value
-    handlers::Dict{Symbol, Vector{Handler}}                      # Handlers for each event
+    handlers::Dict{Symbol, Vector{Handler}}            # Handlers for each event
     hb_interval::Int                                             # Milliseconds between heartbeats.
     hb_seq::Nullable{Int}                                        # Sequence value sent by Discord for resuming.
     last_hb::DateTime                                            # Last heartbeat send.

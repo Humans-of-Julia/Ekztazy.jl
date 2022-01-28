@@ -41,6 +41,9 @@ end
 
 # HTTP response with body (maybe).
 function Response{T}(c::Client, r::HTTP.Messages.Response) where T
+    if T == Nothing 
+        return Response{Nothing}(r)
+    end
     r.status == 204 && return Response{T}(nothing, true, r, nothing)
     r.status >= 300 && return Response{T}(nothing, false, r, nothing)
 
@@ -126,7 +129,7 @@ function Response{T}(
                 http_r = HTTP.request(args...; status_exception=false)
                 @debug "Sent http request" Time=now()
                 if http_r.status - 200 >= 100 
-                    @warn "Got an unexpected response" Code=http_r.status
+                    @warn "Got an unexpected response" Code=http_r.status Body=http_r Sent=args
                 end
                 http_r.status == 429 && return http_r
                 r = Response{T}(c, http_r)

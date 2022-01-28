@@ -74,15 +74,17 @@ function handle(c::Client, handlers::Vector{Handler}, data::Dict, t::Symbol)
     isvalidcomponent = (h) -> return (!hasproperty(h, :custom_id) || (!ismissing(ctx.interaction.data.custom_id) && h.custom_id == ctx.interaction.data.custom_id))
     isvalid = (h) -> return isvalidcommand(h) && isvalidcomponent(h)
     for hh in handlers 
-        isvalid(hh) && (runhandler(hh, ctx, t))
+        isvalid(hh) && (runhandler(c, hh, ctx, t))
     end
 end
 
 """
 Runs a handler with given context
 """
-function runhandler(h::Handler, ctx::Context, t::Symbol) 
-    (hasproperty(h, :name) || hasproperty(h, :custom_id)) && @debug "Running handlers" Handler=h Event=t Time=now()
+function runhandler(c::Client, h::Handler, ctx::Context, t::Symbol) 
+    if hasproperty(h, :name) || hasproperty(h, :custom_id)
+        ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
+    end
     h.f(ctx)
 end
 
