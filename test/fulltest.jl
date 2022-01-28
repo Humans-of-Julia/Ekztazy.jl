@@ -40,7 +40,7 @@ command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx)
 end
 
 on_ready!(client) do (ctx)
-    @info "Successfully logged in as $(ctx.user.username)"
+    @info "Successfully logged in as $(ctx.user.username)" # obtain(client, User).username
 end
 
 start(client)
