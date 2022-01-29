@@ -54,7 +54,24 @@ function command!(f::Function, c::Client, g::Number, name::AbstractString, descr
     add_handler!(c, OnInteractionCreate(f; name=name))
     add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
 end
+command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString; kwargs...) = command!(f, c, parse(Int, g), name, description; kwargs...)
 
+
+
+"""
+component(
+    f::Function
+    c::Client
+    custom_id::AbstractString
+    kwargs...
+)
+
+Adds a handler for INTERACTION CREATE gateway events where the InteractionData's `custom_id` field matches `custom_id`.
+The `f` parameter signature should be:
+```
+(ctx::Context) -> Any 
+```
+"""
 function component!(f::Function, c::Client, custom_id::AbstractString; kwargs...)
     add_handler!(c, OnInteractionCreate(f; custom_id=custom_id))
     return Component(custom_id=custom_id; kwargs...)
@@ -82,6 +99,7 @@ end
 Runs a handler with given context
 """
 function runhandler(c::Client, h::Handler, ctx::Context, t::Symbol) 
+    @debug "Running handler" h=Handler type=t
     if hasproperty(h, :name) || hasproperty(h, :custom_id)
         ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
     end

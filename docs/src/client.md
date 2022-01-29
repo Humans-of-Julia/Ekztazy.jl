@@ -22,6 +22,7 @@ request_guild_members
 update_voice_state
 update_status
 heartbeat_ping
+start
 ```
 
 ## Caching

@@ -29,6 +29,7 @@ create
 retrieve
 update
 delete
+obtain
 ```
 
 The full list of types available to be manipulated is:
@@ -181,4 +182,15 @@ delete_webhook_with_token
 execute_webhook
 execute_slack_compatible_webhook
 execute_github_compatible_webhook
+```
+
+## Interaction
+
+```@docs
+create_application_command
+get_application_commands
+respond_to_interaction
+create_followup_message
+ack_interaction
+bulk_overwrite_application_commands
 ```

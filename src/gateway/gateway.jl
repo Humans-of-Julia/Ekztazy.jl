@@ -190,7 +190,7 @@ end
         deaf::Bool,
     ) -> Bool
 
-Join, move, or disconnect from a voice channel. A [`VoiceStateUpdate`](@ref) event is sent
+Join, move, or disconnect from a voice channel. A `VoiceStateUpdate` event is sent
 by the gateway in response.
 More details [here](https://discordapp.com/developers/docs/topics/gateway#update-voice-state).
 """
@@ -220,7 +220,7 @@ end
         afk::Bool,
     ) -> Bool
 
-Indicate a presence or status update. A [`PresenceUpdate`](@ref) event is sent by the
+Indicate a presence or status update. A `PresenceUpdate` event is sent by the
 gateway in response.
 More details [here](https://discordapp.com/developers/docs/topics/gateway#update-status).
 """

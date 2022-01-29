@@ -1,3 +1,6 @@
+export Handler,
+    Context
+
 const EVENT_TYPES = Dict{String, Symbol}(
     "READY"                       => :Ready,
     "RESUMED"                     => :Resumed,
@@ -35,22 +38,55 @@ const EVENT_TYPES = Dict{String, Symbol}(
     "WEBHOOKS_UPDATE"             => :WebhooksUpdate,
 )
 
+""" 
+    Handler(
+        f::Function
+        d::Dict{Symbol, Any}
+    )
+
+Handler is a wrapper for a `Dict{Symbol, Any}` that also contains a function.
+"""
 struct Handler 
     f::Function
     d::Dict{Symbol, Any}
 end
+
+"""
+    Handler(; kwargs...) -> Handler
+
+Generates a handler based on kwargs and a function.
+"""
 Handler(f; kwargs...) = Handler(f, Dict(kwargs))
+
+"""
+    Context(
+        data::Dict{Symbol, Any}
+    )
+
+Context is a wrapper for a `Dict{Symbol, Any}` with some special functionality.
+"""
 struct Context 
     data::Dict{Symbol, Any}
 end
+"""
+    Context(; kwargs...) -> Context
+
+Generates a context based on kwargs.
+"""
 Context(; kwargs...) = Context(Dict(kwargs))
 
+
 context(data::Dict{Symbol, Any}) = Context(data)
-# Special context definitions
+"""
+    context(t::Symbol, data::Dict{Symbol, Any}) -> Context 
+
+Checks if the Context needs to be created in a special way based on the event provided by `t`.\n 
+Then, returns the generated context.
+"""
 function context(t::Symbol, data::Dict{Symbol, Any})
     t == :OnMessageCreate && return Context(; message=Message(data))
     t ∈ [:OnGuildCreate, :OnGuildUpdate] && return Context(; guild=Guild(data))
-    t ∈ [:OnReady] && return Context(; user=User(data[:user]), delete!(data, :user)...)
+    t  == :OnReady && return Context(; user=User(data[:user]), delete!(data, :user)...)
     t == :OnInteractionCreate && return Context(; interaction=Interaction(data))
     Context(data)
 end

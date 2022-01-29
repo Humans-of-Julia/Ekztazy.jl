@@ -90,7 +90,7 @@ mutable struct Client
     commands::Vector{ApplicationCommand}                         # Commands
     guild_commands::Dict{Snowflake, Vector{ApplicationCommand}}  # Guild commands
     intents::Int                                                 # Intents value
-    handlers::Dict{Symbol, Vector{Handler}}            # Handlers for each event
+    handlers::Dict{Symbol, Vector{Handler}}                      # Handlers for each event
     hb_interval::Int                                             # Milliseconds between heartbeats.
     hb_seq::Nullable{Int}                                        # Sequence value sent by Discord for resuming.
     last_hb::DateTime                                            # Last heartbeat send.
@@ -154,10 +154,26 @@ mutable struct Client
 end
 
 Client(token::String, appid::Int, intents::Int, args...) = Client(token, UInt(appid), intents, args...)
+Client(in::Int) = Client(
+    ENV["DISCORD_TOKEN"], 
+    ENV["APPLICATION_ID"] isa Number ? ENV["APPLICATION_ID"] : parse(UInt, ENV["APPLICATION_ID"]),
+    in
+)
+Client() = Client(intents(GUILDS, GUILD_MESSAGES))
 
 add!(d::Dict{U, Union{Vector{T}}}, k::U, v::T) where T where U = haskey(d, k) ? push!(d[k], v) : d[k] = [v]
 
+"""
+    add_handler!(c::Client, handler::Handler)
+
+Adds a handler to the client.
+"""
 add_handler!(c::Client, handler::Handler) = add!(c.handlers, handlerkind(handler), handler)
+"""
+    add_handler!(c::Client, handler::Handler)
+
+Bulk adds handlers to the client.
+"""
 add_handler!(c::Client, args...) = map(h -> add_handler!(c, h), args)
 
 add_command!(c::Client; kwargs...) = add_command!(c, ApplicationCommand(; application_id=c.application_id, kwargs...))
@@ -249,6 +265,13 @@ function set_cache(f::Function, c::Client, use_cache::Bool)
     end
 end
 
+"""
+    start(c::Client)
+
+Creates a handler to generate [`ApplicationCommand`](@ref)s.\n
+Creates handlers for GuildCreate events.\n 
+Calls `open` then `wait` on the [`Client`](@ref).
+"""
 function start(c::Client)
     hcreate = OnGuildCreate() do (ctx)
         put!(c.state, ctx.guild)
