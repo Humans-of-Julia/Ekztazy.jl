@@ -10,7 +10,7 @@ using OpenTrick
 using Setfield
 using TimeToLive
 
-const DISCORD_JL_VERSION = v"0.2.0"
+const DISCORD_JL_VERSION = v"0.5.1"
 const API_VERSION = 9
 const DISCORD_API = "https://discordapp.com/api"
 
