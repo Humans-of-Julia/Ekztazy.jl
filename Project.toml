@@ -19,5 +19,15 @@ Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
+[compat]
+julia = "1"
+JSON3 = "1.9"
+StructTypes = "1.5"
+HTTP = "0.9"
+LRUCache = "1"
+OpenTrick = "0.2"
+Setfield = "0.8"
+TimeToLive = "0.3"
+
 [targets]
 test = ["Test"]
