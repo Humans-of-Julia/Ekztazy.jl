@@ -184,7 +184,7 @@ end
         kwargs...
     )
 
-Replies to a [`AbstractContext`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
+Replies to a [`Context`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
 """
 reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; kwargs...)
 reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; kwargs...)

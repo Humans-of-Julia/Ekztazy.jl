@@ -2,7 +2,10 @@ export Interaction,
     InteractionData,
     ApplicationCommand,
     ApplicationCommandOption,
-    ApplicationCommandChoice
+    ApplicationCommandChoice,
+    Component,
+    SelectOption,
+    ResolvedData
 
 struct ResolvedData 
     users::Optional{Dict{Snowflake, User}}

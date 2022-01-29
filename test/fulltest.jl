@@ -1,15 +1,11 @@
 using Dizkord
 using Distributed
 
-client = Client(
-    ENV["DISCORD_TOKEN"], 
-    ENV["APPLICATION_ID"] isa Number ? ENV["APPLICATION_ID"] : parse(UInt, ENV["APPLICATION_ID"]),
-    intents(GUILDS, GUILD_MESSAGES)
-)
+client = Client()
 
 ENV["JULIA_DEBUG"] = Dizkord
 
-TESTGUILD = ENV["TESTGUILD"] isa Number ? ENV["TESTGUILD"] : parse(Int, ENV["TESTGUILD"])
+TESTGUILD = ENV["TESTGUILD"]
 
 on_message!(client) do (ctx) 
     if ctx.message.author.id != me(client).id

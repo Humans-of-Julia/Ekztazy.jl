@@ -3,6 +3,9 @@ CurrentModule = Dizkord
 ```
 # Types
 ```@docs
+Message
+AbstractGuild
+Guild
 Activity
 ActivityTimestamps
 ActivityParty
@@ -22,6 +25,7 @@ ActionType
 Ban
 DiscordChannel
 Connection
+Component
 Embed
 EmbedThumbnail
 EmbedVideo
@@ -31,8 +35,6 @@ EmbedAuthor
 EmbedFooter
 EmbedField
 Emoji
-AbstractGuild
-Guild
 UnavailableGuild
 VerificationLevel
 MessageNotificationLevel
@@ -46,17 +48,15 @@ InteractionData
 Invite
 InviteMetadata
 Member
-Message
 MessageActivity
 MessageApplication
 MessageType
 MessageActivityType
 Overwrite
-OverwriteType
 Presence
-PresenceStatus
 Reaction
 Role
+SelectOption
 User
 VoiceRegion
 VoiceState
