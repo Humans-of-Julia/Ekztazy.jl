@@ -29,18 +29,13 @@ It can be added from the Git repository with the following command:
 
 ```julia
 # Discord Token and Application ID should be saved in Env vars
-client = Client(
-    ENV["DISCORD_TOKEN"], 
-    # For compat
-    ENV["APPLICATION_ID"] isa Number ? ENV["APPLICATION_ID"] : parse(UInt, ENV["APPLICATION_ID"]),
-    intents(GUILDS, GUILD_MESSAGES)
-)
+client = Client()
 
 # Guild to register the command in 
-TESTGUILD = ENV["TESTGUILD"] isa Number ? ENV["TESTGUILD"] : parse(Int, ENV["TESTGUILD"])
+TESTGUILD = ENV["TESTGUILD"]
 
-command!(client, TESTGUILD, "boom", "Go boom!") do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> blew up!")
+command!(client, TESTGUILD, "double", "Doubles a number!", options=[opt(name="number", description="The number to double!")]) do (ctx) 
+    Dizkord.reply(client, ctx, content="$(parse(Int, opt(ctx)["number"])*2)")
 end
 
 on_ready!(client) do (ctx)

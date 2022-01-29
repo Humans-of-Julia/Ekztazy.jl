@@ -21,6 +21,10 @@ command!(client, TESTGUILD, "bam", "Go bam!") do (ctx)
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> slapped themselves!")
 end
 
+command!(client, TESTGUILD, "double", "Doubles a number!", options=[opt(name="number", description="The number to double!")]) do (ctx) 
+    Dizkord.reply(client, ctx, content="$(parse(Int, opt(ctx)["number"])*2)")
+end
+
 function ff(ctx) 
     Dizkord.reply(client, ctx, content="You pressed the button!!")
 end
