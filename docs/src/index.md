@@ -43,7 +43,7 @@ client = Client(
     intents(GUILDS, GUILD_MESSAGES)
 )
 ``` 
-(Assuming discord_token is an String and applicaton_id is an Int).
+(Assuming discord\_token is a String and applicaton\_id is an Int).
 For a more complete list of parameters for creating a [`Client`](@ref). Check the Client documentation.
 
 Usually when working with Dizkord, we will either want to handle messages, or commands. Let's start with messages.
@@ -59,7 +59,7 @@ end
 
 start(client)
 ```
-Let's analyze this code. First we are using the [`on_message!`](@ref) function which generates adds a [`Handler`](@ref). (For more information on this, check the events documentation). Then in the handling function we start by checking if the the message author's id isn't the same as the the bot's. This is sensible, as we wouldn't want the bot to indefinitely respond to itself. Finally, we use the [`reply`](@ref) function to reply to the message! Under the hood, the reply function appraises the context, and finds a way to reply to it, the `kwargs` passed to it are then made into the request body. Here, in the message we use interpolution to send the message's content. We finish by calling [`start`](@ref) on the client.
+Let's analyze this code. First we are using the [`on_message!`](@ref) function which generates adds a [`Handler`](@ref). (For more information on this, check the events documentation). Then in the handling function we start by checking if the the message author's id isn't the same as the the bot's. This is sensible, as we wouldn't want the bot to indefinitely respond to itself. Finally, we use the [`reply`](@ref) function to reply to the message! Under the hood, the reply function appraises the context, and finds a way to reply to it, the `kwargs` passed to it are then made into the request body. Here, in the message we use interpolation to send the message's content. We finish by calling [`start`](@ref) on the client.
 
 
 Next, commands.
@@ -76,7 +76,7 @@ start(client)
 Let's analyze this code again. First we are using the [`command!`](@ref) function. This creates a command with the specified parameters. We are also uisng the helper [`opt`](@ref) method, to generate and get options. Calling opt with a name and description will create an option, using it on a context will get the values the user provided for each option in a Dict. Like in the previous example we are using the magic [`reply`](@ref) function that creates a followup message for the interaction. (This does not strictly reply to the interaction. Interactions instantly get ACKd by Dizkord.jl to prevent your handling implementation from exceeding the interaction's 3s reply time limit.)
 
 
-Sometimes we may also want to do things without waiting for user input. However putting such code in the top scope would never be executed as [`start`](@ref) is blocking. This is where [`on_ready!`] comes in.
+Sometimes we may also want to do things without waiting for user input. However putting such code in the top scope would never be executed as [`start`](@ref) is blocking. This is where [`on_ready!`](@ref) comes in.
 
 ```julia
 # ...
