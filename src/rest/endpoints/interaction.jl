@@ -15,6 +15,14 @@ function get_application_commands(c::Client, guild::Snowflake)
     return Response{Vector{ApplicationCommand}}(c, :GET, "/applications/$appid/guilds/$guild/commands")
 end
 
+function update_message_int(c::Client, int_id::Snowflake, int_token::String; kwargs...)
+    dict = Dict{Symbol, Any}(
+        :data => kwargs,
+        :type => 7,
+    )
+    return Response{Message}(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
+end
+
 function respond_to_interaction(c::Client, int_id::Snowflake, int_token::String; kwargs...)
     dict = Dict{Symbol, Any}(
         :data => kwargs,
@@ -25,7 +33,12 @@ end
 
 function create_followup_message(c::Client, int_id::Snowflake, int_token::String; kwargs...)
     appid = c.application_id
-    return Response(c, :POST, "/webhooks/$appid/$int_token)"; body=kwargs)
+    return Response{Message}(c, :POST, "/webhooks/$appid/$int_token)"; body=kwargs)
+end
+
+function edit_interaction(c::Client, int_token::String, mid::Snowflake; kwargs...)
+    appid = c.application_id
+    return Response(c, :PATCH, "/webhooks/$appid/$int_token/messages/$mid"; body=kwargs)
 end
 
 function ack_interaction(c::Client, int_id::Snowflake, int_token::String; kwargs...)
@@ -34,10 +47,12 @@ function ack_interaction(c::Client, int_id::Snowflake, int_token::String; kwargs
     )
     return Response(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
 end
+
 function bulk_overwrite_application_commands(c::Client, guild::Snowflake, cmds::Vector{ApplicationCommand})
     appid = c.application_id
     return Response{Vector{ApplicationCommand}}(c, :PUT, "/applications/$appid/guilds/$guild/commands"; body=cmds)
 end
+
 function bulk_overwrite_application_commands(c::Client, cmds::Vector{ApplicationCommand})
     appid = c.application_id
     return Response{Vector{ApplicationCommand}}(c, :PUT, "/applications/$appid/commands"; body=cmds)

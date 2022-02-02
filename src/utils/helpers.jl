@@ -10,8 +10,10 @@ export PERM_NONE,
     upload_file,
     set_game,
     opt,
+    Option,
     extops,
     component,
+    edit_interaction,
     @fetch,
     @fetchval,
     @deferred_fetch,
@@ -579,12 +581,26 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
     return ex
 end
 
+edit_interaction(c::Client, ctx::Context, m::Message; kwargs...) = edit_interaction(c, ctx.interaction.token, m.id; kwargs...)
+edit_interaction(c::Client, ctx::Context; kwargs...) = update_message_int(c, ctx.interaction.id, ctx.interaction.token; kwargs...)
+
 """
-    opt(; kwargs...)
+    Option(; kwargs...)
 
 Helper function that is equivalent to calling `ApplicationCommandOption(; type=3, kwargs...)`
 """
+Option(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
+Option(t::Type; kwargs...) = ApplicationCommandOption(type=findtype(t); kwargs...)
+
+"""
+Deprecated / For backwards compat
+"""
 opt(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
+opt(t::Type; kwargs...) = ApplicationCommandOption(type=findtype(t); kwargs...)
+
+function findtype(t::Type)
+    return TYPEIND[t]
+end
 """
     opt(ctx::Context)
 

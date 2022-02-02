@@ -103,3 +103,4 @@ Base.getproperty(h::Handler, sym::Symbol) = sym != :f ? getfield(h, :d)[sym] : g
 Base.hasproperty(h::Handler, sym::Symbol) = haskey(getfield(h, :d), sym)
 
 handlerkind(h::Handler) = h.type
+handlerargs(f::Function) = method_args(first(methods(f)))

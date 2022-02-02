@@ -105,6 +105,7 @@ mutable struct Client
     presence::Dict                                               # Default presence options.
     conn::Conn                                                   # WebSocket connection.
     p_guilds::Dict{Snowflake, String}                            # Command prefix overrides.
+    no_auto_ack::Vector{String}                                  # No auto ack custom ids
 
     function Client(
         token::String,
@@ -147,6 +148,7 @@ mutable struct Client
             presence,     # presence
             conn,         # conn
             Dict(),       # p_guilds
+            []            # no_auto_ack
         )
 
         return c
