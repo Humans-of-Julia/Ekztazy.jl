@@ -587,16 +587,29 @@ edit_interaction(c::Client, ctx::Context; kwargs...) = update_message_int(c, ctx
 """
     Option(; kwargs...)
 
-Helper function that is equivalent to calling `ApplicationCommandOption(; type=3, kwargs...)`
+Helper function that creates an ApplicationCommandOption`
 """
 Option(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
-Option(t::Type; kwargs...) = ApplicationCommandOption(type=findtype(t); kwargs...)
+Option(t::Type; kwargs...) = ApplicationCommandOption(; type=findtype(t), kwargs...)
+Option(t::Type, name::String, description::String; kwargs...) = Option(t; name=name, description=descriptions, kwargs...)
+Option(t::Type, name::String; kwargs...) = Option(t, name, "NULL"; kwargs...)
+Option(name::String, description::String; kwargs...) = ApplicationCommandOption(; type=3, name=name, description=descriptions, kwargs...)
+Option(name::String; kwargs...) = Option(name, "NULL"; kwargs...)
 
 """
-Deprecated / For backwards compat
+Deprecated use Option instead
 """
 opt(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
 opt(t::Type; kwargs...) = ApplicationCommandOption(type=findtype(t); kwargs...)
+
+const TYPEIND = Dict{Type, Int64}(
+    String => 3,
+    Int => 4,
+    Bool => 5,
+    User => 6,
+    DiscordChannel => 7,
+    Role => 8, 
+)
 
 function findtype(t::Type)
     return TYPEIND[t]

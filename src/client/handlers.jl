@@ -43,30 +43,43 @@ Adds a handler for INTERACTION CREATE gateway events where the InteractionData's
 Adds this command to `c.commands` or `c.guild_commands` based on the presence of `guild`.
 The `f` parameter signature should be:
 ```
-    (ctx::Context) -> Any 
+    (ctx::Context, args...) -> Any 
 ```
+Where args is a list of all the Command Options
+
+For example a command that takes a user u and a number n as input should have this signature:
+```
+(ctx::Context, u::User, n::Int) -> Any
+```
+and the arguments would automatically get converted.
+
+**Note:** The argument names **must** match the Option names. The arguments can be ordered in any way. If no type is specified, no conversion will be performed, so Discord objects will be `Snowflake`s.
 """
-function command!(f::Function, c::Client, name::AbstractString, description::AbstractString, legacy::Bool=true; kwargs...)
-    if !legacy
-        g = generate_command_func(f)
-        add_handler!(c, OnInteractionCreate(g; name=name))
-        add_command!(c; name=name, description=description, kwargs...)
-    else
-        add_handler!(c, OnInteractionCreate(f; name=name))
-        add_command!(c; name=name, description=description, kwargs...)
-    end
+function command!(c::Client, f::Function, name::AbstractString, desc:::AbstractString, legacy::Bool)
+    namecheck(o.name, r"^[\w-]{1,32}$", 32, "ApplicationCommand Name")
+    namecheck(o.name, 100, "ApplicationCommand Description")
+    legacy ? add_handler!(c, OnInteractionCreate(f; name=name)) : add_handler!(c, OnInteractionCreate(generate_command_func(f); name=name))
 end
-function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString, legacy::Bool=true; kwargs...)
-    if !legacy
-        h = generate_command_func(f)
-        add_handler!(c, OnInteractionCreate(h; name=name))
-        add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
-    else
-        add_handler!(c, OnInteractionCreate(f; name=name))
-        add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
-    end
+
+function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
+    command!(c, f, name, description, legacy)
+    add_command!(c; name=name, description=description, kwargs...)
 end
-command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString, legacy::Bool=true; kwargs...) = command!(f, c, parse(Int, g), name, description, legacy; kwargs...)
+function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
+    command!(c, f, name, description, legacy)
+    add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
+end
+command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString; kwargs...) = command!(f, c, parse(Int, g), name, description; kwargs...)
+
+function check_option(o::ApplicationCommandOption)
+    namecheck(o.name, r"^[\w-]{1,32}$", 32, "ApplicationCommandOption Name")
+    namecheck(o.description, 100, "ApplicationCommandOption Description")
+end
+
+namecheck(val::String, patt::Regex, len::Int, of::String) = (!occursin(patt, val) || length(val) > len) && throw(NamingError(val, of))
+namecheck(val::String, patt::Regex, of::String) = namecheck(val, patt, 32, of)
+namecheck(val::String, len::Int, of::String) = namecheck(val, r"", len, of)
+namecheck(val::String, of::String) = namecheck(val, 32, of)
 
 function generate_command_func(f::Function)
     args = handlerargs(f)
@@ -96,22 +109,13 @@ end
 #// Todo: make converters for User etc
 convert(::Type{T}, arg, ctx::Context) where T = return arg
 
-const TYPEIND = Dict{Type, Int64}(
-    String => 3,
-    Int => 4,
-    Bool => 5,
-    User => 6,
-    DiscordChannel => 7,
-    Role => 8, 
-)
-
 """
-component!(
-    f::Function
-    c::Client
-    custom_id::AbstractString
-    kwargs...
-)
+    component!(
+        f::Function
+        c::Client
+        custom_id::AbstractString
+        kwargs...
+    )
 
 Adds a handler for INTERACTION CREATE gateway events where the InteractionData's `custom_id` field matches `custom_id`.
 The `f` parameter signature should be:
@@ -119,15 +123,15 @@ The `f` parameter signature should be:
 (ctx::Context) -> Any 
 ```
 """
-function component!(f::Function, c::Client, custom_id::AbstractString, auto_ack::Bool; kwargs...)
+function component!(f::Function, c::Client, custom_id::AbstractString; auto_ack::Bool=true, auto_update_ack::Bool=true, kwargs...)
     add_handler!(c, OnInteractionCreate(f; custom_id=custom_id))
     if !auto_ack
         push!(c.no_auto_ack, custom_id)
+    elseif auto_update_ack
+        push!(c.auto_update_ack, custom_id)
     end
     return Component(custom_id=custom_id; kwargs...)
 end
-
-component(a, b, c; kwargs...) = component!(a, b, c, false; kwargs...)
 """
     handle(
         c::Client
@@ -139,12 +143,7 @@ Creates an `AbstractContext` based on the event using the `data` provided and pa
 """
 function handle(c::Client, handlers::Vector{Handler}, data::Dict, t::Symbol)
     ctx = context(t, data::Dict)
-    if hasproperty(ctx, :interaction)
-        if ismissing(ctx.interaction.data.custom_id) || !(ctx.interaction.data.custom_id in c.no_auto_ack)
-            @debug "Acking interaction"
-            ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
-        end
-    end
+    hasproperty(ctx, :interaction) && handle_ack(c, ctx)
     isvalidcommand = (h) -> return (!hasproperty(h, :name) || (!ismissing(ctx.interaction.data.name) && h.name == ctx.interaction.data.name))
     isvalidcomponent = (h) -> return (!hasproperty(h, :custom_id) || (!ismissing(ctx.interaction.data.custom_id) && h.custom_id == ctx.interaction.data.custom_id))
     isvalid = (h) -> return isvalidcommand(h) && isvalidcomponent(h)
@@ -153,14 +152,27 @@ function handle(c::Client, handlers::Vector{Handler}, data::Dict, t::Symbol)
     end
 end
 
+function handle_ack(c::Client, ctx::Context)
+    iscomp = !ismissing(ctx.interaction.data.custom_id)
+    if !iscomp || !(ctx.interaction.data.custom_id in c.no_auto_ack)
+        @debug "Acking interaction"
+        if iscomp && (ctx.interaction.data.custom_id in c.auto_update_ack)
+            update_ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
+        else
+            ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
+        end
+    end
+end
+
 """
 Runs a handler with given context
 """
 function runhandler(c::Client, h::Handler, ctx::Context, t::Symbol) 
     @debug "Running handler" h=Handler type=t
-    begin 
-        h.f(ctx) 
-    end
+    @spawn begin try h.f(ctx) catch e
+            showerror(stdout, e)
+            @warn "Got an error running handler" err=e
+    end end
 end
 
 """

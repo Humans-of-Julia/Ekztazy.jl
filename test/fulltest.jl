@@ -21,10 +21,9 @@ command!(client, TESTGUILD, "bam", "Go bam!") do (ctx)
     Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> slapped themselves!")
 end
 
-command!(client, TESTGUILD, "double", "Doubles a number!", false, options=[
+command!(client, TESTGUILD, "double", "Doubles a number!", legacy=false, options=[
     Option(Int, name="number", description="The number to double!")
 ]) do ctx, number
-    @info "$(typeof(ctx, number))"
     Dizkord.reply(client, ctx, content="$(number*2)")
 end
 
@@ -32,13 +31,13 @@ command!(client, TESTGUILD, "multiply", "Multiplies numbers!", options=[opt(name
     Dizkord.reply(client, ctx, content="$(parse(Int, opt(ctx)["a"])*parse(Int, opt(ctx)["b"]))")
 end
 
-command!(client, TESTGUILD, "water", "Water a plant", true; options=[
-    Option(String, name="howmuch", description="How long do you want to water the plant?")
-]) do (ctx) 
+command!(client, TESTGUILD, "water", "Water a plant", legacy=false, options=[
+    Option(Int, name="howmuch", description="How long do you want to water the plant?")
+]) do ctx, howmuch 
     cm = component!(client, "magic", false; type=2, style=1, label="Wow, a Button!?") do (context)
-        Dizkord.edit_interaction(client, context, content="You pressed the button!")
+        edit_interaction(client, context, content="You pressed the button!")
     end
-    Dizkord.reply(client, ctx, components=[Dizkord.Component(; type=1, components=[cm])], content="<@$(ctx.interaction.member.user.id)> watered their plant for $(opt(ctx)["howmuch"]) hours. So much that the plant grew taller than them!")
+    reply(client, ctx, components=[Dizkord.Component(; type=1, components=[cm])], content="<@$(ctx.interaction.member.user.id)> watered their plant for $(opt(ctx)["howmuch"]) hours. So much that the plant grew taller than them!")
 end
 
 command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
