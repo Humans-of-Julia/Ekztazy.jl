@@ -55,18 +55,19 @@ and the arguments would automatically get converted.
 
 **Note:** The argument names **must** match the Option names. The arguments can be ordered in any way. If no type is specified, no conversion will be performed, so Discord objects will be `Snowflake`s.
 """
-function command!(c::Client, f::Function, name::AbstractString, desc:::AbstractString, legacy::Bool)
-    namecheck(o.name, r"^[\w-]{1,32}$", 32, "ApplicationCommand Name")
-    namecheck(o.name, 100, "ApplicationCommand Description")
+function command!(c::Client, f::Function, name::AbstractString, desc::AbstractString, legacy::Bool; kwargs...)
+    haskey(kwargs, :options) && check_option.(kwargs[:options])
+    namecheck(name, r"^[\w-]{1,32}$", 32, "ApplicationCommand Name")
+    namecheck(name, 100, "ApplicationCommand Description")
     legacy ? add_handler!(c, OnInteractionCreate(f; name=name)) : add_handler!(c, OnInteractionCreate(generate_command_func(f); name=name))
 end
 
 function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
-    command!(c, f, name, description, legacy)
+    command!(c, f, name, description, legacy; kwargs...)
     add_command!(c; name=name, description=description, kwargs...)
 end
 function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
-    command!(c, f, name, description, legacy)
+    command!(c, f, name, description, legacy; kwargs...)
     add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
 end
 command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString; kwargs...) = command!(f, c, parse(Int, g), name, description; kwargs...)
