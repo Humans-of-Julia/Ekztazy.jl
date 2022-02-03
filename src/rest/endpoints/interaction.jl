@@ -30,16 +30,16 @@ function ack_interaction(c::Client, int_id::Snowflake, int_token::String; kwargs
     return Response(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
 end
 
-function update_message_int(c::Client, int_id::Snowflake, int_token::String; kwargs...)
+function update_ack_interaction(c::Client, int_id::Snowflake, int_token::String; kwargs...)
     dict = Dict{Symbol, Any}(
-        :data => kwargs,
         :type => 6,
     )
     return Response{Message}(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
 end
 
-function update_ack_interaction(c::Client, int_id::Snowflake, int_token::String; kwargs...)
+function update_message_int(c::Client, int_id::Snowflake, int_token::String; kwargs...)
     dict = Dict{Symbol, Any}(
+        :data => kwargs,
         :type => 7,
     )
     return Response(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)

@@ -171,7 +171,7 @@ Runs a handler with given context
 function runhandler(c::Client, h::Handler, ctx::Context, t::Symbol) 
     @debug "Running handler" h=Handler type=t
     @spawn begin try h.f(ctx) catch e
-            showerror(stdout, e)
+            showerror(stderr, e)
             @warn "Got an error running handler" err=e
     end end
 end

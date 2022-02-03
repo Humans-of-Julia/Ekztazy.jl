@@ -179,6 +179,23 @@ function Base.print(io::IO, e::Emoji)
     print(io, s)
 end
 
+function compkwfix(; kwargs...) 
+    if haskey(kwargs, :components)
+        temp = []
+        for c = kwargs[:components]
+            if c.type != 1 
+                push!(temp, Component(; type=1, components=[c]))
+            else
+                push!(temp, c)
+            end
+        end
+        v = Dict(kwargs)
+        v[:components] = temp
+        return v
+    else 
+        return kwargs
+    end
+end
 """
     reply(
         c::Client
@@ -188,9 +205,9 @@ end
 
 Replies to a [`Context`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
 """
-reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; kwargs...)
-reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; kwargs...)
-reply(c::Client, ctx::Context; kwargs...) = reply(c, (hasproperty(ctx, :message) ? ctx.message : ctx.interaction); kwargs...)
+reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; compkwfix(; kwargs...)...)
+reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; compkwfix(; kwargs...)...)
+reply(c::Client, ctx::Context; kwargs...) = reply(c, (hasproperty(ctx, :message) ? ctx.message : ctx.interaction); compkwfix(; kwargs...)...)
 
 """
     mention(
@@ -581,8 +598,8 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
     return ex
 end
 
-edit_interaction(c::Client, ctx::Context, m::Message; kwargs...) = edit_interaction(c, ctx.interaction.token, m.id; kwargs...)
-edit_interaction(c::Client, ctx::Context; kwargs...) = update_message_int(c, ctx.interaction.id, ctx.interaction.token; kwargs...)
+edit_interaction(c::Client, ctx::Context, m::Message; kwargs...) = edit_interaction(c, ctx.interaction.token, m.id; compkwfix(; kwargs...)...)
+edit_interaction(c::Client, ctx::Context; kwargs...) = update_message_int(c, ctx.interaction.id, ctx.interaction.token; compkwfix(; kwargs...)...)
 
 """
     Option(; kwargs...)

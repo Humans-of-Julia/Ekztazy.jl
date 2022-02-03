@@ -1,5 +1,5 @@
 function create(c::Client, ::Type{Message}, ch::DiscordChannel; kwargs...)
-    return create_message(c, ch.id; kwargs...)
+    return create_message(c, ch.id; compkwfix(; kwargs...)...)
 end
 
 function retrieve(c::Client, ::Type{Message}, ch::DiscordChannel, message::Integer)

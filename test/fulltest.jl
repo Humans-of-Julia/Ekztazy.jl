@@ -34,10 +34,10 @@ end
 command!(client, TESTGUILD, "water", "Water a plant", legacy=false, options=[
     Option(Int, name="howmuch", description="How long do you want to water the plant?")
 ]) do ctx, howmuch 
-    cm = component!(client, "magic", false; type=2, style=1, label="Wow, a Button!?") do (context)
+    cm = component!(client, "magic"; auto_ack=false, type=2, style=1, label="Wow, a Button!?") do context
         edit_interaction(client, context, content="You pressed the button!")
     end
-    reply(client, ctx, components=[Dizkord.Component(; type=1, components=[cm])], content="<@$(ctx.interaction.member.user.id)> watered their plant for $(opt(ctx)["howmuch"]) hours. So much that the plant grew taller than them!")
+    reply(client, ctx, components=[cm], content="<@$(ctx.interaction.member.user.id)> watered their plant for $(opt(ctx)["howmuch"]) hours. So much that the plant grew taller than them!")
 end
 
 command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
