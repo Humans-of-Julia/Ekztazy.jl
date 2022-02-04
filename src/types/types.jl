@@ -8,6 +8,7 @@ abstract type DiscordObject end
 
 snowflake(s::Integer) = Snowflake(s)
 snowflake(s::AbstractString) = parse(Snowflake, s)
+snowflake(s::Symbol) = parse(Snowflake, s)
 
 snowflake2datetime(s::Snowflake) = unix2datetime(((s >> 22) + DISCORD_EPOCH) / 1000)
 worker_id(s::Snowflake) = (s & 0x3e0000) >> 17
@@ -50,6 +51,7 @@ field(k::QuoteNode, ::Type{Vector{Snowflake}}) = :(snowflake.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{DateTime}}) = :(datetime.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{T}}) where T = :($T.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Any}) = :(haskey(kwargs, $k) ? kwargs[$k] : missing)
+field(k::QuoteNode, ::Type{Dict}) = :(snowify(kwargs[$k]))
 function field(k::QuoteNode, ::Type{T}) where T <: Enum
     return :(kwargs[$k] isa Integer ? $T(Int(kwargs[$k])) :
              kwargs[$k] isa $T ? kwargs[$k] : $T(kwargs[$k]))
@@ -72,13 +74,22 @@ function symbolize(dict::Dict{String, Any})
     new
 end
 symbolize(t::Any) = t 
+
+function snowify(d::Dict{Symbol, Any})
+    f = Dict{Snowflake, T}()
+    for (k, v) in d
+        f[snowflake(k)] = v
+    end
+    f
+end
+snowify(a::Any) = a
 # Define constructors from keyword arguments and a Dict for a type.
 macro constructors(T)
     TT = eval(T)
     args = map(f -> field(QuoteNode(f), fieldtype(TT, f)), fieldnames(TT))
-
     quote
         function $(esc(T))(; kwargs...) 
+            
             $(esc(T))($(args...))
         end
         $(esc(T))(d::Dict{Symbol, Any}) = $(esc(T))(; d...)

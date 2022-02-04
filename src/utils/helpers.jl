@@ -4,7 +4,9 @@ export PERM_NONE,
     permissions_in,
     reply,
     intents,
+    mention,
     split_message,
+    Options,
     plaintext,
     heartbeat_ping,
     upload_file,
@@ -12,8 +14,8 @@ export PERM_NONE,
     opt,
     Option,
     extops,
+    isme,
     component,
-    edit_interaction,
     @fetch,
     @fetchval,
     @deferred_fetch,
@@ -213,12 +215,15 @@ reply(c::Client, ctx::Context; kwargs...) = reply(c, (hasproperty(ctx, :message)
     mention(
         o::DiscordObject
     )
-Generates the plaintext mention for a [`User`](@ref), a [`Member`](@ref), a [`DiscordChannel`](@ref), or a [`Role`](@ref)
+Generates the plaintext mention for a [`User`](@ref), a [`Member`](@ref), a [`DiscordChannel`](@ref), a [`Role`](@ref), or a [`Context`](@ref)
 """
 mention(u::User) = "<@$(u.id)>"
 mention(r::Role) = "<@&$(r.id)>"
 mention(m::Member) = "<@$(m.user.id)>"
 mention(c::DiscordChannel) = "<#$(c.id)>"
+mention(m::Message) = mention(m.author)
+mention(i::Interaction) = ismissing(i.member) ? mention(i.user) : mention(i.member)
+mention(ctx::Context) = if hasproperty(ctx, :interaction) return mention(ctx.interaction) elseif hasproperty(ctx, :message) return mention(ctx.message) end
 """
     filter_ranges(u::Vector{UnitRange{Int}})
 
@@ -598,23 +603,27 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
     return ex
 end
 
-edit_interaction(c::Client, ctx::Context, m::Message; kwargs...) = edit_interaction(c, ctx.interaction.token, m.id; compkwfix(; kwargs...)...)
-edit_interaction(c::Client, ctx::Context; kwargs...) = update_message_int(c, ctx.interaction.id, ctx.interaction.token; compkwfix(; kwargs...)...)
-
 """
-    Option(; kwargs...)
+    Option(; kwargs...) -> ApplicationCommandOption
 
 Helper function that creates an ApplicationCommandOption`
 """
 Option(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
 Option(t::Type; kwargs...) = ApplicationCommandOption(; type=findtype(t), kwargs...)
-Option(t::Type, name::String, description::String; kwargs...) = Option(t; name=name, description=descriptions, kwargs...)
+Option(t::Type, name::String, description::String; kwargs...) = Option(t; name=name, description=description, kwargs...)
 Option(t::Type, name::String; kwargs...) = Option(t, name, "NULL"; kwargs...)
-Option(name::String, description::String; kwargs...) = ApplicationCommandOption(; type=3, name=name, description=descriptions, kwargs...)
+Option(name::String, description::String; kwargs...) = ApplicationCommandOption(; type=3, name=name, description=description, kwargs...)
 Option(name::String; kwargs...) = Option(name, "NULL"; kwargs...)
 
 """
-Deprecated use Option instead
+    Options(args...) -> Vector{ApplicationCommandOption}
+
+Calls [`Option`](@ref) on each Vector in the args.
+"""
+Options(args...) = [Option(a...) for a in args]
+
+"""
+Deprecated, use [`Option`](@ref) instead
 """
 opt(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
 opt(t::Type; kwargs...) = ApplicationCommandOption(type=findtype(t); kwargs...)
@@ -648,3 +657,11 @@ extops(ops::Vector) = Dict([(op.name, Int(op.type) < 3 ? extops(op.options) : op
 Return an empty `Dict` if the list of options used is missing.
 """
 extops(::Missing) = Dict()
+
+"""
+    isme(c::Client, ctx::Context) -> Bool
+
+Returns whether the context is a Message Context sent by the bot user.
+"""
+isme(c::Client, ctx::Context) = hasproperty(ctx, :message) ? (ctx.message.author.id == me(c).id) : false
+

@@ -14,7 +14,7 @@ struct ResolvedData
     channels::Optional{Dict{Snowflake, Channel}}
     messages::Optional{Dict{Snowflake, Message}}
 end
-@boilerplate ResolvedData :constructors :lower :merge 
+@boilerplate ResolvedData :constructors :lower :merge
 
 """
 Application Command Choice.

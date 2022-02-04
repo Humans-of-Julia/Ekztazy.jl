@@ -8,40 +8,47 @@ ENV["JULIA_DEBUG"] = Dizkord
 TESTGUILD = ENV["TESTGUILD"]
 
 on_message!(client) do (ctx) 
-    if ctx.message.author.id != me(client).id
-        Dizkord.reply(client, ctx, content="<@$(ctx.message.author.id)>, $(ctx.message.content) TEST")
-    end
+    (!isme(client, ctx)) && reply(client, ctx, content="$(mention(ctx.message.author)), $(ctx.message.content) TEST")
 end
 
 command!(client, TESTGUILD, "boom", "Go boom!") do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> blew up!")
+    reply(client, ctx, content="$(mention(ctx)) blew up!")
 end
 
 command!(client, TESTGUILD, "bam", "Go bam!") do (ctx) 
-    Dizkord.reply(client, ctx, content="<@$(ctx.interaction.member.user.id)> slapped themselves!")
+    reply(client, ctx, content="$(mention(ctx)) slapped themselves!")
 end
 
 command!(client, TESTGUILD, "double", "Doubles a number!", legacy=false, options=[
     Option(Int, name="number", description="The number to double!")
 ]) do ctx, number
-    Dizkord.reply(client, ctx, content="$(number*2)")
+    reply(client, ctx, content="$(number*2)")
 end
 
-command!(client, TESTGUILD, "multiply", "Multiplies numbers!", options=[opt(name="a", description="The first number."), opt(name="b", description="The second number.")]) do (ctx) 
-    Dizkord.reply(client, ctx, content="$(parse(Int, opt(ctx)["a"])*parse(Int, opt(ctx)["b"]))")
+command!(client, TESTGUILD, "multiply", "Multiplies numbers!", legacy=false, options=Options(
+    [Int, "a", "the first number"],
+    [Int, "b", "the second number"]
+)) do ctx, a::Int, b::Int
+    reply(client, ctx, content="$(a*b)")
+end
+
+command!(client, TESTGUILD, "greet", "Greets a user", legacy=false, options=Options(
+    [User, "u", "The user to greet"]
+)) do ctx, u
+    @info "$u"
 end
 
 command!(client, TESTGUILD, "water", "Water a plant", legacy=false, options=[
-    Option(Int, name="howmuch", description="How long do you want to water the plant?")
+    Option(Int, "howmuch", "How long do you want to water the plant?")
 ]) do ctx, howmuch 
     cm = component!(client, "magic"; auto_ack=false, type=2, style=1, label="Wow, a Button!?") do context
-        edit_interaction(client, context, content="You pressed the button!")
+        update(client, context, content="You pressed the button!")
     end
-    reply(client, ctx, components=[cm], content="<@$(ctx.interaction.member.user.id)> watered their plant for $(opt(ctx)["howmuch"]) hours. So much that the plant grew taller than them!")
+    reply(client, ctx, components=[cm], content="$(mention(ctx)) watered their plant for $(howmuch) hours. So much that the plant grew taller than them!")
 end
 
 command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
-    Dizkord.reply(client, ctx, content="Shutting down the bot")
+    reply(client, ctx, content="Shutting down the bot")
     close(client)
 end
 

@@ -126,11 +126,8 @@ The `f` parameter signature should be:
 """
 function component!(f::Function, c::Client, custom_id::AbstractString; auto_ack::Bool=true, auto_update_ack::Bool=true, kwargs...)
     add_handler!(c, OnInteractionCreate(f; custom_id=custom_id))
-    if !auto_ack
-        push!(c.no_auto_ack, custom_id)
-    elseif auto_update_ack
-        push!(c.auto_update_ack, custom_id)
-    end
+    if !auto_ack push!(c.no_auto_ack, custom_id) end
+    if auto_update_ack push!(c.auto_update_ack, custom_id) end
     return Component(custom_id=custom_id; kwargs...)
 end
 """
@@ -171,7 +168,7 @@ Runs a handler with given context
 function runhandler(c::Client, h::Handler, ctx::Context, t::Symbol) 
     @debug "Running handler" h=Handler type=t
     @spawn begin try h.f(ctx) catch e
-            showerror(stderr, e)
+            println(e)
             @warn "Got an error running handler" err=e
     end end
 end

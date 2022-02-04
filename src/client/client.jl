@@ -149,7 +149,8 @@ mutable struct Client
             presence,     # presence
             conn,         # conn
             Dict(),       # p_guilds
-            []            # no_auto_ack
+            [],           # no_auto_ack
+            []            # auto_update_ack
         )
 
         return c
