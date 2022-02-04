@@ -102,13 +102,30 @@ function makeargs(ctx::Context, args)
     for x = args 
         t = last(x)
         arg =  get(o, string(first(x)), :ERR)
-        push!(v, convert(t, arg, ctx))
+        push!(v, conv(t, arg, ctx))
     end
     v
 end
 
 #// Todo: make converters for User etc
-convert(::Type{T}, arg, ctx::Context) where T = return arg
+function conv(::Type{T}, arg, ctx::Context) where T
+    id = snowflake(arg)
+    if T in [String, Int, Bool] 
+        return arg 
+    elseif T == User 
+        return ctx.interaction.data.resolved.users[id]
+    elseif T == Member
+        u = ctx.interaction.data.resolved.users[id]
+        m = ctx.interaction.data.resolved.members[id]
+        m.user = u
+        return m 
+    elseif T == Role 
+        return ctx.interaction.data.resolved.roles[id]
+    elseif T == DiscordChannel 
+        return ctx.interaction.data.resolved.channels[id]
+    end
+    arg
+end
 
 """
     component!(
@@ -168,8 +185,8 @@ Runs a handler with given context
 function runhandler(c::Client, h::Handler, ctx::Context, t::Symbol) 
     @debug "Running handler" h=Handler type=t
     @spawn begin try h.f(ctx) catch e
-            println(e)
-            @warn "Got an error running handler" err=e
+            kws = logkws(c; handler=t, exception=(e, catch_backtrace()))
+            @warn "Handler errored" kws...
     end end
 end
 

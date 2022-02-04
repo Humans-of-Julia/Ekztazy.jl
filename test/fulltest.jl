@@ -34,8 +34,8 @@ end
 
 command!(client, TESTGUILD, "greet", "Greets a user", legacy=false, options=Options(
     [User, "u", "The user to greet"]
-)) do ctx, u
-    @info "$u"
+)) do ctx, u::Member
+    reply(client, ctx, content="Hello, $(u)!")
 end
 
 command!(client, TESTGUILD, "water", "Water a plant", legacy=false, options=[

@@ -10,8 +10,8 @@ mutable struct Member <: DiscordObject
     roles::Vector{Snowflake}
     joined_at::DateTime
     premium_since::OptionalNullable{DateTime}
-    deaf::Bool
-    mute::Bool
+    deaf::Optional{Bool}
+    mute::Optional{Bool}
 end
 @boilerplate Member :constructors :docs :lower :merge :mock
 
