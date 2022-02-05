@@ -1,4 +1,4 @@
-module Dizkord
+module D1zk0rd
 
 using Dates
 using Distributed
@@ -10,7 +10,7 @@ using OpenTrick
 using Setfield
 using TimeToLive
 
-const DISCORD_JL_VERSION = v"0.5.2"
+const D1ZKORD_JL_VERSION = v"0.6.0"
 const API_VERSION = 9
 const DISCORD_API = "https://discordapp.com/api"
 
@@ -73,3 +73,5 @@ include(joinpath("rest", "rest.jl"))
 include(joinpath("utils", "helpers.jl"))
 
 end
+
+const Dizkord = D1zk0rd # For past version compat

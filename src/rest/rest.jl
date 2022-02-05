@@ -107,7 +107,7 @@ function Response{T}(
         @debug "Preparing Request: Did not find in cache, preparing request" Time=now()
         isempty(kwargs) || (url *= "?" * HTTP.escapeuri(kwargs))
         headers = merge(Dict(
-            "User-Agent" => "Discord.jl $DISCORD_JL_VERSION",
+            "User-Agent" => "Discord.jl $D1ZKORD_JL_VERSION",
             "Content-Type" => "application/json",
             "Authorization" => c.token,
         ), Dict(headers))

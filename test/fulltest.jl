@@ -1,9 +1,9 @@
-using Dizkord
+using D1zk0rd
 using Distributed
 
 client = Client()
 
-ENV["JULIA_DEBUG"] = Dizkord
+ENV["JULIA_DEBUG"] = D1zk0rd
 
 TESTGUILD = ENV["TESTGUILD"]
 
