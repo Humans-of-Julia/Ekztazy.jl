@@ -73,5 +73,3 @@ include(joinpath("rest", "rest.jl"))
 include(joinpath("utils", "helpers.jl"))
 
 end
-
-const Dizkord = D1zk0rd # For past version compat
