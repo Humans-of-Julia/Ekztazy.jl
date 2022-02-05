@@ -8,6 +8,14 @@ abstract type DiscordObject end
 
 snowflake(s::Integer) = Snowflake(s)
 snowflake(s::AbstractString) = parse(Snowflake, s)
+function snowflake(s::Symbol) 
+    try 
+        parse(Snowflake, string(s)) 
+    catch
+         return s 
+    end
+end
+snowflake(s::Any) = s
 
 snowflake2datetime(s::Snowflake) = unix2datetime(((s >> 22) + DISCORD_EPOCH) / 1000)
 worker_id(s::Snowflake) = (s & 0x3e0000) >> 17
@@ -50,6 +58,7 @@ field(k::QuoteNode, ::Type{Vector{Snowflake}}) = :(snowflake.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{DateTime}}) = :(datetime.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Vector{T}}) where T = :($T.(kwargs[$k]))
 field(k::QuoteNode, ::Type{Any}) = :(haskey(kwargs, $k) ? kwargs[$k] : missing)
+field(k::QuoteNode, ::Type{Dict{Any, T}}) where T = :(snowify(T, kwargs[$k]))
 function field(k::QuoteNode, ::Type{T}) where T <: Enum
     return :(kwargs[$k] isa Integer ? $T(Int(kwargs[$k])) :
              kwargs[$k] isa $T ? kwargs[$k] : $T(kwargs[$k]))
@@ -64,6 +73,13 @@ function field(k::QuoteNode, ::Type{OptionalNullable{T}}) where T
     return :(haskey(kwargs, $k) ? $(field(k, Nullable{T})) : missing)
 end
 
+function cvs(::Type{T}, d::Dict) where T
+    new = Dict()
+    for (k, v) in d
+        new[k] = T(v)
+    end
+    new
+end
 function symbolize(dict::Dict{String, Any}) 
     new = Dict{Symbol, Any}()
     for (k, v) in dict
@@ -72,18 +88,39 @@ function symbolize(dict::Dict{String, Any})
     new
 end
 symbolize(t::Any) = t 
+
+function snowify(d::Dict{Symbol, Any})
+    f = Dict()
+    for (k, v) in d
+        f[snowflake(k)] = v
+    end
+    f
+end
+
+# convert(::Type{Snowflake}, s::Symbol) = parse(Snowflake, s)
+
+function snowify(d::Dict{Symbol, V}) where V<:Dict{Symbol, Any}
+    f = Dict()
+    for (k, v) in d
+        f[k] = snowify(v)
+    end
+    f
+end
+
+snowify(a::Any) = a
 # Define constructors from keyword arguments and a Dict for a type.
 macro constructors(T)
     TT = eval(T)
     args = map(f -> field(QuoteNode(f), fieldtype(TT, f)), fieldnames(TT))
-
     quote
         function $(esc(T))(; kwargs...) 
+            kwargs = snowify(Dict(kwargs))
             $(esc(T))($(args...))
         end
         $(esc(T))(d::Dict{Symbol, Any}) = $(esc(T))(; d...)
         $(esc(T))(d::Dict{String, Any}) = $(esc(T))(symbolize(d))
         $(esc(T))(x::$(esc(T))) = x
+        Base.convert(::Type{$(esc(T))}, d::Dict{Symbol, Any})= $(esc(T))(d)
         function StructTypes.keyvaluepairs(x::$(esc(T))) 
             d = Dict{Symbol, Any}()
             for k = fieldnames(typeof(x))

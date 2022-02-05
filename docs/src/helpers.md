@@ -16,6 +16,7 @@ plaintext
 upload_file
 set_game
 opt
+Option
 extops
 @fetch
 @fetchval

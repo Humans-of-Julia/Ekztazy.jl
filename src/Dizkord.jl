@@ -43,6 +43,27 @@ function compile(f::Function, force::Bool; kwargs...)
     end
 end
 
+function method_argnames(m::Method)
+    argnames = ccall(:jl_uncompress_argnames, Vector{Symbol}, (Any,), m.slot_syms)
+    isempty(argnames) && return argnames
+    return argnames[2:m.nargs]
+end
+
+function method_argtypes(m::Method)
+    return m.sig.types[2:end]
+end
+
+"""
+    method_args(m::Method) -> Vector{Tuple{Symbol, Type}}
+"""
+function method_args(m::Method) 
+    n, t, v = method_argnames(m), method_argtypes(m), []
+    for x = 1:length(n)
+        push!(v, (n[x], t[x]))
+    end
+    v
+end
+
 include(joinpath("utils", "consts.jl"))
 include(joinpath("types", "types.jl"))
 include(joinpath("client", "client.jl"))

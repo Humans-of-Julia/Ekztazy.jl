@@ -4,13 +4,17 @@ export PERM_NONE,
     permissions_in,
     reply,
     intents,
+    mention,
     split_message,
+    Options,
     plaintext,
     heartbeat_ping,
     upload_file,
     set_game,
     opt,
+    Option,
     extops,
+    isme,
     component,
     @fetch,
     @fetchval,
@@ -177,6 +181,23 @@ function Base.print(io::IO, e::Emoji)
     print(io, s)
 end
 
+function compkwfix(; kwargs...) 
+    if haskey(kwargs, :components)
+        temp = []
+        for c = kwargs[:components]
+            if c.type != 1 
+                push!(temp, Component(; type=1, components=[c]))
+            else
+                push!(temp, c)
+            end
+        end
+        v = Dict(kwargs)
+        v[:components] = temp
+        return v
+    else 
+        return kwargs
+    end
+end
 """
     reply(
         c::Client
@@ -186,20 +207,23 @@ end
 
 Replies to a [`Context`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
 """
-reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; kwargs...)
-reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; kwargs...)
-reply(c::Client, ctx::Context; kwargs...) = reply(c, (hasproperty(ctx, :message) ? ctx.message : ctx.interaction); kwargs...)
+reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; compkwfix(; kwargs...)...)
+reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; compkwfix(; kwargs...)...)
+reply(c::Client, ctx::Context; kwargs...) = reply(c, (hasproperty(ctx, :message) ? ctx.message : ctx.interaction); compkwfix(; kwargs...)...)
 
 """
     mention(
         o::DiscordObject
     )
-Generates the plaintext mention for a [`User`](@ref), a [`Member`](@ref), a [`DiscordChannel`](@ref), or a [`Role`](@ref)
+Generates the plaintext mention for a [`User`](@ref), a [`Member`](@ref), a [`DiscordChannel`](@ref), a [`Role`](@ref), or a [`Context`](@ref)
 """
 mention(u::User) = "<@$(u.id)>"
 mention(r::Role) = "<@&$(r.id)>"
 mention(m::Member) = "<@$(m.user.id)>"
 mention(c::DiscordChannel) = "<#$(c.id)>"
+mention(m::Message) = mention(m.author)
+mention(i::Interaction) = ismissing(i.member) ? mention(i.user) : mention(i.member)
+mention(ctx::Context) = if hasproperty(ctx, :interaction) return mention(ctx.interaction) elseif hasproperty(ctx, :message) return mention(ctx.message) end
 """
     filter_ranges(u::Vector{UnitRange{Int}})
 
@@ -580,11 +604,42 @@ function deferfn!(ex, fns::Tuple, deferred::Symbol)
 end
 
 """
-    opt(; kwargs...)
+    Option(; kwargs...) -> ApplicationCommandOption
 
-Helper function that is equivalent to calling `ApplicationCommandOption(; type=3, kwargs...)`
+Helper function that creates an ApplicationCommandOption`
+"""
+Option(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
+Option(t::Type; kwargs...) = ApplicationCommandOption(; type=findtype(t), kwargs...)
+Option(t::Type, name::String, description::String; kwargs...) = Option(t; name=name, description=description, kwargs...)
+Option(t::Type, name::String; kwargs...) = Option(t, name, "NULL"; kwargs...)
+Option(name::String, description::String; kwargs...) = ApplicationCommandOption(; type=3, name=name, description=description, kwargs...)
+Option(name::String; kwargs...) = Option(name, "NULL"; kwargs...)
+
+"""
+    Options(args...) -> Vector{ApplicationCommandOption}
+
+Calls [`Option`](@ref) on each Vector in the args.
+"""
+Options(args...) = [Option(a...) for a in args]
+
+"""
+Deprecated, use [`Option`](@ref) instead
 """
 opt(; kwargs...) = ApplicationCommandOption(; type=3, kwargs...)
+opt(t::Type; kwargs...) = ApplicationCommandOption(type=findtype(t); kwargs...)
+
+const TYPEIND = Dict{Type, Int64}(
+    String => 3,
+    Int => 4,
+    Bool => 5,
+    User => 6,
+    DiscordChannel => 7,
+    Role => 8, 
+)
+
+function findtype(t::Type)
+    return TYPEIND[t]
+end
 """
     opt(ctx::Context)
 
@@ -602,3 +657,11 @@ extops(ops::Vector) = Dict([(op.name, Int(op.type) < 3 ? extops(op.options) : op
 Return an empty `Dict` if the list of options used is missing.
 """
 extops(::Missing) = Dict()
+
+"""
+    isme(c::Client, ctx::Context) -> Bool
+
+Returns whether the context is a Message Context sent by the bot user.
+"""
+isme(c::Client, ctx::Context) = hasproperty(ctx, :message) ? (ctx.message.author.id == me(c).id) : false
+

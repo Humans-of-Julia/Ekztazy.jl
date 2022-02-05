@@ -129,7 +129,7 @@ function Response{T}(
                 http_r = HTTP.request(args...; status_exception=false)
                 @debug "Sent http request" Time=now()
                 if http_r.status - 200 >= 100 
-                    @warn "Got an unexpected response" Code=http_r.status Body=http_r Sent=args
+                    @warn "Got an unexpected response" To=args[2] Code=http_r.status Body=http_r Sent=args[4]
                 end
                 http_r.status == 429 && return http_r
                 r = Response{T}(c, http_r)
