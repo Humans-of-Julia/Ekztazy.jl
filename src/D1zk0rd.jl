@@ -10,7 +10,7 @@ using OpenTrick
 using Setfield
 using TimeToLive
 
-const D1ZKORD_JL_VERSION = v"0.6.0"
+const D1ZKORD_JL_VERSION = v"0.6.1"
 const API_VERSION = 9
 const DISCORD_API = "https://discordapp.com/api"
 
