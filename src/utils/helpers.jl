@@ -98,7 +98,7 @@ const PERM_ALL = |(Int.(instances(Permission))...)
 Determine whether a bitwise OR of permissions contains one [`Permission`](@ref).
 
 ## Examples
-```jldoctest; setup=:(using Dizkord)
+```jldoctest; setup=:(using D1zk0rd)
 julia> has_permission(0x0420, PERM_VIEW_CHANNEL)
 true
 
@@ -230,8 +230,8 @@ mention(ctx::Context) = if hasproperty(ctx, :interaction) return mention(ctx.int
 Filter a list of ranges, discarding ranges included in other ranges from the list.
 
 # Example
-```jldoctest; setup=:(using Dizkord)
-julia> Dizkord.filter_ranges([1:5, 3:8, 1:20, 2:16, 10:70, 25:60, 5:35, 50:90, 10:70])
+```jldoctest; setup=:(using D1zk0rd)
+julia> D1zk0rd.filter_ranges([1:5, 3:8, 1:20, 2:16, 10:70, 25:60, 5:35, 50:90, 10:70])
 4-element Vector{UnitRange{Int64}}:
  1:20
  5:35
@@ -269,7 +269,7 @@ cannot be avoided. If desired, however, this behavior can be lifter by setting
 `forcesplit` to false.
 
 ## Examples
-```jldoctest; setup=:(using Dizkord)
+```jldoctest; setup=:(using D1zk0rd)
 julia> split_message("foo")
 1-element Vector{String}:
  "foo"

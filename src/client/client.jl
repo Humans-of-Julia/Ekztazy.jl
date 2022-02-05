@@ -76,7 +76,7 @@ The cache can also be disabled/enabled permanently and temporarily as a whole wi
 
 ### API Version
 The `version` keyword chooses the Version of the Discord API to use. Using anything but
-`$API_VERSION` is not officially supported by the Dizkord.jl developers.
+`$API_VERSION` is not officially supported by the D1zk0rd.jl developers.
 
 ### Sharding
 Sharding is handled automatically. The number of available processes is the number of
