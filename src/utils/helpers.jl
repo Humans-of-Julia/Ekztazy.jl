@@ -195,7 +195,7 @@ function compkwfix(; kwargs...)
         v[:components] = temp
         return v
     else 
-        return kwargs
+        return Dict(kwargs)
     end
 end
 """
@@ -207,7 +207,7 @@ end
 
 Replies to a [`Context`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
 """
-reply(c::Client, m::Message; kwargs...) = create_message(c, m.channel_id; compkwfix(; kwargs...)...)
+reply(c::Client, m::Message; noreply=false, kwargs...) = create_message(c, m.channel_id; message_reference=(noreply ? missing : MessageReference(message_id=m.id)), compkwfix(; kwargs...)...)
 reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; compkwfix(; kwargs...)...)
 reply(c::Client, ctx::Context; kwargs...) = reply(c, (hasproperty(ctx, :message) ? ctx.message : ctx.interaction); compkwfix(; kwargs...)...)
 

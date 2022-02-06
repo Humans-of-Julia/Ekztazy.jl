@@ -21,6 +21,13 @@ struct MessageApplication <: DiscordObject
     name::String
 end
 @boilerplate MessageApplication :constructors :docs :lower :merge :mock
+struct MessageReference <: DiscordObject
+    message_id::Snowflake
+    channel_id::Optional{Snowflake}
+    guild_id::Optional{Snowflake}
+    fail_if_not_exists::Optional{Bool}
+end
+@boilerplate MessageReference :constructors :lower :merge
 
 """
 A message sent to a [`DiscordChannel`](@ref).
@@ -41,6 +48,7 @@ struct Message <: DiscordObject
     mentions::Optional{Vector{User}}
     mention_roles::Optional{Vector{Snowflake}}
     attachments::Optional{Vector{Attachment}}
+    message_reference::Optional{MessageReference}
     embeds::Optional{Vector{Embed}}
     reactions::Optional{Vector{Reaction}}
     nonce::OptionalNullable{Snowflake}
@@ -50,5 +58,6 @@ struct Message <: DiscordObject
     activity::Optional{MessageActivity}
     application::Optional{MessageApplication}
 end
-
 @boilerplate Message :constructors :docs :lower :merge :mock
+
+
