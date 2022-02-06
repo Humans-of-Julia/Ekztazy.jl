@@ -1,10 +1,10 @@
 ```@meta
-CurrentModule = D1zk0rd
+CurrentModule = Ekztazy
 ```
 
 # Events
 Events are how Discord communicates and interacts with our application.
-In D1zk0rd.jl, we use the [`Handler`](@ref) type in conjunction with the [`Context`](@ref) type to handle them.
+In Ekztazy.jl, we use the [`Handler`](@ref) type in conjunction with the [`Context`](@ref) type to handle them.
 
 ## Handler
 A Handler is simple to register for an event.

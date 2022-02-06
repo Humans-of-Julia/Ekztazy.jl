@@ -1,7 +1,7 @@
-using Documenter, D1zk0rd
+using Documenter, Ekztazy
 
 makedocs(;
-    modules=[D1zk0rd],
+    modules=[Ekztazy],
     format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
@@ -12,7 +12,7 @@ makedocs(;
         "Handlers" => "events.md"
     ],
     repo="https://github.com/Humans-of-Julia/Dizkord.jl/blob/{commit}{path}#L{line}",
-    sitename="D1zk0rd.jl",
+    sitename="Ekztazy.jl",
     authors="Xh4H <sindur.esl@gmail.com>, christopher-dG <chrisadegraaf@gmail.com> Kyando <izawa.iori.tan@gmail.com>",
 )
 

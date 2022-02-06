@@ -1,12 +1,12 @@
 ```@meta
-CurrentModule = D1zk0rd
+CurrentModule = Ekztazy
 ```
 ## Index
 
 ### Introduction
-Welcome to D1zk0rd.jl
+Welcome to Ekztazy.jl
 
-D1zk0rd.jl is the spiritual successor to Discord.jl. It is a maintained Julia Pkg for creating simple yet efficient Discord bots.
+Ekztazy.jl is the spiritual successor to Discord.jl. It is a maintained Julia Pkg for creating simple yet efficient Discord bots.
 
 - Strong, expressive type system: No fast-and-loose JSON objects here.
 - Non-blocking: API calls return immediately and can be awaited when necessary.
@@ -18,14 +18,14 @@ D1zk0rd.jl is the spiritual successor to Discord.jl. It is a maintained Julia Pk
 - Distributed: Process-based sharding requires next to no intervention and you can even run shards on separate machines.
 
 ### Getting Started
-You can add D1zk0rd.jl from Git using the following command in the REPL:
+You can add Ekztazy.jl from Git using the following command in the REPL:
 ```julia
 ] add https://github.com/Humans-of-Julia/Dizkord.jl
 ```
-The most important type when working with D1zk0rd.jl is the [`Client`](@ref). 
+The most important type when working with Ekztazy.jl is the [`Client`](@ref). 
 Most applications will start in a similar fashion to this:
 ```julia
-using D1zk0rd
+using Ekztazy
 
 client = Client()
 ```
@@ -35,7 +35,7 @@ This will create a [`Client`](@ref) using default parameters. This expects two e
 
 These can also be specified.
 ```julia
-using D1zk0rd
+using Ekztazy
 
 client = Client(
     discord_token,
@@ -46,14 +46,14 @@ client = Client(
 (Assuming discord\_token is a String and applicaton\_id is an Int).
 For a more complete list of parameters for creating a [`Client`](@ref). Check the Client documentation.
 
-Usually when working with D1zk0rd, we will either want to handle messages, or commands. Let's start with messages.
+Usually when working with Ekztazy, we will either want to handle messages, or commands. Let's start with messages.
 
 ```julia 
 # ... 
 
 on_message!(client) do (ctx) 
     if ctx.message.author.id != me(client).id
-        D1zk0rd.reply(client, ctx, content="I received the following message: $(ctx.message.content).")
+        reply(client, ctx, content="I received the following message: $(ctx.message.content).")
     end
 end
 
@@ -68,13 +68,27 @@ Next, commands.
 g = ENV["MY_TESTING_GUILD"]
 
 command!(client, g, "double", "Doubles a number!", options=[opt(name="number", description="The number to double!")]) do (ctx) 
-    D1zk0rd.reply(client, ctx, content="$(parse(Int, opt(ctx)["number"])*2)")
+    Ekztazy.reply(client, ctx, content="$(parse(Int, opt(ctx)["number"])*2)")
 end
 
 start(client)
 ```
-Let's analyze this code again. First we are using the [`command!`](@ref) function. This creates a command with the specified parameters. We are also uisng the helper [`opt`](@ref) method, to generate and get options. Calling opt with a name and description will create an option, using it on a context will get the values the user provided for each option in a Dict. Like in the previous example we are using the magic [`reply`](@ref) function that creates a followup message for the interaction. (This does not strictly reply to the interaction. Interactions instantly get ACKd by D1zk0rd.jl to prevent your handling implementation from exceeding the interaction's 3s reply time limit.)
+Let's analyze this code again. First we are using the [`command!`](@ref) function. This creates a command with the specified parameters. We are also uisng the helper [`opt`](@ref) method, to generate and get options. Calling opt with a name and description will create an option, using it on a context will get the values the user provided for each option in a Dict. Like in the previous example we are using the magic [`reply`](@ref) function that creates a followup message for the interaction. (This does not strictly reply to the interaction. Interactions instantly get ACKd by Ekztazy.jl to prevent your handling implementation from exceeding the interaction's 3s reply time limit.)
 
+Here is the equivalent using the new system. The old system is deprecated and will be removed in the next major version.
+```julia
+# ...
+g = ENV["MY_TESTING_GUILD"]
+
+command!(client, g, "double", "Doubles a number!", legacy=false, options=Options(
+    [Int, "num", "The number to double!"]
+) do ctx, num::Int
+    reply(client, ctx, content="$(num*2)")
+end
+
+start(client)
+```
+The option `num` will magically be passed to the handler to be used directly.
 
 Sometimes we may also want to do things without waiting for user input. However putting such code in the top scope would never be executed as [`start`](@ref) is blocking. This is where [`on_ready!`](@ref) comes in.
 
@@ -84,9 +98,9 @@ Sometimes we may also want to do things without waiting for user input. However 
 CHID = 776251117616234509 # Testing channel ID
 on_ready!(client) do (ctx)
     cm = component!(client, "ar00"; type=2, style=1, label="Really??") do (ctx)
-        D1zk0rd.reply(client, ctx, content="Yes!")
+        Ekztazy.reply(client, ctx, content="Yes!")
     end
-    create_message(client, CHID, content="I am ready!", components=[D1zk0rd.Component(type=1, components=[cm])])
+    create_message(client, CHID, content="I am ready!", components=[Ekztazy.Component(type=1, components=[cm])])
 end
 ```
 Let's get right into it. First we are using the [`on_ready!`](@ref). This is called as soon as the bot is ready. We are then creating a [`Component`](@ref) and a handler for it.

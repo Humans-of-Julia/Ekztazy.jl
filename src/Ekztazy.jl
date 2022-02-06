@@ -1,4 +1,4 @@
-module D1zk0rd
+module Ekztazy
 
 using Dates
 using Distributed
