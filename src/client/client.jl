@@ -2,7 +2,8 @@ export Client,
     me,
     enable_cache!,
     disable_cache!,
-    start
+    start,
+    add_handler!
 
 include("limiter.jl")
 include("state.jl")

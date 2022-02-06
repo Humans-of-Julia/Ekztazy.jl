@@ -20,7 +20,7 @@ Ekztazy.jl is the spiritual successor to Discord.jl. It is a maintained Julia Pk
 ### Getting Started
 You can add Ekztazy.jl from Git using the following command in the REPL:
 ```julia
-] add https://github.com/Humans-of-Julia/Dizkord.jl
+] add https://github.com/Humans-of-Julia/Ekztazy.jl
 ```
 The most important type when working with Ekztazy.jl is the [`Client`](@ref). 
 Most applications will start in a similar fashion to this:

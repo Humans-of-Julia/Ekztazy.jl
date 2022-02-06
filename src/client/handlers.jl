@@ -2,7 +2,7 @@ export on_message!,
     on_ready!,
     command!,
     component!,
-    component
+    on_reaction_add!
 
 """
     on_message!(
@@ -17,6 +17,19 @@ The `f` parameter's signature should be:
 ```
 """
 on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))
+"""
+    on_message!(
+        f::Function
+        c::Client
+    )
+
+Adds a handler for the MESSAGE_CREATE gateway event.
+The `f` parameter's signature should be:
+```
+    (ctx::Context) -> Any 
+```
+"""
+on_reaction_add!(f::Function, c::Client) = add_handler!(c, OnMessageReactionAdd(f))
 """
     on_ready!(
         f::Function

@@ -86,10 +86,17 @@ Then, returns the generated context.
 function context(t::Symbol, data::Dict{Symbol, Any})
     t == :OnMessageCreate && return Context(; message=Message(data))
     t ∈ [:OnGuildCreate, :OnGuildUpdate] && return Context(; guild=Guild(data))
-    t  == :OnReady && return Context(; user=User(data[:user]), delete!(data, :user)...)
+    t ∈ [:OnMessageReactionAdd, :OnMessageReactionRemove] && return Context(; 
+        emoji=make(Emoji, data, :emoji), 
+        channel=DiscordChannel(; id=data[:channel_id]),
+        message=Message(; id=data[:message_id], channel_id=data[:channel_id]), 
+        data...)
+    t  == :OnReady && return Context(; user=make(User, data, :user), data...)
     t == :OnInteractionCreate && return Context(; interaction=Interaction(data))
     Context(data)
 end
+
+make(::Type{T}, data::Dict{Symbol, Any}, k::Symbol) where T <: DiscordObject = T(pop!(data, k, missing))
 
 for v in values(EVENT_TYPES)
     nm = Symbol("On"*String(v))
