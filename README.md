@@ -7,7 +7,7 @@
 | [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://humans-of-julia.github.io/Dizkord.jl/stable/) [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://humans-of-julia.github.io/Dizkord.jl/dev/)| [![CI](https://github.com/Humans-of-Julia/Dizkord.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/Humans-of-Julia/Dizkord.jl/actions/workflows/ci.yml) |
 </div>
 
-D1zk0rd.jl is the spiritual successor to [Discord.jl](https://github.com/Xh4H/Discord.jl). It is a maintained Julia Pkg for creating simple yet efficient [Discord](https://discord.com) bots.
+Ekztazy.jl is the spiritual successor to [Discord.jl](https://github.com/Xh4H/Discord.jl). It is a maintained Julia Pkg for creating simple yet efficient [Discord](https://discord.com) bots.
 
 * Strong, expressive type system: No fast-and-loose JSON objects here.
 * Non-blocking: API calls return immediately and can be awaited when necessary.
@@ -18,7 +18,7 @@ D1zk0rd.jl is the spiritual successor to [Discord.jl](https://github.com/Xh4H/Di
 * Gateway independent: Ability to interact with Discord's API without establishing a gateway connection.
 * Distributed: [Process-based sharding](https://Humans-of-Julia.github.io/Dizkord.jl/stable/client.html#Dizkord.Client) requires next to no intervention and you can even run shards on separate machines.
 
-D1zk0rd.jl has not been released.
+Ekztazy.jl has not been released.
 It can be added from the Git repository with the following command:
 
 ```julia
@@ -35,7 +35,7 @@ client = Client()
 TESTGUILD = ENV["TESTGUILD"]
 
 command!(client, TESTGUILD, "double", "Doubles a number!", options=[opt(name="number", description="The number to double!")]) do (ctx) 
-    D1zk0rd.reply(client, ctx, content="$(parse(Int, opt(ctx)["number"])*2)")
+    Ekztazy.reply(client, ctx, content="$(parse(Int, opt(ctx)["number"])*2)")
 end
 
 on_ready!(client) do (ctx)

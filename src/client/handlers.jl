@@ -109,10 +109,11 @@ end
 
 #// Todo: make converters for User etc
 function conv(::Type{T}, arg, ctx::Context) where T
-    id = snowflake(arg)
     if T in [String, Int, Bool] 
         return arg 
-    elseif T == User 
+    end
+    snowflake(arg)
+    if T == User 
         return ctx.interaction.data.resolved.users[id]
     elseif T == Member
         u = ctx.interaction.data.resolved.users[id]

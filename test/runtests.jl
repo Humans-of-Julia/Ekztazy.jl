@@ -1,4 +1,4 @@
-using D1zk0rd
+using Ekztazy
 using Test 
 
 include("fulltest.jl")

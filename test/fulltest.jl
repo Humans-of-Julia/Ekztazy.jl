@@ -1,9 +1,9 @@
-using D1zk0rd
+using Ekztazy
 using Distributed
 
 client = Client()
 
-ENV["JULIA_DEBUG"] = D1zk0rd
+ENV["JULIA_DEBUG"] = Ekztazy
 
 TESTGUILD = ENV["TESTGUILD"]
 

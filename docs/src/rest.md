@@ -1,5 +1,5 @@
 ```@meta
-CurrentModule = D1zk0rd
+CurrentModule = Ekztazy
 ```
 
 # REST API
@@ -13,7 +13,7 @@ fetchval
 
 ## CRUD API
 
-On top of functions for accessing individual endpoints such as [`get_channel_messages`](@ref), D1zk0rd.jl also offers a unified API with just four functions.
+On top of functions for accessing individual endpoints such as [`get_channel_messages`](@ref), Ekztazy.jl also offers a unified API with just four functions.
 Named after [the **CRUD** model](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete), they cover most of the Discord REST API and allow you to write concise, expressive code, and forget about the subtleties of endpoint naming.
 The argument ordering convention is roughly as follows:
 
