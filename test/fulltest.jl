@@ -7,7 +7,7 @@ ENV["JULIA_DEBUG"] = Ekztazy
 
 TESTGUILD = ENV["TESTGUILD"]
 
-on_message!(client) do (ctx) 
+on_message_create!(client) do (ctx) 
     (!isme(client, ctx)) && reply(client, ctx, content="$(mention(ctx.message.author)), $(ctx.message.content) TEST")
 end
 
