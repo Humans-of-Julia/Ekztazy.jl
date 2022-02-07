@@ -192,5 +192,9 @@ get_application_commands
 respond_to_interaction
 create_followup_message
 ack_interaction
+update_ack_interaction
+update_message_int
+create_followup_message
+edit_interaction
 bulk_overwrite_application_commands
 ```

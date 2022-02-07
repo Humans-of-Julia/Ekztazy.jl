@@ -75,13 +75,13 @@ Generates a context based on kwargs.
 """
 Context(; kwargs...) = Context(Dict(kwargs))
 
-quickdoc(name::String) = "
+quickdoc(name::String, ar::String) = "
     $(name)(
         f::Function
         c::Client
     )
 
-Adds a handler for the MESSAGE_CREATE gateway event.
+Adds a handler for the $(replace(ar, "_"=>"\\_")) gateway event.
 The `f` parameter's signature should be:
 ```
     (ctx::Context) -> Any 
@@ -115,7 +115,7 @@ for (k, v) in EVENT_TYPES
     hm = Symbol("on_"*lowercase(k)*"!")
     @eval ($nm)(f::Function; kwargs...) = Handler(f; type=Symbol($nm), kwargs...)
     k = quote 
-        @doc quickdoc(string($hm))
+        @doc quickdoc(string($hm), $k)
         ($hm)(f::Function, c; kwargs...) = add_handler!(c, ($nm)(f, kwargs...))
         export $hm
     end
