@@ -75,6 +75,18 @@ Generates a context based on kwargs.
 """
 Context(; kwargs...) = Context(Dict(kwargs))
 
+quickdoc(name::String) = "
+    $(name)(
+        f::Function
+        c::Client
+    )
+
+Adds a handler for the MESSAGE_CREATE gateway event.
+The `f` parameter's signature should be:
+```
+    (ctx::Context) -> Any 
+```
+"
 
 context(data::Dict{Symbol, Any}) = Context(data)
 """
@@ -98,10 +110,28 @@ end
 
 make(::Type{T}, data::Dict{Symbol, Any}, k::Symbol) where T <: DiscordObject = T(pop!(data, k, missing))
 
-for v in values(EVENT_TYPES)
+for (k, v) in EVENT_TYPES
     nm = Symbol("On"*String(v))
+    hm = Symbol("on_"*lowercase(k)*"!")
     @eval ($nm)(f::Function; kwargs...) = Handler(f; type=Symbol($nm), kwargs...)
+    k = quote 
+        @doc quickdoc(string($hm))
+        ($hm)(f::Function, c; kwargs...) = add_handler!(c, ($nm)(f, kwargs...))
+        export $hm
+    end
+    eval(k)
 end
+
+# Deprecated
+# ---------------------------------------- 
+# |    Removed: 1.0+                     |
+# |    Added 0.3                         |
+# |    Replaced by on_message_create!    |
+# ----------------------------------------
+const on_message! = on_message_create!
+const on_reaction_add! = on_message_reaction_add!
+const on_reaction_remove! = on_message_reaction_remove!
+
 
 Base.getproperty(ctx::Context, sym::Symbol) = getfield(ctx, :data)[sym]
 Base.hasproperty(ctx::Context, sym::Symbol) = haskey(getfield(ctx, :data), sym)

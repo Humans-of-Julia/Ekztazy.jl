@@ -1,61 +1,6 @@
-export on_message!,
-    on_ready!,
-    command!,
-    component!,
-    on_reaction_add!
-
-"""
-    on_message!(
-        f::Function
-        c::Client
-    )
-
-Adds a handler for the MESSAGE_CREATE gateway event.
-The `f` parameter's signature should be:
-```
-    (ctx::Context) -> Any 
-```
-"""
-on_message!(f::Function, c::Client) = add_handler!(c, OnMessageCreate(f))
-"""
-    on_reaction_add!(
-        f::Function
-        c::Client
-    )
-
-Adds a handler for the MESSAGE_CREATE gateway event.
-The `f` parameter's signature should be:
-```
-    (ctx::Context) -> Any 
-```
-"""
-on_reaction_add!(f::Function, c::Client) = add_handler!(c, OnMessageReactionAdd(f))
-"""
-    on_reaction_remove!(
-        f::Function
-        c::Client
-    )
-
-Adds a handler for the MESSAGE_CREATE gateway event.
-The `f` parameter's signature should be:
-```
-    (ctx::Context) -> Any 
-```
-"""
-on_reaction_remove!(f::Function, c::Client) = add_handler!(c, OnMessageReactionRemove(f))
-"""
-    on_ready!(
-        f::Function
-        c::Client
-    )
-
-Adds a handler for the READY gateway event.
-The `f` parameter signature should be:
-```
-    (ctx::Context) -> Any 
-```
-"""
-on_ready!(f::Function, c::Client) = add_handler!(c, OnReady(f))
+export command!,
+    component!
+    
 """
     command!(
         f::Function
