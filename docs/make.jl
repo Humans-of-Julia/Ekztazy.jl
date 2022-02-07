@@ -9,7 +9,7 @@ makedocs(;
         "Client" => "client.md",
         "REST API" => "rest.md",
         "Helpers" => "helpers.md",
-        "Handlers" => "events.md"
+        "Events" => "events.md"
     ],
     repo="https://github.com/Humans-of-Julia/Ekztazy.jl/blob/{commit}{path}#L{line}",
     sitename="Ekztazy.jl",

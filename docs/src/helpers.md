@@ -18,6 +18,11 @@ set_game
 opt
 Option
 extops
+isme
+method_args
+add_handler!
+Options
+mention
 @fetch
 @fetchval
 @deferred_fetch
