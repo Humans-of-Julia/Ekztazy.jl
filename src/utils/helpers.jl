@@ -269,7 +269,7 @@ cannot be avoided. If desired, however, this behavior can be lifter by setting
 `forcesplit` to false.
 
 ## Examples
-```jldoctest; setup=:(using Ekztazy)
+```julia
 julia> split_message("foo")
 1-element Vector{String}:
  "foo"
@@ -297,15 +297,16 @@ julia> split_message("**hello**, _*beautiful* world_", chunk_limit=15, forcespli
  "**hello**,"
  "_*beautiful* world_"
 
-julia> split_message("**hello**\n=====\n", 12)
+julia> split_message("**hello**\\n=====\\n", chunk_limit=12)
 2-element Vector{String}:
- "**hello**\n=="
+ "**hello**\\n=="
  "==="
   
-julia> split_message("**hello**\n≡≡≡≡≡\n", chunk_limit=12, extrastyles = [r"\n≡+\n"])
+julia> split_message("**hello**\\n≡≡≡≡≡\\n", chunk_limit=12, extrastyles = [r"\\n≡+\\n"])
 2-element Vector{String}:
  "**hello**"
  "≡≡≡≡≡"
+```
 """
 function split_message(text::AbstractString; chunk_limit::Int=2000,
                        extrastyles::Vector{Regex}=Vector{Regex}(),
