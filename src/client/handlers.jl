@@ -26,19 +26,20 @@ and the arguments would automatically get converted.
 
 **Note:** The argument names **must** match the Option names. The arguments can be ordered in any way. If no type is specified, no conversion will be performed, so Discord objects will be `Snowflake`s.
 """
-function command!(c::Client, f::Function, name::AbstractString, desc::AbstractString, legacy::Bool; kwargs...)
+function command!(c::Client, f::Function, name::AbstractString, desc::AbstractString, legacy::Bool; auto_ack=true, kwargs...)
     haskey(kwargs, :options) && check_option.(kwargs[:options])
     namecheck(name, r"^[\w-]{1,32}$", 32, "ApplicationCommand Name")
     namecheck(name, 100, "ApplicationCommand Description")
+    if !auto_ack push!(c.no_auto_ack, name) end
     legacy ? add_handler!(c, OnInteractionCreate(f; name=name)) : add_handler!(c, OnInteractionCreate(generate_command_func(f); name=name))
 end
 
-function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
-    command!(c, f, name, description, legacy; kwargs...)
+function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; legacy::Bool=true, auto_ack=true, kwargs...)
+    command!(c, f, name, description, legacy; auto_ack=auto_ack, kwargs...)
     add_command!(c; name=name, description=description, kwargs...)
 end
-function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
-    command!(c, f, name, description, legacy; kwargs...)
+function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString; legacy::Bool=true, auto_ack=true, kwargs...)
+    command!(c, f, name, description, legacy; auto_ack=auto_ack, kwargs...)
     add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
 end
 command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString; kwargs...) = command!(f, c, parse(Int, g), name, description; kwargs...)
@@ -145,7 +146,8 @@ function handle_ack(c::Client, ctx::Context)
         @debug "Acking interaction"
         if iscomp && (ctx.interaction.data.custom_id in c.auto_update_ack)
             update_ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
-        else
+        elseif (!ismissing(ctx.interaction.data.name) && !(ctx.interaction.data.name in c.no_auto_ack)) || iscomp
+            @info "Somehow" name=ctx.interaction.data.name no_auto_ack=c.no_auto_ack
             ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
         end
     end
