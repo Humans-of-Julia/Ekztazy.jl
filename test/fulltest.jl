@@ -49,8 +49,8 @@ end
 
 command!(client, TESTGUILD, "test", "Test something", legacy=false, auto_ack=false) do ctx 
     cm = Component(; type=4, custom_id="name", label="Name", style=1)
-    modal(client, "customtest", ctx, components=[cm], title="test", custom_id="ttest") do context 
-        reply(client, context, raw=false, content="Your name is $(context)")
+    modal!(client, "ttest", ctx, components=[cm], title="test") do context, name 
+        reply(client, context, raw=true, content="Your name is $(context)")
     end
 end
 

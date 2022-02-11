@@ -44,6 +44,13 @@ function command!(f::Function, c::Client, g::Number, name::AbstractString, descr
 end
 command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString; kwargs...) = command!(f, c, parse(Int, g), name, description; kwargs...)
 
+function modal!(f::Function, c::Client, custom_id::String, int::Interaction; kwargs...)
+    add_handler!(c, OnInteractionCreate(generate_command_func(f, modal=true), custom_id=custom_id))
+    push!(c.no_auto_ack, custom_id)
+    respond_to_interaction_with_a_modal(c, int.id, int.token; custom_id=custom_id, kwargs...)
+end
+modal!(f::Function, c::Client, custom_id::String, ctx::Context; kwargs...) = modal(f, c, custom_id, ctx.interaction; compkwfix(; kwargs...)...)
+
 function check_option(o::ApplicationCommandOption)
     namecheck(o.name, r"^[\w-]{1,32}$", 32, "ApplicationCommandOption Name")
     namecheck(o.description, 100, "ApplicationCommandOption Description")
@@ -54,17 +61,17 @@ namecheck(val::String, patt::Regex, of::String) = namecheck(val, patt, 32, of)
 namecheck(val::String, len::Int, of::String) = namecheck(val, r"", len, of)
 namecheck(val::String, of::String) = namecheck(val, 32, of)
 
-function generate_command_func(f::Function)
+function generate_command_func(f::Function, modal=false)
     args = handlerargs(f)
     @debug "Generating typed args" args=args
     g = (ctx::Context) -> begin
-        a = makeargs(ctx, args)
+        a = makeargs(ctx, args, modal)
         f(ctx, a...)  
     end
     g
 end
 
-function makeargs(ctx::Context, args) 
+function makeargs(ctx::Context, args, modal::Bool) 
     o = opt(ctx)
     v = []
     args = args[2:end]
@@ -135,6 +142,7 @@ function handle(c::Client, handlers::Vector{Handler}, data::Dict, t::Symbol)
     isvalidcommand = (h) -> return (!hasproperty(h, :name) || (!ismissing(ctx.interaction.data.name) && h.name == ctx.interaction.data.name))
     isvalidcomponent = (h) -> return (!hasproperty(h, :custom_id) || (!ismissing(ctx.interaction.data.custom_id) && h.custom_id == ctx.interaction.data.custom_id))
     isvalid = (h) -> return isvalidcommand(h) && isvalidcomponent(h)
+    @debug "$(repr.(handlers))" currrent = repr(ctx)
     for hh in handlers 
         isvalid(hh) && (runhandler(c, hh, ctx, t))
     end
@@ -142,12 +150,12 @@ end
 
 function handle_ack(c::Client, ctx::Context)
     iscomp = !ismissing(ctx.interaction.data.custom_id)
+    !ismissing(ctx.interaction.data.type) && ctx.interaction.data.type == 5 && return
     if !iscomp || !(ctx.interaction.data.custom_id in c.no_auto_ack)
-        @debug "Acking interaction"
+        @debug "Acking interaction" name=ctx.interaction.data.name custom_id=ctx.interaction.data.custom_id
         if iscomp && (ctx.interaction.data.custom_id in c.auto_update_ack)
             update_ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
         elseif (!ismissing(ctx.interaction.data.name) && !(ctx.interaction.data.name in c.no_auto_ack)) || iscomp
-            @info "Somehow" name=ctx.interaction.data.name no_auto_ack=c.no_auto_ack
             ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
         end
     end
