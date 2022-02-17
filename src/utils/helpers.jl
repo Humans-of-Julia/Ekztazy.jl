@@ -161,6 +161,9 @@ function permissions_in(m::Member, g::Guild, ch::DiscordChannel)
     return perms
 end
 
+getId(int::Interaction) = ismissing(int.member) ? int.user.id : int.member.user.id
+getId(ctx::Context) = hasproperty(ctx, :message) ? ctx.message.author.id : getId(ctx.interaction)
+
 Base.print(io::IO, c::DiscordChannel) = print(io, "<#$(c.id)>")
 Base.print(io::IO, r::Role) = print(io, "<@&$(r.id)>")
 Base.print(io::IO, u::User) = print(io, "<@$(u.id)>")
