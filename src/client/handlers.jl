@@ -26,22 +26,30 @@ and the arguments would automatically get converted.
 
 **Note:** The argument names **must** match the Option names. The arguments can be ordered in any way. If no type is specified, no conversion will be performed, so Discord objects will be `Snowflake`s.
 """
-function command!(c::Client, f::Function, name::AbstractString, desc::AbstractString, legacy::Bool; kwargs...)
+function command!(c::Client, f::Function, name::AbstractString, desc::AbstractString, legacy::Bool; auto_ack=true, kwargs...)
     haskey(kwargs, :options) && check_option.(kwargs[:options])
     namecheck(name, r"^[\w-]{1,32}$", 32, "ApplicationCommand Name")
     namecheck(name, 100, "ApplicationCommand Description")
+    if !auto_ack push!(c.no_auto_ack, name) end
     legacy ? add_handler!(c, OnInteractionCreate(f; name=name)) : add_handler!(c, OnInteractionCreate(generate_command_func(f); name=name))
 end
 
-function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
-    command!(c, f, name, description, legacy; kwargs...)
+function command!(f::Function, c::Client, name::AbstractString, description::AbstractString; legacy::Bool=true, auto_ack=true, kwargs...)
+    command!(c, f, name, description, legacy; auto_ack=auto_ack, kwargs...)
     add_command!(c; name=name, description=description, kwargs...)
 end
-function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString; legacy::Bool=true, kwargs...)
-    command!(c, f, name, description, legacy; kwargs...)
+function command!(f::Function, c::Client, g::Number, name::AbstractString, description::AbstractString; legacy::Bool=true, auto_ack=true, kwargs...)
+    command!(c, f, name, description, legacy; auto_ack=auto_ack, kwargs...)
     add_command!(c, Snowflake(g); name=name, description=description, kwargs...)
 end
 command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString; kwargs...) = command!(f, c, parse(Int, g), name, description; kwargs...)
+
+function modal!(f::Function, c::Client, custom_id::String, int::Interaction; kwargs...)
+    add_handler!(c, OnInteractionCreate(generate_command_func(f, modal=true), custom_id=custom_id))
+    push!(c.no_auto_ack, custom_id)
+    respond_to_interaction_with_a_modal(c, int.id, int.token; custom_id=custom_id, kwargs...)
+end
+modal!(f::Function, c::Client, custom_id::String, ctx::Context; kwargs...) = modal(f, c, custom_id, ctx.interaction; compkwfix(; kwargs...)...)
 
 function check_option(o::ApplicationCommandOption)
     namecheck(o.name, r"^[\w-]{1,32}$", 32, "ApplicationCommandOption Name")
@@ -53,17 +61,17 @@ namecheck(val::String, patt::Regex, of::String) = namecheck(val, patt, 32, of)
 namecheck(val::String, len::Int, of::String) = namecheck(val, r"", len, of)
 namecheck(val::String, of::String) = namecheck(val, 32, of)
 
-function generate_command_func(f::Function)
+function generate_command_func(f::Function, modal=false)
     args = handlerargs(f)
     @debug "Generating typed args" args=args
     g = (ctx::Context) -> begin
-        a = makeargs(ctx, args)
+        a = makeargs(ctx, args, modal)
         f(ctx, a...)  
     end
     g
 end
 
-function makeargs(ctx::Context, args) 
+function makeargs(ctx::Context, args, modal::Bool) 
     o = opt(ctx)
     v = []
     args = args[2:end]
@@ -134,6 +142,7 @@ function handle(c::Client, handlers::Vector{Handler}, data::Dict, t::Symbol)
     isvalidcommand = (h) -> return (!hasproperty(h, :name) || (!ismissing(ctx.interaction.data.name) && h.name == ctx.interaction.data.name))
     isvalidcomponent = (h) -> return (!hasproperty(h, :custom_id) || (!ismissing(ctx.interaction.data.custom_id) && h.custom_id == ctx.interaction.data.custom_id))
     isvalid = (h) -> return isvalidcommand(h) && isvalidcomponent(h)
+    @debug "$(repr.(handlers))" currrent = repr(ctx)
     for hh in handlers 
         isvalid(hh) && (runhandler(c, hh, ctx, t))
     end
@@ -141,11 +150,12 @@ end
 
 function handle_ack(c::Client, ctx::Context)
     iscomp = !ismissing(ctx.interaction.data.custom_id)
+    !ismissing(ctx.interaction.data.type) && ctx.interaction.data.type == 5 && return
     if !iscomp || !(ctx.interaction.data.custom_id in c.no_auto_ack)
-        @debug "Acking interaction"
+        @debug "Acking interaction" name=ctx.interaction.data.name custom_id=ctx.interaction.data.custom_id
         if iscomp && (ctx.interaction.data.custom_id in c.auto_update_ack)
             update_ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
-        else
+        elseif (!ismissing(ctx.interaction.data.name) && !(ctx.interaction.data.name in c.no_auto_ack)) || iscomp
             ack_interaction(c, ctx.interaction.id, ctx.interaction.token)
         end
     end

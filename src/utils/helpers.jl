@@ -3,6 +3,7 @@ export PERM_NONE,
     has_permission,
     permissions_in,
     reply,
+    modal,
     intents,
     mention,
     split_message,
@@ -160,6 +161,9 @@ function permissions_in(m::Member, g::Guild, ch::DiscordChannel)
     return perms
 end
 
+getId(int::Interaction) = ismissing(int.member) ? int.user.id : int.member.user.id
+getId(ctx::Context) = hasproperty(ctx, :message) ? ctx.message.author.id : getId(ctx.interaction)
+
 Base.print(io::IO, c::DiscordChannel) = print(io, "<#$(c.id)>")
 Base.print(io::IO, r::Role) = print(io, "<@&$(r.id)>")
 Base.print(io::IO, u::User) = print(io, "<@$(u.id)>")
@@ -208,7 +212,7 @@ end
 Replies to a [`Context`](@ref), an [`Interaction`](@ref) or a [`Message`](@ref).
 """
 reply(c::Client, m::Message; noreply=false, kwargs...) = create_message(c, m.channel_id; message_reference=(noreply ? missing : MessageReference(message_id=m.id)), compkwfix(; kwargs...)...)
-reply(c::Client, int::Interaction; kwargs...) = create(c, Message, int; compkwfix(; kwargs...)...)
+reply(c::Client, int::Interaction; raw=false, kwargs...) = !raw ? create(c, Message, int; compkwfix(; kwargs...)...) : respond_to_interaction(c, int.id, int.token; kwargs...)
 reply(c::Client, ctx::Context; kwargs...) = reply(c, (hasproperty(ctx, :message) ? ctx.message : ctx.interaction); compkwfix(; kwargs...)...)
 
 """
@@ -269,7 +273,7 @@ cannot be avoided. If desired, however, this behavior can be lifter by setting
 `forcesplit` to false.
 
 ## Examples
-```jldoctest; setup=:(using Ekztazy)
+```julia
 julia> split_message("foo")
 1-element Vector{String}:
  "foo"
@@ -297,15 +301,16 @@ julia> split_message("**hello**, _*beautiful* world_", chunk_limit=15, forcespli
  "**hello**,"
  "_*beautiful* world_"
 
-julia> split_message("**hello**\n=====\n", 12)
+julia> split_message("**hello**\\n=====\\n", chunk_limit=12)
 2-element Vector{String}:
- "**hello**\n=="
+ "**hello**\\n=="
  "==="
   
-julia> split_message("**hello**\n≡≡≡≡≡\n", chunk_limit=12, extrastyles = [r"\n≡+\n"])
+julia> split_message("**hello**\\n≡≡≡≡≡\\n", chunk_limit=12, extrastyles = [r"\\n≡+\\n"])
 2-element Vector{String}:
  "**hello**"
  "≡≡≡≡≡"
+```
 """
 function split_message(text::AbstractString; chunk_limit::Int=2000,
                        extrastyles::Vector{Regex}=Vector{Regex}(),
