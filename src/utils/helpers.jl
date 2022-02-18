@@ -650,7 +650,13 @@ end
 
 Helper function that is equivalent to calling `extops(ctx.interaction.data.options)`
 """
-opt(ctx::Context) = ismissing(ctx.interaction.data.components) ? extops(ctx.interaction.data.options) : Dict([(comp.custom_id, comp.value) for comp in vcat([c.components for c in ctx.interaction.data.components]...)])
+function opt(ctx::Context)
+    if ismissing(ctx.interaction.data.components) 
+        extops(ctx.interaction.data.options)
+    else
+        extops(ctx.interaction.data.components, :custom_id)
+    end
+end
 """
     extops(ops::Vector)
 
@@ -658,6 +664,9 @@ Creates a Dict of `option name` -> `option value` for the given vector of [`Appl
 If the option is of `Subcommand` type, creates a dict for all its subcommands.
 """
 extops(ops::Vector) = Dict([(op.name, Int(op.type) < 3 ? extops(op.options) : op.value) for op in ops])
+extops(ops::Vector, kf::Symbol) = extops(ops, kf, :value)
+extops(ops::Vector, kf::Symbol, kv::Symbol) = Dict([(getproperty(comp, kf), getproperty(comp, kv)) for comp in vcat([c.components for c in ops]...)])
+
 """
 Return an empty `Dict` if the list of options used is missing.
 """

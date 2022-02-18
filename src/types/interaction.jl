@@ -77,6 +77,14 @@ struct SelectOption <: DiscordObject
 end
 @boilerplate SelectOption :constructors :docs :lower :merge :mock
 
+function SelectOption(label, value, args...) 
+    if length(args)>0
+        r = [:description, :emoji, :default]
+        t = Dict([(r[x+1], args[x+1]) for x in 0:length(args)])
+        SelectOption(; label=label, value=value, t...)
+    else SelectOption(; label=label, value=value) end
+end
+
 """
 An interactable component.
 More details [here](https://discord.com/developers/docs/interactions/message-components).
