@@ -650,7 +650,7 @@ end
 
 Helper function that is equivalent to calling `extops(ctx.interaction.data.options)`
 """
-opt(ctx::Context) = extops(ctx.interaction.data.options)
+opt(ctx::Context) = ismissing(ctx.interaction.data.components) ? extops(ctx.interaction.data.options) : Dict([(comp.custom_id, comp.value) for comp in vcat([c.components for c in ctx.interaction.data.components]...)])
 """
     extops(ops::Vector)
 
