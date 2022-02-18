@@ -1,6 +1,7 @@
 export command!,
     component!,
-    modal!
+    modal!,
+    select!
     
 """
     command!(
@@ -72,6 +73,13 @@ function generate_command_func(f::Function)
     g
 end
 
+function generate_select_command_func(f::Function) 
+    g = (ctx::Context) -> begin 
+        f(ctx, ctx.interaction.data.values)
+    end
+    g
+end
+
 function makeargs(ctx::Context, args)
     v = []
     args = args[2:end]
@@ -127,6 +135,30 @@ function component!(f::Function, c::Client, custom_id::AbstractString; auto_ack:
     if auto_update_ack push!(c.auto_update_ack, custom_id) end
     return Component(custom_id=custom_id; kwargs...)
 end
+
+"""
+    select!(
+        f::Function
+        c::Client
+        custom_id::AbstractString
+        args::Vector{Tuple}
+        kwargs...
+    )
+
+Adds a handler for INTERACTION CREATE gateway events where the InteractionData's `custom_id` field matches `custom_id`.
+The `f` parameter signature should be:
+```
+(ctx::Context, choices::Vector{String}) -> Any 
+```
+"""
+function select!(f::Function, c::Client, custom_id::AbstractString, args...; auto_ack::Bool=true, auto_update_ack::Bool=true, kwargs...)
+    add_handler!(c, OnInteractionCreate(generate_select_command_func(f); custom_id=custom_id))
+    if !auto_ack push!(c.no_auto_ack, custom_id) end
+    if auto_update_ack push!(c.auto_update_ack, custom_id) end
+    if length(args) == 0 throw(FieldRequired("options", "SelectOption")) end
+    return Component(custom_id=custom_id; options=[SelectOption(a...) for a in args], type=3, kwargs...)
+end
+
 """
     handle(
         c::Client
