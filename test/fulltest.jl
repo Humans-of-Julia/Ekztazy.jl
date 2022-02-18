@@ -47,6 +47,13 @@ command!(client, TESTGUILD, "water", "Water a plant", legacy=false, options=[
     reply(client, ctx, components=[cm], content="$(mention(ctx)) watered their plant for $(howmuch) hours. So much that the plant grew taller than them!")
 end
 
+command!(client, TESTGUILD, "test", "Test something", legacy=false, auto_ack=false) do ctx 
+    cm = Component(; type=4, custom_id="name", label="Name", style=1)
+    modal!(client, "ttest", ctx, components=[cm], title="test") do context, name
+        reply(client, context, raw=true, content="Your name is $(name)")
+    end
+end
+
 command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
     reply(client, ctx, content="Shutting down the bot")
     close(client)

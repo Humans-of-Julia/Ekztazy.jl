@@ -84,6 +84,7 @@ More details [here](https://discord.com/developers/docs/interactions/message-com
 struct Component <: DiscordObject
     type::Int
     custom_id::Optional{String}
+    value::Optional{String}
     disabled::Optional{Bool}
     style::Optional{Int}
     label::Optional{String}
@@ -110,6 +111,7 @@ struct InteractionData <: DiscordObject
     options::Optional{Vector{ApplicationCommandOption}}
     custom_id::OptionalNullable{String}
     component_type::OptionalNullable{Int}
+    components::OptionalNullable{Vector{Component}}
     values::Optional{Vector{String}}
     target_id::Optional{Snowflake}
 end

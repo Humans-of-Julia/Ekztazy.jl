@@ -48,6 +48,14 @@ function respond_to_interaction(c::Client, int_id::Snowflake, int_token::String;
     return Response{Message}(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
 end
 
+function respond_to_interaction_with_a_modal(c::Client, int_id::Snowflake, int_token::String; kwargs...)
+    dict = Dict{Symbol, Any}(
+        :data => kwargs,
+        :type => 9,
+    )
+    return Response{Message}(c, :POST, "/interactions/$int_id/$int_token/callback"; body=dict)
+end
+
 """
     ack_interaction(c::Client, int_id::Snowflake, int_token::String; kwargs...)
 
