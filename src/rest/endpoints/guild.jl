@@ -37,6 +37,47 @@ export create_guild,
     get_guild_widget_image
 
 """
+    create_guild_scheduled_event(c::Client, guild::Integer; kwargs...)
+
+Create a Guild Scheduled Event.
+More details [here](https://discord.com/developers/docs/resources/guild-scheduled-event#create-guild-scheduled-event)
+"""
+function create_guild_scheduled_event(c::Client, guild::Integer, s::ScheduledEvent; kwargs...)
+    return Response{ScheduledEvent}(c, :POST, "/guilds/$(guild)/scheduled-events"; body=s)
+end
+
+"""
+    modify_guild_scheduled_event(c::Client, guild::Integer; kwargs...)
+
+Modify a Guild Scheduled Event.
+More details [here](https://discord.com/developers/docs/resources/guild-scheduled-event#modify-guild-scheduled-event)
+"""
+function modify_guild_scheduled_event(c::Client, guild::Integer, s::ScheduledEvent; kwargs...)
+    return Response{ScheduledEvent}(c, :PATCH, "/guilds/$(guild)/scheduled-events/$(s.id)"; body=s)
+end
+
+"""
+    delete_guild_scheduled_event(c::Client, guild::Integer; kwargs...)
+
+Delete a Guild Scheduled Event.
+More details [here](https://discord.com/developers/docs/resources/guild-scheduled-event#delete-guild-scheduled-event)
+"""
+function delete_guild_scheduled_event(c::Client, guild::Integer, s::ScheduledEvent)
+    return Response(c, :DELETE, "/guilds/$(guild)/scheduled-events/$(s.id)")
+end
+
+
+"""
+    get_guild_scheduled_event(c::Client, guild::Integer; kwargs...)
+
+Get a Guild Scheduled Event.
+More details [here](https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event)
+"""
+function get_guild_scheduled_event(c::Client, guild::Integer, s::Integer; kwargs...)
+    return Response{ScheduledEvent}(c, :GET, "/guilds/$(guild)/scheduled-events/$(s.id)", body=kwargs)
+end
+
+"""
     create_guild(c::Client; kwargs...) -> Guild
 
 Create a [`Guild`](@ref).
