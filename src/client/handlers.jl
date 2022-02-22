@@ -1,5 +1,7 @@
 export command!,
-    component!
+    component!,
+    modal!,
+    select!
     
 """
     command!(
@@ -45,11 +47,11 @@ end
 command!(f::Function, c::Client, g::String, name::AbstractString, description::AbstractString; kwargs...) = command!(f, c, parse(Int, g), name, description; kwargs...)
 
 function modal!(f::Function, c::Client, custom_id::String, int::Interaction; kwargs...)
-    add_handler!(c, OnInteractionCreate(generate_command_func(f, modal=true), custom_id=custom_id))
+    add_handler!(c, OnInteractionCreate(generate_command_func(f), custom_id=custom_id))
     push!(c.no_auto_ack, custom_id)
     respond_to_interaction_with_a_modal(c, int.id, int.token; custom_id=custom_id, kwargs...)
 end
-modal!(f::Function, c::Client, custom_id::String, ctx::Context; kwargs...) = modal(f, c, custom_id, ctx.interaction; compkwfix(; kwargs...)...)
+modal!(f::Function, c::Client, custom_id::String, ctx::Context; kwargs...) = modal!(f, c, custom_id, ctx.interaction; compkwfix(; kwargs...)...)
 
 function check_option(o::ApplicationCommandOption)
     namecheck(o.name, r"^[\w-]{1,32}$", 32, "ApplicationCommandOption Name")
@@ -61,23 +63,30 @@ namecheck(val::String, patt::Regex, of::String) = namecheck(val, patt, 32, of)
 namecheck(val::String, len::Int, of::String) = namecheck(val, r"", len, of)
 namecheck(val::String, of::String) = namecheck(val, 32, of)
 
-function generate_command_func(f::Function, modal=false)
+function generate_command_func(f::Function)
     args = handlerargs(f)
     @debug "Generating typed args" args=args
     g = (ctx::Context) -> begin
-        a = makeargs(ctx, args, modal)
+        a = makeargs(ctx, args)
         f(ctx, a...)  
     end
     g
 end
 
-function makeargs(ctx::Context, args, modal::Bool) 
-    o = opt(ctx)
+function generate_select_command_func(f::Function) 
+    g = (ctx::Context) -> begin 
+        f(ctx, ctx.interaction.data.values)
+    end
+    g
+end
+
+function makeargs(ctx::Context, args)
     v = []
     args = args[2:end]
     if length(args) == 0
         return v
     end
+    o = opt(ctx)
     for x = args 
         t = last(x)
         arg =  get(o, string(first(x)), :ERR)
@@ -86,12 +95,11 @@ function makeargs(ctx::Context, args, modal::Bool)
     v
 end
 
-#// Todo: make converters for User etc
 function conv(::Type{T}, arg, ctx::Context) where T
-    if T in [String, Int, Bool] 
+    if T in [String, Int, Bool, Any] 
         return arg 
     end
-    snowflake(arg)
+    id = snowflake(arg)
     if T == User 
         return ctx.interaction.data.resolved.users[id]
     elseif T == Member
@@ -127,6 +135,30 @@ function component!(f::Function, c::Client, custom_id::AbstractString; auto_ack:
     if auto_update_ack push!(c.auto_update_ack, custom_id) end
     return Component(custom_id=custom_id; kwargs...)
 end
+
+"""
+    select!(
+        f::Function
+        c::Client
+        custom_id::AbstractString
+        args::Vector{Tuple}
+        kwargs...
+    )
+
+Adds a handler for INTERACTION CREATE gateway events where the InteractionData's `custom_id` field matches `custom_id`.
+The `f` parameter signature should be:
+```
+(ctx::Context, choices::Vector{String}) -> Any 
+```
+"""
+function select!(f::Function, c::Client, custom_id::AbstractString, args...; auto_ack::Bool=true, auto_update_ack::Bool=true, kwargs...)
+    add_handler!(c, OnInteractionCreate(generate_select_command_func(f); custom_id=custom_id))
+    if !auto_ack push!(c.no_auto_ack, custom_id) end
+    if auto_update_ack push!(c.auto_update_ack, custom_id) end
+    if length(args) == 0 throw(FieldRequired("options", "SelectOption")) end
+    return Component(custom_id=custom_id; options=[SelectOption(a...) for a in args], type=3, kwargs...)
+end
+
 """
     handle(
         c::Client

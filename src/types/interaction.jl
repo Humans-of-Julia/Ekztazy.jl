@@ -77,6 +77,14 @@ struct SelectOption <: DiscordObject
 end
 @boilerplate SelectOption :constructors :docs :lower :merge :mock
 
+function SelectOption(label, value, args...) 
+    if length(args)>0
+        r = [:description, :emoji, :default]
+        t = Dict([(r[x+1], args[x+1]) for x in 0:length(args)])
+        SelectOption(; label=label, value=value, t...)
+    else SelectOption(; label=label, value=value) end
+end
+
 """
 An interactable component.
 More details [here](https://discord.com/developers/docs/interactions/message-components).
@@ -84,6 +92,7 @@ More details [here](https://discord.com/developers/docs/interactions/message-com
 struct Component <: DiscordObject
     type::Int
     custom_id::Optional{String}
+    value::Optional{String}
     disabled::Optional{Bool}
     style::Optional{Int}
     label::Optional{String}
@@ -110,6 +119,7 @@ struct InteractionData <: DiscordObject
     options::Optional{Vector{ApplicationCommandOption}}
     custom_id::OptionalNullable{String}
     component_type::OptionalNullable{Int}
+    components::OptionalNullable{Vector{Component}}
     values::Optional{Vector{String}}
     target_id::Optional{Snowflake}
 end

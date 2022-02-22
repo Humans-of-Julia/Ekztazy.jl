@@ -47,13 +47,18 @@ command!(client, TESTGUILD, "water", "Water a plant", legacy=false, options=[
     reply(client, ctx, components=[cm], content="$(mention(ctx)) watered their plant for $(howmuch) hours. So much that the plant grew taller than them!")
 end
 
-command!(client, TESTGUILD, "test", "Test something", legacy=false, auto_ack=false) do ctx 
-    cm = Component(; type=4, custom_id="name", label="Name", style=1)
-    modal!(client, "ttest", ctx, components=[cm], title="test") do context, name 
-        reply(client, context, raw=true, content="Your name is $(context)")
+command!(client, TESTGUILD, "test", "Test something", legacy=false) do ctx 
+    cm = select!(
+        client,
+        "class",
+        ("Rogue", "rogue"),
+        ("Mage", "mage");
+        max_values=1
+    ) do context, choices
+        reply(client, context, content="You chose $(choices[1])")
     end
+    reply(client, ctx, components=[cm], content="What class you want noob?")
 end
-
 
 command!(client, TESTGUILD, "quit", "Ends the bot process!") do (ctx) 
     reply(client, ctx, content="Shutting down the bot")
