@@ -3,6 +3,8 @@ export Client,
     enable_cache!,
     disable_cache!,
     start,
+    start!,
+    init!,
     add_handler!
 
 include("limiter.jl")
@@ -271,13 +273,58 @@ function set_cache(f::Function, c::Client, use_cache::Bool)
 end
 
 """
-    start(c::Client)
+    start!(c::Client)
+
+Calls [`init`](@ref) on the client
+Calls `open` then `wait` on the [`Client`](@ref).
+"""
+function start!(c::Client, duration=Minute(0))
+    open(c)
+    duration != Second(0) && auto_shutdown(c, duration, "SHUTDOWN")
+    wait(c)
+end
+
+
+"""
+    auto_shutdown(run_duration::TimePeriod)
+
+Run a background process to track the program's run time and exit
+the program when it has exceeded the specified `run_duration` or
+when a file exists at `trigger_path`.
+"""
+function auto_shutdown(c::Client, run_duration::TimePeriod, trigger_path::AbstractString="SHUTDOWN", s=5)
+    start_time = now()
+    @async while true
+        if now() > start_time + run_duration
+            @info "Times up! The bot is shutting down automatically."
+            shutdown_gracefully(c)
+            break
+        end
+        if length(trigger_path) > 0 && isfile(trigger_path)
+            @info "The bot is shutting down via trigger path `$trigger_path`."
+            rm(trigger_path)
+            shutdown_gracefully(c)
+            break
+        end
+        sleep(s)
+    end
+end
+
+function shutdown_gracefully(c::Client)
+    try
+        close(c)
+    catch ex
+        @warn "Unable to close client connection" ex
+    end
+end
+
+"""
+    init!(c::Client)
 
 Creates a handler to generate [`ApplicationCommand`](@ref)s.\n
 Creates handlers for GuildCreate events.\n 
-Calls `open` then `wait` on the [`Client`](@ref).
 """
-function start(c::Client)
+function init!(c::Client)
     hcreate = OnGuildCreate() do (ctx)
         put!(c.state, ctx.guild)
     end
@@ -292,14 +339,6 @@ function start(c::Client)
         create(c, Vector{ApplicationCommand}, c.commands)
     end
     add_handler!(c, hcreate, hupdate, hready)
-    try
-        open(c)
-        wait(c)
-    catch err
-        if err isa InterruptException
-            close(c)
-        end
-        rethrow(err)
-        return
-    end
 end
+
+const start = start! # backwards compat
