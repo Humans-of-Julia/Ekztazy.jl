@@ -89,8 +89,12 @@ function makeargs(ctx::Context, args)
     o = opt(ctx)
     for x = args 
         t = last(x)
-        arg =  get(o, string(first(x)), :ERR)
-        push!(v, conv(t, arg, ctx))
+        arg = get(o, string(first(x)), nothing)
+        if arg === nothing
+            push!(v, arg)
+        else
+            push!(v, conv(t, arg, ctx))
+        end
     end
     v
 end
