@@ -73,3 +73,28 @@ end
 
 Base.merge(x::UnavailableGuild, y::Guild) = y
 Base.merge(x::Guild, y::UnavailableGuild) = x
+
+struct EntityMetadata <: DiscordObject
+    location::Optional{String}
+end
+@boilerplate EntityMetadata :constructors :docs :lower :merge :mock
+
+mutable struct ScheduledEvent <: DiscordObject 
+    id::Snowflake
+    guild_id::Snowflake
+    channel_id::Optional{Snowflake}
+    creator_id::Optional{Snowflake}
+    name::Optional{String}
+    description::Optional{String}
+    scheduled_start_time::Optional{DateTime}
+    scheduled_end_time::Optional{DateTime}
+    privacy_level::Optional{Int} # convert to enum
+    status::Optional{Int} # convert to enum
+    entity_type::Optional{Int} # convert to enum
+    entity_id::Optional{Snowflake}
+    entity_metadata::Optional{EntityMetadata}
+    creator::Optional{User}
+    user_count::Optional{Int}
+    image::Optional{String}
+end
+@boilerplate ScheduledEvent :constructors :docs :lower :merge :mock
